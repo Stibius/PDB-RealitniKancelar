@@ -1,7 +1,7 @@
-DROP TABLE objekty;
-DROP TABLE obrazky;
-DROP TABLE majitele;
-DROP TABLE sektor;
+DROP TABLE objekty CASCADE CONSTRAINTS;
+DROP TABLE obrazky CASCADE CONSTRAINTS;
+DROP TABLE majitele CASCADE CONSTRAINTS;
+DROP TABLE sektor CASCADE CONSTRAINTS;
 
 --==========================================
 -- objekty
@@ -13,7 +13,7 @@ CREATE TABLE objekty (
     id NUMBER NOT null,
     nazev VARCHAR(32) NOT null,
     typ VARCHAR(32),
-    editovatelny NUMBER(1),
+    editable VARCHAR(1),
     popis VARCHAR(250),
     majitel NUMBER NOT null,
     sektor NUMBER NOT null,
@@ -49,8 +49,7 @@ FROM objekty o;
 -- obrazky
 --==========================================
 DROP SEQUENCE obrazky_seq;
-CREATE SEQUENCE obrazky_seq
-START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE obrazky_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE obrazky (
     id NUMBER NOT null,
@@ -69,8 +68,7 @@ COMMIT;
 -- majitele
 --==========================================
 DROP SEQUENCE majitele_seq;
-CREATE SEQUENCE majitele_seq
-START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE majitele_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE majitele (
     id NUMBER NOT null,
@@ -104,7 +102,7 @@ INSERT INTO USER_SDO_GEOM_METADATA VALUES (
 );
 
 DROP INDEX objekt_geometrie_sidx;
-CREATE INDEX objekt_geometrie_sidx ON sektor(geometrie) indextype is MDSYS.SPATIAL_INDEX;
+CREATE INDEX sektor_geometrie_sidx ON sektor(geometrie) indextype is MDSYS.SPATIAL_INDEX;
 
 COMMIT;
 
@@ -116,9 +114,19 @@ FROM sektor;
 SELECT o.nazev, o.geometrie.ST_IsValid()
 FROM objekty o;
 --==========================================
--- vytvoreeni cizich klicu
+-- vytvoreni cizich klicu
 --==========================================
-ALTER TABLE objekty ADD CONSTRAINT fk_objekt_majitel FOREIGN KEY (majitel) REFERENCES majitele(id) on delete cascade;
-ALTER TABLE objekty ADD CONSTRAINT fk_objekt_sektor FOREIGN KEY (sektor) REFERENCES sektor(id) on delete cascade;
-ALTER TABLE obrazky ADD CONSTRAINT fk_obr_objekt FOREIGN KEY (objekt) REFERENCES objekty(id) on delete cascade;
+ALTER TABLE OBJEKTY 
+ADD CONSTRAINT fk_objekt_majitel 
+FOREIGN KEY (majitel) 
+REFERENCES MAJITELE(id) on delete cascade;
 
+ALTER TABLE OBJEKTY
+ADD CONSTRAINT fk_objekt_sektor
+FOREIGN KEY (sektor) 
+REFERENCES sektor(id) on delete cascade;
+
+ALTER TABLE OBRAZKY
+ADD CONSTRAINT fk_obr_objekt
+FOREIGN KEY (objekt)
+REFERENCES objekty(id) on delete cascade;
