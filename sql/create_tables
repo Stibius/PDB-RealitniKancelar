@@ -13,16 +13,11 @@ CREATE TABLE objekty (
     id NUMBER NOT null,
     nazev VARCHAR(32) NOT null,
     typ VARCHAR(32),
-    edit BOOLEAN,
+    editovatelny NUMBER(1),
     popis VARCHAR(250),
     majitel NUMBER NOT null,
     sektor NUMBER NOT null,
     geometrie SDO_GEOMETRY,
-    --==========================================
-    -- vystavba DATE,
-    -- rekonstrukce DATE,
-    -- demolice DATE,
-    --==========================================
     CONSTRAINT pk_objekt PRIMARY KEY (id)
 );
 
@@ -108,6 +103,7 @@ INSERT INTO USER_SDO_GEOM_METADATA VALUES (
     NULL
 );
 
+DROP INDEX objekt_geometrie_sidx;
 CREATE INDEX objekt_geometrie_sidx ON sektor(geometrie) indextype is MDSYS.SPATIAL_INDEX;
 
 COMMIT;
@@ -122,7 +118,7 @@ FROM objekty o;
 --==========================================
 -- vytvoreeni cizich klicu
 --==========================================
-CONSTRAINT fk_objekt_majitel FOREIGN KEY objekty(majitel) REFERENCES majitel(id) on delete cascade;
-CONSTRAINT fk_objekt_sektor FOREIGN KEY objekty(sektor) REFERENCES sektor(id) on delete cascade;
-CONSTRAINT fk_obr_objekt FOREIGN KEY obrazky(objekt) REFERENCES objekty(id) on delete cascade;
+ALTER TABLE objekty ADD CONSTRAINT fk_objekt_majitel FOREIGN KEY (majitel) REFERENCES majitele(id) on delete cascade;
+ALTER TABLE objekty ADD CONSTRAINT fk_objekt_sektor FOREIGN KEY (sektor) REFERENCES sektor(id) on delete cascade;
+ALTER TABLE obrazky ADD CONSTRAINT fk_obr_objekt FOREIGN KEY (objekt) REFERENCES objekty(id) on delete cascade;
 
