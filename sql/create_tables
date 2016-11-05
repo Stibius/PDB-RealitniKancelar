@@ -18,9 +18,11 @@ CREATE TABLE objekty (
     majitel NUMBER NOT null,
     sektor NUMBER NOT null,
     geometrie SDO_GEOMETRY,
+    intervalMajitele WM_PERIOD,
+    existence WM_PERIOD
+    
     CONSTRAINT pk_objekt PRIMARY KEY (id)
 );
-
 -- nazvy tabulky a sloupce musi byt velkymi pismeny
 DELETE FROM USER_SDO_GEOM_METADATA WHERE
     TABLE_NAME = 'OBJEKTY' AND COLUMN_NAME = 'GEOMETRIE';
