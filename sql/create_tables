@@ -19,7 +19,8 @@ CREATE TABLE objekty (
     sektor NUMBER NOT null,
     geometrie SDO_GEOMETRY,
     intervalMajitele WM_PERIOD,
-    existence WM_PERIOD
+    existence WM_PERIOD,
+    rekonstrukce WM_PERIOD
     
     CONSTRAINT pk_objekt PRIMARY KEY (id)
 );
