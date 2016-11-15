@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cz.vutbr.fit.pdb</groupId>
+    <artifactId>RealitniKancelar</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    <name>RealitniKancelar</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>cz.vutbr.fit.pdb.realitnikancelar.MainWindow</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>com.oracle.weblogic</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <!-- Oracle Maven Repository, see https://maven.oracle.com/doc.html -->
+            <!-- An example of configuration in ~/.m2/settings.xml, XPath /settings/servers follows:
+                 (wagon-http warnings are OK, including "Not authorized" on https://maven.oracle.com, they do not affect ability to download from the repo)
+                 <server>
+                   <id>maven.oracle.com</id>
+                   <username>YOUR_ORACLE_ACCOUNT_EMAIL</username>
+                   <password>YOUR_ORACLE_ACCOUNT_PASSWORD</password>
+                   <configuration>
+                     <basicAuthScope>
+                       <host>ANY</host>
+                       <port>ANY</port>
+                       <realm>OAM 11g</realm>
+                     </basicAuthScope>
+                     <httpConfiguration>
+                       <all>
+                         <params>
+                           <property>
+                             <name>http.protocol.allow-circular-redirects</name>
+                             <value>%b,true</value>
+                           </property>
+                         </params>
+                       </all>
+                     </httpConfiguration>
+                   </configuration>
+                 </server>
+            -->
+            <id>maven.oracle.com</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>https://maven.oracle.com</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>in-project</id>
+            <name>In Project Repository</name>
+            <url>file://${project.basedir}/libs</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven.oracle.com</id>
+            <url>https://maven.oracle.com</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
