@@ -4,15 +4,16 @@
  * and open the template in the editor.
  */
 package cz.vutbr.fit.pdb.realitnikancelar;
-import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
-import java.awt.Shape;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import javafx.scene.shape.Polyline;
+import oracle.spatial.geometry.JGeometry;
 
 /**
  *
@@ -20,7 +21,8 @@ import javafx.scene.shape.Polyline;
  * Tady budou ulozeny veskere informace o objektech.
  */
 public class Data {
-    
+    public static class JGeometry2ShapeException extends Exception {
+    };
     //rozmery mapy
     public static int width = 1000; 
     public static int height = 1000; 
@@ -49,6 +51,18 @@ public class Data {
         //zjisti se rozmery mapy
         width = 1000;
         height = 1000;
+
+        try (Statement stmt = ConnectDialog.conn.createStatement()) {
+            ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY");
+            while (res.next()) {
+                    loadShape(res);
+                }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
         
         //vymazou se predchozi data
         points.clear();
@@ -90,11 +104,54 @@ public class Data {
         polygon.addPoint(850, 300);
         polygons.add(polygon);
         polygonsInfo.add(new ObjectInfo());
-        
+        */
     }
-    
+
+    private static void loadShape(ResultSet res) throws Exception, SQLException {
+        byte[] image = new byte[0];
+        JGeometry tempGeo;
+        Shape shape;
+
+        image = res.getBytes("geometrie");
+        ObjectInfo info = ObjectInfo.create(res);
+
+        //process shape
+        tempGeo = JGeometry.load(image);
+        shape = jGeometry2Shape(tempGeo);
+        populatePanel(shape, info);
+    }
+
+    private static void populatePanel(Shape shape, ObjectInfo info) {
+        if (shape instanceof Rectangle2D) {
+            Rectangle rectangle = shape.getBounds();
+            rectangles.add(rectangle);
+            rectanglesInfo.add(info);
+            return;
+        }
+        else if(shape instanceof Ellipse2D) {
+            ellipses.add((Ellipse2D) shape);
+            ellipsesInfo.add(info);
+            return;
+        }
+    }
+
     //tady se budou potom ukladat data do databze, zatim tu neni nic
     public static void saveData() {
         
+    }
+    public static Shape jGeometry2Shape(JGeometry jGeometry) throws
+            JGeometry2ShapeException {
+        Shape shape;
+        // check a type of JGeometry object
+        switch (jGeometry.getType()) {
+            // it is a polygon
+            case JGeometry.GTYPE_POLYGON:
+                shape = jGeometry.createShape();
+                break;
+            // it is something else (we do not know how to convert)
+            default:
+                throw new JGeometry2ShapeException();
+        }
+        return shape;
     }
 }

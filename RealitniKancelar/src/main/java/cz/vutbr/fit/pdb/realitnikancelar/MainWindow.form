@@ -151,15 +151,94 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="390" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="infoNazevLabel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="infoTypLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="infoMajitelLabel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="infoPopisLabel" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="infoNazevLabel1" pref="105" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="169" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="infoNazevLabel2" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="infoNazevLabel3" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="infoNazevLabel4" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="366" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="infoNazevLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="infoNazevLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="infoTypLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="infoNazevLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="infoMajitelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="infoNazevLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="infoPopisLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="infoNazevLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="283" max="32767" attributes="0"/>
+                  </Group>
               </Group>
             </DimensionLayout>
           </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="infoNazevLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="N&#xe1;zev objektu"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="infoTypLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Typ objektu"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="infoMajitelLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Majitel"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="infoPopisLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Popis"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="infoNazevLabel1">
+            </Component>
+            <Component class="javax.swing.JLabel" name="infoNazevLabel2">
+            </Component>
+            <Component class="javax.swing.JLabel" name="infoNazevLabel3">
+            </Component>
+            <Component class="javax.swing.JLabel" name="infoNazevLabel4">
+            </Component>
+          </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="editPanel">
           <Constraints>

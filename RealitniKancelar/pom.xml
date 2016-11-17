@@ -5,6 +5,7 @@
     <artifactId>RealitniKancelar</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
+    <url>https://www.fit.vutbr.cz/study/courses/PDB/</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -28,40 +29,57 @@
         </plugins>
     </build>
     <dependencies>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <!--  Oracle JDBC Driver  -->
         <dependency>
             <groupId>com.oracle.weblogic</groupId>
+            <!--  for Java 1.2  -->
+            <!-- artifactId>classes12</artifactId -->
+            <!--  for Java 1.4  -->
+            <!-- artifactId>ojdbc14</artifactId -->
+            <!--  for Java 5  -->
+            <!-- artifactId>ojdbc5</artifactId -->
+            <!--  for Java 6  -->
+            <!-- artifactId>ojdbc6</artifactId -->
+            <!--  for Java 7/8  -->
+            <!-- artifactId>ojdbc7</artifactId -->
             <artifactId>ojdbc7</artifactId>
             <version>RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.weblogic</groupId>
+            <artifactId>xmlparserv2_sans_jaxp_services</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <!--  Oracle XML Database  -->
+        <dependency>
+            <groupId>com.oracle.weblogic</groupId>
+            <artifactId>oracle.xdb_12.1.0</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+        <!--  Oracle Multimedia Database  -->
+        <!--  Oracle SDO Locator Objects  -->
+        <dependency>
+            <groupId>oracle.sdo.locator</groupId>
+            <artifactId>sdoapi</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>oracle.sdo.locator</groupId>
+            <artifactId>sdoapi</artifactId>
+            <version>RELEASE</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/sdoapi.jar</systemPath>
         </dependency>
     </dependencies>
     <repositories>
         <repository>
-            <!-- Oracle Maven Repository, see https://maven.oracle.com/doc.html -->
-            <!-- An example of configuration in ~/.m2/settings.xml, XPath /settings/servers follows:
-                 (wagon-http warnings are OK, including "Not authorized" on https://maven.oracle.com, they do not affect ability to download from the repo)
-                 <server>
-                   <id>maven.oracle.com</id>
-                   <username>YOUR_ORACLE_ACCOUNT_EMAIL</username>
-                   <password>YOUR_ORACLE_ACCOUNT_PASSWORD</password>
-                   <configuration>
-                     <basicAuthScope>
-                       <host>ANY</host>
-                       <port>ANY</port>
-                       <realm>OAM 11g</realm>
-                     </basicAuthScope>
-                     <httpConfiguration>
-                       <all>
-                         <params>
-                           <property>
-                             <name>http.protocol.allow-circular-redirects</name>
-                             <value>%b,true</value>
-                           </property>
-                         </params>
-                       </all>
-                     </httpConfiguration>
-                   </configuration>
-                 </server>
-            -->
             <id>maven.oracle.com</id>
             <releases>
                 <enabled>true</enabled>

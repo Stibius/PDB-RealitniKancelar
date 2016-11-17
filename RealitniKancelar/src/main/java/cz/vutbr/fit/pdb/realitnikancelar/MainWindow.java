@@ -99,6 +99,14 @@ public class MainWindow extends javax.swing.JFrame {
         buttonGroup = new javax.swing.ButtonGroup();
         tabbedPane = new javax.swing.JTabbedPane();
         infoPanel = new javax.swing.JPanel();
+        infoNazevLabel = new javax.swing.JLabel();
+        infoTypLabel = new javax.swing.JLabel();
+        infoMajitelLabel = new javax.swing.JLabel();
+        infoPopisLabel = new javax.swing.JLabel();
+        infoNazevLabel1 = new javax.swing.JLabel();
+        infoNazevLabel2 = new javax.swing.JLabel();
+        infoNazevLabel3 = new javax.swing.JLabel();
+        infoNazevLabel4 = new javax.swing.JLabel();
         editPanel = new javax.swing.JPanel();
         selectRadioButton = new javax.swing.JRadioButton();
         addPointRadioButton = new javax.swing.JRadioButton();
@@ -141,15 +149,60 @@ public class MainWindow extends javax.swing.JFrame {
         tabbedPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tabbedPane.setMinimumSize(new java.awt.Dimension(100, 130));
 
+        infoNazevLabel.setText("Název objektu");
+
+        infoTypLabel.setText("Typ objektu");
+
+        infoMajitelLabel.setText("Majitel");
+
+        infoPopisLabel.setText("Popis");
+
         javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
         infoPanel.setLayout(infoPanelLayout);
         infoPanelLayout.setHorizontalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 390, Short.MAX_VALUE)
+            .addGroup(infoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(infoNazevLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(infoTypLabel)
+                    .addComponent(infoMajitelLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(infoPopisLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(infoPanelLayout.createSequentialGroup()
+                        .addComponent(infoNazevLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                        .addGap(169, 169, 169))
+                    .addGroup(infoPanelLayout.createSequentialGroup()
+                        .addComponent(infoNazevLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
+                        .addComponent(infoNazevLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
+                        .addComponent(infoNazevLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         infoPanelLayout.setVerticalGroup(
             infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 366, Short.MAX_VALUE)
+            .addGroup(infoPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(infoNazevLabel)
+                    .addComponent(infoNazevLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(infoTypLabel)
+                    .addComponent(infoNazevLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(infoMajitelLabel)
+                    .addComponent(infoNazevLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(infoPopisLabel)
+                    .addComponent(infoNazevLabel4))
+                .addContainerGap(283, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Informace", infoPanel);
@@ -797,6 +850,8 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.points.size(); i++)
         {
+            if (Data.pointsInfo.get(i).selected)
+                setInfo(Data.pointsInfo.get(i));
             if (Data.pointsInfo.get(i).selected && Data.pointsInfo.get(i).editable)
             {
                 Data.points.get(i).translate(xDiff, yDiff);
@@ -807,6 +862,8 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.polylines.size(); i++)
         {
+            if (Data.polylinesInfo.get(i).selected)
+                setInfo(Data.polylinesInfo.get(i));
             if (Data.polylinesInfo.get(i).selected && Data.polylinesInfo.get(i).editable)
             {
                 for (int j = 0; j < Data.polylines.get(i).size(); j++)
@@ -821,6 +878,8 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.rectangles.size(); i++)
         {
+            if (Data.rectanglesInfo.get(i).selected)
+                setInfo(Data.rectanglesInfo.get(i));
             if (Data.rectanglesInfo.get(i).selected && Data.rectanglesInfo.get(i).editable)
             {
                 Data.rectangles.get(i).translate(xDiff, yDiff);
@@ -831,6 +890,8 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.ellipses.size(); i++)
         {
+            if (Data.ellipsesInfo.get(i).selected)
+                setInfo(Data.ellipsesInfo.get(i));
             if (Data.ellipsesInfo.get(i).selected && Data.ellipsesInfo.get(i).editable)
             {
                 Data.ellipses.get(i).setFrame(Data.ellipses.get(i).getX() + xDiff, 
@@ -844,6 +905,8 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.polygons.size(); i++)
         {
+            if (Data.polygonsInfo.get(i).selected)
+                setInfo(Data.polygonsInfo.get(i));
             if (Data.polygonsInfo.get(i).selected && Data.polygonsInfo.get(i).editable)
             {
                 Data.polygons.get(i).translate(xDiff, yDiff);
@@ -1382,7 +1445,15 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JPanel fillColorPanel;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JLabel infoMajitelLabel;
+    private javax.swing.JLabel infoNazevLabel;
+    private javax.swing.JLabel infoNazevLabel1;
+    private javax.swing.JLabel infoNazevLabel2;
+    private javax.swing.JLabel infoNazevLabel3;
+    private javax.swing.JLabel infoNazevLabel4;
     private javax.swing.JPanel infoPanel;
+    private javax.swing.JLabel infoPopisLabel;
+    private javax.swing.JLabel infoTypLabel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1408,4 +1479,11 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel selectionColorPanel;
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
+
+    private void setInfo(ObjectInfo info) {
+        infoNazevLabel1.setText(info.nazev);
+        infoNazevLabel2.setText(info.typ);
+        infoNazevLabel3.setText(info.majitel);
+        infoNazevLabel4.setText(info.popis);
+    }
 }
