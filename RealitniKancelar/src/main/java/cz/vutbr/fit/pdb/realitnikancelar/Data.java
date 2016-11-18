@@ -62,6 +62,16 @@ public class Data {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        //nejake objekty na testovani, protoze v databazi nic neni
+        rectangles.add(new Rectangle(100, 100, 300, 200));
+        rectanglesInfo.add(new ObjectInfo());
+        rectanglesInfo.get(0).nazev = "Ahoj";
+        
+        rectangles.add(new Rectangle(500, 500, 300, 200));
+        rectanglesInfo.add(new ObjectInfo());
+        rectanglesInfo.get(1).nazev = "XXX";
+        
         /*
         
         //vymazou se predchozi data

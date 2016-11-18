@@ -850,8 +850,6 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.points.size(); i++)
         {
-            if (Data.pointsInfo.get(i).selected)
-                setInfo(Data.pointsInfo.get(i));
             if (Data.pointsInfo.get(i).selected && Data.pointsInfo.get(i).editable)
             {
                 Data.points.get(i).translate(xDiff, yDiff);
@@ -862,8 +860,6 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.polylines.size(); i++)
         {
-            if (Data.polylinesInfo.get(i).selected)
-                setInfo(Data.polylinesInfo.get(i));
             if (Data.polylinesInfo.get(i).selected && Data.polylinesInfo.get(i).editable)
             {
                 for (int j = 0; j < Data.polylines.get(i).size(); j++)
@@ -878,8 +874,6 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.rectangles.size(); i++)
         {
-            if (Data.rectanglesInfo.get(i).selected)
-                setInfo(Data.rectanglesInfo.get(i));
             if (Data.rectanglesInfo.get(i).selected && Data.rectanglesInfo.get(i).editable)
             {
                 Data.rectangles.get(i).translate(xDiff, yDiff);
@@ -890,8 +884,6 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.ellipses.size(); i++)
         {
-            if (Data.ellipsesInfo.get(i).selected)
-                setInfo(Data.ellipsesInfo.get(i));
             if (Data.ellipsesInfo.get(i).selected && Data.ellipsesInfo.get(i).editable)
             {
                 Data.ellipses.get(i).setFrame(Data.ellipses.get(i).getX() + xDiff, 
@@ -905,8 +897,6 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.polygons.size(); i++)
         {
-            if (Data.polygonsInfo.get(i).selected)
-                setInfo(Data.polygonsInfo.get(i));
             if (Data.polygonsInfo.get(i).selected && Data.polygonsInfo.get(i).editable)
             {
                 Data.polygons.get(i).translate(xDiff, yDiff);
@@ -993,11 +983,13 @@ public class MainWindow extends javax.swing.JFrame {
         
         if (selectRadioButton.isSelected()) {
             
+            clearInfo();
             deleteButton.setEnabled(false);
             deleteMenuItem.setEnabled(false);
 
             for (int i = 0; i < Data.points.size(); i++) {
                 if (Data.pointsInfo.get(i).hovered) {
+                    setInfo(Data.pointsInfo.get(i));
                     Data.pointsInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
@@ -1008,6 +1000,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             for (int i = 0; i < Data.polylines.size(); i++) {
                 if (Data.polylinesInfo.get(i).hovered) {
+                    setInfo(Data.polylinesInfo.get(i));
                     Data.polylinesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
@@ -1018,6 +1011,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             for (int i = 0; i < Data.rectangles.size(); i++) {
                 if (Data.rectanglesInfo.get(i).hovered) {
+                    setInfo(Data.rectanglesInfo.get(i));
                     Data.rectanglesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
@@ -1028,6 +1022,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             for (int i = 0; i < Data.ellipses.size(); i++) {
                 if (Data.ellipsesInfo.get(i).hovered) {
+                    setInfo(Data.ellipsesInfo.get(i));
                     Data.ellipsesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
@@ -1038,6 +1033,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             for (int i = 0; i < Data.polygons.size(); i++) {
                 if (Data.polygonsInfo.get(i).hovered) {
+                    setInfo(Data.polygonsInfo.get(i));
                     Data.polygonsInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
@@ -1485,5 +1481,12 @@ public class MainWindow extends javax.swing.JFrame {
         infoNazevLabel2.setText(info.typ);
         infoNazevLabel3.setText(info.majitel);
         infoNazevLabel4.setText(info.popis);
+    }
+    
+    private void clearInfo() {
+        infoNazevLabel1.setText("");
+        infoNazevLabel2.setText("");
+        infoNazevLabel3.setText("");
+        infoNazevLabel4.setText("");
     }
 }
