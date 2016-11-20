@@ -127,7 +127,7 @@ public class Data {
 
         //process shape
         tempGeo = JGeometry.load(image);
-        shape = jGeometry2Shape(tempGeo);
+        shape = ShapeHelper.jGeometry2Shape(tempGeo);
         populatePanel(shape, info);
     }
 
@@ -148,20 +148,5 @@ public class Data {
     //tady se budou potom ukladat data do databze, zatim tu neni nic
     public static void saveData() {
         
-    }
-    public static Shape jGeometry2Shape(JGeometry jGeometry) throws
-            JGeometry2ShapeException {
-        Shape shape;
-        // check a type of JGeometry object
-        switch (jGeometry.getType()) {
-            // it is a polygon
-            case JGeometry.GTYPE_POLYGON:
-                shape = jGeometry.createShape();
-                break;
-            // it is something else (we do not know how to convert)
-            default:
-                throw new JGeometry2ShapeException();
-        }
-        return shape;
     }
 }
