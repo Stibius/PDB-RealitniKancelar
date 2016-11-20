@@ -13,6 +13,9 @@ import java.awt.geom.Rectangle2D;
 import java.io.InvalidObjectException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import oracle.jdbc.pool.OracleDataSource;
 import oracle.spatial.geometry.JGeometry;
@@ -68,6 +71,7 @@ public class Data {
         }
 
         //nejake objekty na testovani, protoze v databazi nic neni
+        /*
         rectangles.add(new Rectangle(100, 100, 300, 200));
         rectanglesInfo.add(new ObjectInfo());
         rectanglesInfo.get(0).nazev = "Ahoj";
@@ -76,7 +80,7 @@ public class Data {
         rectanglesInfo.add(new ObjectInfo());
         rectanglesInfo.get(1).nazev = "XXX";
         
-        /*
+
         
         //vymazou se predchozi data
         points.clear();
@@ -151,5 +155,43 @@ public class Data {
     // ukladani dat do DB
     public static void saveData() throws InvalidObjectException, SQLException {
 
+        Shape current;
+        ObjectInfo currentInfo;
+        Connection conn = ConnectDialog.conn;
+
+        Map<ObjectInfo, Shape> objects = mergeShapes();
+
+        //vycistit objekty
+        PreparedStatement del = conn.prepareStatement("DELETE FROM objekty");
+        del.execute();
+
+        for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet())
+        {
+            currentInfo = entry.getKey();
+            current = entry.getValue();
+
+            JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
+            try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id, geometrie) VALUES (?, ?)")) {
+                stmt.setInt(1, currentInfo.id);
+
+                STRUCT obj = JGeometry.store(conn, jGeo);
+                stmt.setObject(2, obj);
+
+                stmt.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static Map mergeShapes() {
+        Map<ObjectInfo, Shape> objects = new HashMap<>();
+        for (int i = 0; i < rectangles.size(); i++)
+            objects.put(rectanglesInfo.get(i), rectangles.get(i));
+        for (int i = 0; i < ellipses.size(); i++)
+            objects.put(ellipsesInfo.get(i), ellipses.get(i));
+        for (int i = 0; i < polygons.size(); i++)
+            objects.put(polygonsInfo.get(i), polygons.get(i));
+        return objects;
     }
 }
