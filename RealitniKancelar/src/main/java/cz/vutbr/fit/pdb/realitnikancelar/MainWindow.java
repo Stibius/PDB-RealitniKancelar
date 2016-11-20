@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.Color;
+import java.io.InvalidObjectException;
 import java.lang.Math;
 import javax.swing.JColorChooser;
 import java.awt.BasicStroke;
@@ -22,6 +23,7 @@ import javax.swing.JOptionPane;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -513,7 +515,11 @@ public class MainWindow extends javax.swing.JFrame {
         saveChangesButton.setText("Uložit změny do databáze");
         saveChangesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveChangesButtonActionPerformed(evt);
+                try {
+                    saveChangesButtonActionPerformed(evt);
+                } catch (InvalidObjectException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -547,7 +553,11 @@ public class MainWindow extends javax.swing.JFrame {
         saveChangesMenuItem.setText("Uložit změny do databáze");
         saveChangesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveChangesMenuItemActionPerformed(evt);
+                try {
+                    saveChangesMenuItemActionPerformed(evt);
+                } catch (InvalidObjectException e) {
+                    e.printStackTrace();
+                }
             }
         });
         mainMenu.add(saveChangesMenuItem);
@@ -635,8 +645,12 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
-    private void saveChanges() {
-        Data.saveData();
+    private void saveChanges() throws InvalidObjectException {
+        try {
+            Data.saveData();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         saveChangesButton.setEnabled(false);
         saveChangesMenuItem.setEnabled(false);
     }
@@ -657,12 +671,12 @@ public class MainWindow extends javax.swing.JFrame {
         loadData();
     }//GEN-LAST:event_loadDataButtonActionPerformed
 
-    private void saveChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveChangesButtonActionPerformed
+    private void saveChangesButtonActionPerformed(java.awt.event.ActionEvent evt) throws InvalidObjectException {//GEN-FIRST:event_saveChangesButtonActionPerformed
         // TODO add your handling code here:
         saveChanges();
     }//GEN-LAST:event_saveChangesButtonActionPerformed
 
-    private void saveChangesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveChangesMenuItemActionPerformed
+    private void saveChangesMenuItemActionPerformed(java.awt.event.ActionEvent evt) throws InvalidObjectException {//GEN-FIRST:event_saveChangesMenuItemActionPerformed
         // TODO add your handling code here:
         saveChanges();
     }//GEN-LAST:event_saveChangesMenuItemActionPerformed
