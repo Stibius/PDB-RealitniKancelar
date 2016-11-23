@@ -189,9 +189,11 @@ public class MainWindow extends javax.swing.JFrame {
         saveChangesButton = new javax.swing.JButton();
         positionLabel = new javax.swing.JLabel();
         deleteButton = new javax.swing.JButton();
+        createDataButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         mainMenu = new javax.swing.JMenu();
         loadDataMenuItem = new javax.swing.JMenuItem();
+        createDataMenuItem = new javax.swing.JMenuItem();
         deleteMenuItem = new javax.swing.JMenuItem();
         saveChangesMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -810,6 +812,13 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        createDataButton.setText("Naplnit databázi vzorovými daty");
+        createDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createDataButtonActionPerformed(evt);
+            }
+        });
+
         mainMenu.setLabel("Menu");
 
         loadDataMenuItem.setText("Načíst data z databáze");
@@ -819,6 +828,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         mainMenu.add(loadDataMenuItem);
+
+        createDataMenuItem.setText("Naplnit databázi vzorovými daty");
+        createDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createDataMenuItemActionPerformed(evt);
+            }
+        });
+        mainMenu.add(createDataMenuItem);
 
         deleteMenuItem.setText("Vymazat označený objekt");
         deleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -860,10 +877,12 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(loadDataButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
+                        .addComponent(createDataButton)
+                        .addGap(18, 18, 18)
                         .addComponent(saveChangesButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteButton)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -882,7 +901,8 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loadDataButton)
                     .addComponent(saveChangesButton)
-                    .addComponent(deleteButton))
+                    .addComponent(deleteButton)
+                    .addComponent(createDataButton))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1903,8 +1923,24 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void rotateImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateImageButtonActionPerformed
         // TODO add your handling code here:
+        //tady se bude rotovat obrazkem
     }//GEN-LAST:event_rotateImageButtonActionPerformed
 
+    private void createDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createDataButtonActionPerformed
+        // TODO add your handling code here:
+        createData();
+    }//GEN-LAST:event_createDataButtonActionPerformed
+
+    private void createDataMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createDataMenuItemActionPerformed
+        // TODO add your handling code here:
+        createData();
+    }//GEN-LAST:event_createDataMenuItemActionPerformed
+
+    private void createData()
+    {
+        //tady se budou vkladat do databaze vzorova data a rovnou se i zobrazi
+    }
+    
     private void unselect()
     {
         for (int i = 0; i < Data.points.size(); i++)
@@ -2015,6 +2051,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JRadioButton addRectangleRadioButton;
     private javax.swing.JPanel backColorPanel;
     private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.JButton createDataButton;
+    private javax.swing.JMenuItem createDataMenuItem;
     private javax.swing.JButton deleteButton;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JButton deleteOwnerButton;
