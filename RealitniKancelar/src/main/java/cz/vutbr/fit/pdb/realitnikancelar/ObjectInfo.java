@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.ArrayList;
+import oracle.ord.im.OrdImage;
 
 /**
  *
@@ -20,14 +22,23 @@ import java.util.TreeSet;
  * To zahrnuje jak veci z databaze, tak nejake pomocne informace jako jestli je objekt prave oznaceny.
  */
 public class ObjectInfo {
+    
+    final public static int NUM_TYPES = 4;
+    final public static String[] TYPES = { "Dům", "Řeka", "Autobusová zastávka", "Silnice" };
+    
     public int id;
     public String nazev;
     public String typ;
     public boolean editable = true;
     public String popis;
-    public String majitel;
+    public ArrayList<Owner> majitele = new ArrayList<>();
+    public ArrayList<Date> majitelOd = new ArrayList<>();
+    public ArrayList<Date> majitelDo = new ArrayList<>();
     public String sektor;
-    public Date obdobi;
+    public Date existenceOd;
+    public Date existenceDo;
+    public Date rekonstrukceOd;
+    public Date rekonstrukceDo;
     private static TreeSet<Integer> ids = new TreeSet<Integer>();
     public boolean selected = false; //jestli je objekt vybrany
     public boolean hovered = false; //jestli je prave nad objektem mys
@@ -38,9 +49,14 @@ public class ObjectInfo {
         this.typ = "Typ objektu";
         this.editable = true;
         this.popis = "popis";
-        this.majitel = "majitel";
+        this.majitele = new ArrayList<>();
         this.sektor = "sektor";
-        this.obdobi = null;
+        this.majitelOd = new ArrayList<>();
+        this.majitelDo = new ArrayList<>();
+        this.existenceOd = new Date(0, 1, 1);
+        this.existenceDo = null;
+        this.rekonstrukceOd = new Date(50, 1, 3);
+        this.rekonstrukceDo = new Date(50, 1, 7);
         ids.add(this.id);
     }
     public ObjectInfo(Boolean load)
@@ -63,9 +79,14 @@ public class ObjectInfo {
         info.typ = res.getString("typ");
         info.editable = true;
         info.popis = res.getString("popis");
-        info.majitel = res.getString("majitel");
+        //info.majitel = res.getString("majitel");
         info.sektor = res.getString("sektor");
-        info.obdobi = res.getDate("obdobiod");
+        //info.majitelOd = res.getDate("obdobiod");
+        //info.majitelDo = res.getDate("obdobiod");
+        info.existenceOd = res.getDate("obdobiod");
+        info.existenceDo = res.getDate("obdobiod");
+        info.rekonstrukceOd = res.getDate("obdobiod");
+        info.rekonstrukceDo = res.getDate("obdobiod");
         ids.add(info.id);
         return info;
     }

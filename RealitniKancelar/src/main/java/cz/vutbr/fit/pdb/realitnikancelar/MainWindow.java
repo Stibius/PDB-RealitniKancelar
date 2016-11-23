@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.io.InvalidObjectException;
 import java.lang.Math;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import java.awt.BasicStroke;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -24,7 +25,14 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.JList;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  *
@@ -49,22 +57,35 @@ public class MainWindow extends javax.swing.JFrame {
     private boolean newRectangle = false;
     private boolean newEllipse = false;
     
+    private static DefaultListModel ownersListModel = new DefaultListModel();
+    
     /**
      * Creates new form MainWindow
      */
     public MainWindow() {
         initComponents();
         
+        typeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(ObjectInfo.TYPES));
+        
+        clearInfo();
+        
         saveChangesButton.setEnabled(false);
-        deleteButton.setEnabled(false);
         saveChangesMenuItem.setEnabled(false);
-        deleteMenuItem.setEnabled(false);
         selectRadioButton.setEnabled(false);
         addPointRadioButton.setEnabled(false);
         addPolylineRadioButton.setEnabled(false);
         addPolygonRadioButton.setEnabled(false);
         addRectangleRadioButton.setEnabled(false);
         addEllipseRadioButton.setEnabled(false);
+        ownersList.setEnabled(false);
+        ownerNameField.setEnabled(false);
+        ownerAddressField.setEnabled(false);
+        addOwnerButton.setEnabled(false);
+        updateOwnerButton.setEnabled(false);
+        deleteOwnerButton.setEnabled(false);
+        
+        ownersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        ownersList.setModel(ownersListModel);
         
         buttonGroup.add(selectRadioButton);
         buttonGroup.add(addPointRadioButton);
@@ -100,15 +121,35 @@ public class MainWindow extends javax.swing.JFrame {
 
         buttonGroup = new javax.swing.ButtonGroup();
         tabbedPane = new javax.swing.JTabbedPane();
-        infoPanel = new javax.swing.JPanel();
-        infoNazevLabel = new javax.swing.JLabel();
-        infoTypLabel = new javax.swing.JLabel();
-        infoMajitelLabel = new javax.swing.JLabel();
-        infoPopisLabel = new javax.swing.JLabel();
-        infoNazevLabel1 = new javax.swing.JLabel();
-        infoNazevLabel2 = new javax.swing.JLabel();
-        infoNazevLabel3 = new javax.swing.JLabel();
-        infoNazevLabel4 = new javax.swing.JLabel();
+        infoPanel = new javax.swing.JScrollPane();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        objectNameField = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        typeComboBox = new javax.swing.JComboBox<>();
+        jLabel10 = new javax.swing.JLabel();
+        sectorLabel = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        ownersButton = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        ownerNameLabel = new javax.swing.JLabel();
+        ownerAddressLabel = new javax.swing.JLabel();
+        rekonstrukceOdField = new javax.swing.JTextField();
+        existenceOdField = new javax.swing.JTextField();
+        existenceDoField = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        descriptionField = new javax.swing.JTextArea();
+        rekonstrukceDoField = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        loadImageButton = new javax.swing.JButton();
+        saveImageButton = new javax.swing.JButton();
+        rotateImageButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        imagePanel = new DrawingPanel();
         editPanel = new javax.swing.JPanel();
         selectRadioButton = new javax.swing.JRadioButton();
         addPointRadioButton = new javax.swing.JRadioButton();
@@ -116,6 +157,17 @@ public class MainWindow extends javax.swing.JFrame {
         addRectangleRadioButton = new javax.swing.JRadioButton();
         addEllipseRadioButton = new javax.swing.JRadioButton();
         addPolygonRadioButton = new javax.swing.JRadioButton();
+        ownersPanel = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        ownerNameField = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        ownerAddressField = new javax.swing.JTextField();
+        addOwnerButton = new javax.swing.JButton();
+        updateOwnerButton = new javax.swing.JButton();
+        deleteOwnerButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ownersList = new javax.swing.JList<>();
         mapSettingsPanel = new javax.swing.JPanel();
         backColorPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -151,63 +203,202 @@ public class MainWindow extends javax.swing.JFrame {
         tabbedPane.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tabbedPane.setMinimumSize(new java.awt.Dimension(100, 130));
 
-        infoNazevLabel.setText("Název objektu");
+        jLabel8.setText("Název objektu:");
 
-        infoTypLabel.setText("Typ objektu");
+        jLabel9.setText("Typ objektu:");
 
-        infoMajitelLabel.setText("Majitel");
+        jLabel10.setText("Sektor:");
 
-        infoPopisLabel.setText("Popis");
+        sectorLabel.setText("jLabel11");
 
-        javax.swing.GroupLayout infoPanelLayout = new javax.swing.GroupLayout(infoPanel);
-        infoPanel.setLayout(infoPanelLayout);
-        infoPanelLayout.setHorizontalGroup(
-            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(infoPanelLayout.createSequentialGroup()
+        jLabel15.setText("Poslední majitel:");
+
+        ownersButton.setText("Historie a editace majitelů");
+
+        jLabel16.setText("Datum výstavby:");
+
+        jLabel17.setText("Datum rekonstrukce:");
+
+        jLabel18.setText("Datum demolice:");
+
+        jLabel19.setText("Popis:");
+
+        ownerNameLabel.setText("jLabel14");
+
+        ownerAddressLabel.setText("jLabel14");
+
+        descriptionField.setColumns(20);
+        descriptionField.setRows(5);
+        jScrollPane2.setViewportView(descriptionField);
+
+        jLabel11.setText(" - ");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(infoNazevLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(infoTypLabel)
-                    .addComponent(infoMajitelLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(infoPopisLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(objectNameField)
+                                    .addComponent(typeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(sectorLabel)
+                                .addGap(87, 87, 87))))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(ownerAddressLabel)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel15)
+                            .addGap(14, 14, 14)
+                            .addComponent(ownerNameLabel)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(91, 91, 91)
+                        .addComponent(ownersButton))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel17)
+                                .addComponent(jLabel18)
+                                .addComponent(jLabel16))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(existenceOdField)
+                                .addComponent(rekonstrukceOdField)
+                                .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel11)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(rekonstrukceDoField))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(jLabel19)
+                            .addGap(77, 77, 77)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(objectNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(infoPanelLayout.createSequentialGroup()
-                        .addComponent(infoNazevLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                        .addGap(169, 169, 169))
-                    .addGroup(infoPanelLayout.createSequentialGroup()
-                        .addComponent(infoNazevLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
-                        .addComponent(infoNazevLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, infoPanelLayout.createSequentialGroup()
-                        .addComponent(infoNazevLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(typeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(sectorLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(ownerNameLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ownerAddressLabel)
+                .addGap(5, 5, 5)
+                .addComponent(ownersButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(existenceOdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(rekonstrukceOdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rekonstrukceDoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(existenceDoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
-        infoPanelLayout.setVerticalGroup(
-            infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(infoPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(infoNazevLabel)
-                    .addComponent(infoNazevLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(infoTypLabel)
-                    .addComponent(infoNazevLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(infoMajitelLabel)
-                    .addComponent(infoNazevLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(infoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(infoPopisLabel)
-                    .addComponent(infoNazevLabel4))
-                .addContainerGap(283, Short.MAX_VALUE))
-        );
+
+        infoPanel.setViewportView(jPanel2);
 
         tabbedPane.addTab("Informace", infoPanel);
+
+        loadImageButton.setText("Načíst ze souboru");
+        loadImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadImageButtonActionPerformed(evt);
+            }
+        });
+
+        saveImageButton.setText("Uložit do souboru");
+        saveImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveImageButtonActionPerformed(evt);
+            }
+        });
+
+        rotateImageButton.setText("Rotovat");
+        rotateImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rotateImageButtonActionPerformed(evt);
+            }
+        });
+
+        imagePanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout imagePanelLayout = new javax.swing.GroupLayout(imagePanel);
+        imagePanel.setLayout(imagePanelLayout);
+        imagePanelLayout.setHorizontalGroup(
+            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 388, Short.MAX_VALUE)
+        );
+        imagePanelLayout.setVerticalGroup(
+            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 322, Short.MAX_VALUE)
+        );
+
+        jScrollPane3.setViewportView(imagePanel);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addComponent(loadImageButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(saveImageButton)
+                .addGap(56, 56, 56))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(155, 155, 155)
+                .addComponent(rotateImageButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jScrollPane3)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loadImageButton)
+                    .addComponent(saveImageButton))
+                .addGap(18, 18, 18)
+                .addComponent(rotateImageButton)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3))
+        );
+
+        tabbedPane.addTab("Obrázek", jPanel3);
 
         selectRadioButton.setSelected(true);
         selectRadioButton.setText("Posouvání a mazání");
@@ -273,10 +464,101 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(addEllipseRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addPolygonRadioButton)
-                .addContainerGap(194, Short.MAX_VALUE))
+                .addContainerGap(260, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Editace", editPanel);
+
+        jPanel1.setPreferredSize(new java.awt.Dimension(100, 100));
+
+        jLabel12.setText("Jméno:");
+
+        jLabel13.setText("Adresa:");
+
+        addOwnerButton.setText("Přidat");
+        addOwnerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addOwnerButtonActionPerformed(evt);
+            }
+        });
+
+        updateOwnerButton.setText("Změnit");
+        updateOwnerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateOwnerButtonActionPerformed(evt);
+            }
+        });
+
+        deleteOwnerButton.setText("Vymazat");
+        deleteOwnerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteOwnerButtonActionPerformed(evt);
+            }
+        });
+
+        ownersList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        ownersList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                ownersListValueChanged(evt);
+            }
+        });
+        jScrollPane1.setViewportView(ownersList);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(82, 82, 82)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel13)
+                    .addComponent(addOwnerButton))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ownerAddressField, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ownerNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(updateOwnerButton)
+                        .addGap(30, 30, 30)
+                        .addComponent(deleteOwnerButton)))
+                .addContainerGap(43, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(ownerNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ownerAddressField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addOwnerButton)
+                    .addComponent(updateOwnerButton)
+                    .addComponent(deleteOwnerButton))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        ownersPanel.setViewportView(jPanel1);
+
+        tabbedPane.addTab("Majitelé", ownersPanel);
 
         backColorPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         backColorPanel.setMaximumSize(new java.awt.Dimension(15, 15));
@@ -459,7 +741,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(mapSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(selectionColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                 .addGroup(mapSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(pointThicknessSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -467,7 +749,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(mapSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(lineThicknessSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 188, Short.MAX_VALUE))
+                .addGap(0, 205, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Nastavení mapy", mapSettingsPanel);
@@ -496,11 +778,11 @@ public class MainWindow extends javax.swing.JFrame {
         mapPanel.setLayout(mapPanelLayout);
         mapPanelLayout.setHorizontalGroup(
             mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 552, Short.MAX_VALUE)
+            .addGap(0, 550, Short.MAX_VALUE)
         );
         mapPanelLayout.setVerticalGroup(
             mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGap(0, 458, Short.MAX_VALUE)
         );
 
         mapScrollPanel.setViewportView(mapPanel);
@@ -515,11 +797,7 @@ public class MainWindow extends javax.swing.JFrame {
         saveChangesButton.setText("Uložit změny do databáze");
         saveChangesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    saveChangesButtonActionPerformed(evt);
-                } catch (InvalidObjectException e) {
-                    e.printStackTrace();
-                }
+                saveChangesButtonActionPerformed(evt);
             }
         });
 
@@ -553,11 +831,7 @@ public class MainWindow extends javax.swing.JFrame {
         saveChangesMenuItem.setText("Uložit změny do databáze");
         saveChangesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    saveChangesMenuItemActionPerformed(evt);
-                } catch (InvalidObjectException e) {
-                    e.printStackTrace();
-                }
+                saveChangesMenuItemActionPerformed(evt);
             }
         });
         mainMenu.add(saveChangesMenuItem);
@@ -583,22 +857,23 @@ public class MainWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(mapScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(loadDataButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveChangesButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(positionLabel)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(loadDataButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saveChangesButton)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addComponent(positionLabel)
+                                .addGap(0, 490, Short.MAX_VALUE))
+                            .addComponent(mapScrollPanel))
+                        .addGap(18, 18, 18)
+                        .addComponent(tabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(21, 21, 21))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -608,7 +883,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(loadDataButton)
                     .addComponent(saveChangesButton)
                     .addComponent(deleteButton))
-                .addGap(18, 18, 18)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(mapScrollPanel))
@@ -634,25 +909,76 @@ public class MainWindow extends javax.swing.JFrame {
             addPolygonRadioButton.setEnabled(true);
             addRectangleRadioButton.setEnabled(true);
             addEllipseRadioButton.setEnabled(true);
+            ownersList.setEnabled(true);
+            ownerNameField.setEnabled(true);
+            ownerAddressField.setEnabled(true);
+            saveChangesButton.setEnabled(true);
+            saveChangesMenuItem.setEnabled(true);
+            
+        
+            
             
             Data.loadData();
             
             ((DrawingPanel)mapPanel).createImageFromData();
             mapScrollPanel.revalidate();
             
-            this.saveChangesButton.setEnabled(false);
-            this.saveChangesMenuItem.setEnabled(false);
+            ownersListModel.removeAllElements();
+            
+            //pridame majitele do GUIcka
+            for (int i = 0; i < Data.owners.size(); i++)
+            {
+                ownersListModel.addElement(Data.owners.get(i).jmeno);
+            }
+            
+            
+            if (ownersListModel.getSize() != 0) ownersList.setSelectedIndex(0);
+            
+            addOwnerButton.setEnabled(true);
+        
+            
         }
     }
     
-    private void saveChanges() throws InvalidObjectException {
+    private void saveChanges() {
+        
+        for (int i = 0; i < Data.points.size(); i++) {
+            if (Data.pointsInfo.get(i).selected) {
+                saveInfo(Data.pointsInfo.get(i));
+            }
+        }
+
+        for (int i = 0; i < Data.polylines.size(); i++) {
+            if (Data.polylinesInfo.get(i).selected) {
+                saveInfo(Data.polylinesInfo.get(i));
+            }
+        }
+
+        for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).selected) {
+                saveInfo(Data.rectanglesInfo.get(i));
+            }
+        }
+
+        for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).selected) {
+                saveInfo(Data.ellipsesInfo.get(i));
+            }
+        }
+
+        for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).selected) {
+                saveInfo(Data.polygonsInfo.get(i));
+            }
+        }
+        
         try {
             Data.saveData();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (InvalidObjectException e) {
+            e.printStackTrace();
         }
-        saveChangesButton.setEnabled(false);
-        saveChangesMenuItem.setEnabled(false);
     }
     
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
@@ -670,16 +996,6 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         loadData();
     }//GEN-LAST:event_loadDataButtonActionPerformed
-
-    private void saveChangesButtonActionPerformed(java.awt.event.ActionEvent evt) throws InvalidObjectException {//GEN-FIRST:event_saveChangesButtonActionPerformed
-        // TODO add your handling code here:
-        saveChanges();
-    }//GEN-LAST:event_saveChangesButtonActionPerformed
-
-    private void saveChangesMenuItemActionPerformed(java.awt.event.ActionEvent evt) throws InvalidObjectException {//GEN-FIRST:event_saveChangesMenuItemActionPerformed
-        // TODO add your handling code here:
-        saveChanges();
-    }//GEN-LAST:event_saveChangesMenuItemActionPerformed
 
     private void mapPanelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mapPanelMouseMoved
         // TODO add your handling code here:
@@ -867,8 +1183,6 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.pointsInfo.get(i).selected && Data.pointsInfo.get(i).editable)
             {
                 Data.points.get(i).translate(xDiff, yDiff);
-                saveChangesButton.setEnabled(true);
-                saveChangesMenuItem.setEnabled(true);
             }
         }
         
@@ -880,9 +1194,6 @@ public class MainWindow extends javax.swing.JFrame {
                 {
                     Data.polylines.get(i).get(j).translate(xDiff, yDiff);
                 }
-
-                saveChangesButton.setEnabled(true);
-                saveChangesMenuItem.setEnabled(true);
             }
         }
         
@@ -891,8 +1202,6 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.rectanglesInfo.get(i).selected && Data.rectanglesInfo.get(i).editable)
             {
                 Data.rectangles.get(i).translate(xDiff, yDiff);
-                saveChangesButton.setEnabled(true);
-                saveChangesMenuItem.setEnabled(true);
             }
         }
         
@@ -904,8 +1213,6 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.ellipses.get(i).getY() + yDiff,
                         Data.ellipses.get(i).getWidth(),
                         Data.ellipses.get(i).getHeight());
-                saveChangesButton.setEnabled(true);
-                saveChangesMenuItem.setEnabled(true);
             }
         }
         
@@ -914,8 +1221,6 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.polygonsInfo.get(i).selected && Data.polygonsInfo.get(i).editable)
             {
                 Data.polygons.get(i).translate(xDiff, yDiff);
-                saveChangesButton.setEnabled(true);
-                saveChangesMenuItem.setEnabled(true);
             }
         }
         
@@ -996,19 +1301,53 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         if (selectRadioButton.isSelected()) {
-            
-            clearInfo();
-            deleteButton.setEnabled(false);
-            deleteMenuItem.setEnabled(false);
 
+            for (int i = 0; i < Data.points.size(); i++) {
+                if (Data.pointsInfo.get(i).selected) {
+                    Data.pointsInfo.get(i).selected = false;
+                    saveInfo(Data.pointsInfo.get(i));
+                    clearInfo();
+                }
+            }
+
+            for (int i = 0; i < Data.polylines.size(); i++) {
+                if (Data.polylinesInfo.get(i).selected) {
+                    Data.polylinesInfo.get(i).selected = false;
+                    saveInfo(Data.polylinesInfo.get(i));
+                    clearInfo();
+                }
+            }
+
+            for (int i = 0; i < Data.rectangles.size(); i++) {
+                if (Data.rectanglesInfo.get(i).selected) {
+                    Data.rectanglesInfo.get(i).selected = false;
+                    saveInfo(Data.rectanglesInfo.get(i));
+                    clearInfo();
+                }
+            }
+
+            for (int i = 0; i < Data.ellipses.size(); i++) {
+                if (Data.ellipsesInfo.get(i).selected) {
+                    Data.ellipsesInfo.get(i).selected = false;
+                    saveInfo(Data.ellipsesInfo.get(i));
+                    clearInfo();
+                }
+            }
+
+            for (int i = 0; i < Data.polygons.size(); i++) {
+                if (Data.polygonsInfo.get(i).selected) {
+                    Data.polygonsInfo.get(i).selected = false;
+                    saveInfo(Data.polygonsInfo.get(i));
+                    clearInfo();
+                }
+            }
+            
             for (int i = 0; i < Data.points.size(); i++) {
                 if (Data.pointsInfo.get(i).hovered) {
                     setInfo(Data.pointsInfo.get(i));
                     Data.pointsInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
-                } else {
-                    Data.pointsInfo.get(i).selected = false;
                 }
             }
 
@@ -1018,9 +1357,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polylinesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
-                } else {
-                    Data.polylinesInfo.get(i).selected = false;
-                }
+                } 
             }
 
             for (int i = 0; i < Data.rectangles.size(); i++) {
@@ -1029,9 +1366,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.rectanglesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
-                } else {
-                    Data.rectanglesInfo.get(i).selected = false;
-                }
+                } 
             }
 
             for (int i = 0; i < Data.ellipses.size(); i++) {
@@ -1040,9 +1375,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.ellipsesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
-                } else {
-                    Data.ellipsesInfo.get(i).selected = false;
-                }
+                } 
             }
 
             for (int i = 0; i < Data.polygons.size(); i++) {
@@ -1051,9 +1384,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polygonsInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
-                } else {
-                    Data.polygonsInfo.get(i).selected = false;
-                }
+                } 
             }
         }
         else if (addPointRadioButton.isSelected())
@@ -1061,9 +1392,6 @@ public class MainWindow extends javax.swing.JFrame {
             Data.points.add(new Point(evt.getX(), evt.getY()));
             ObjectInfo info = new ObjectInfo();
             Data.pointsInfo.add(info);
-            
-            saveChangesButton.setEnabled(true);
-            saveChangesMenuItem.setEnabled(true);
         }
         else if (addPolylineRadioButton.isSelected())
         {
@@ -1079,7 +1407,6 @@ public class MainWindow extends javax.swing.JFrame {
                     info.selected = true;
                     Data.polylinesInfo.add(info);
                     newPolyline = true;
-                    saveChangesButton.setEnabled(false);
                 }
                 else
                 {
@@ -1091,11 +1418,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (newPolyline == true)
                 {
                     unselect();
-                    newPolyline = false;
-            
-                    saveChangesButton.setEnabled(true);
-                    saveChangesMenuItem.setEnabled(true);
-                    
+                    newPolyline = false;                    
                 }
             }
         }
@@ -1113,7 +1436,6 @@ public class MainWindow extends javax.swing.JFrame {
                     info.selected = true;
                     Data.polylinesInfo.add(info);
                     newPolygon = true;
-                    saveChangesButton.setEnabled(false);
                 }
                 else
                 {
@@ -1136,11 +1458,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polygons.add(polygon);
                     Data.polylines.remove(Data.polylines.size()-1);
                     Data.polygonsInfo.add(Data.polylinesInfo.get(Data.polylinesInfo.size()-1));
-                    Data.polylinesInfo.remove(Data.polylinesInfo.size()-1);
-            
-                    saveChangesButton.setEnabled(true);
-                    saveChangesMenuItem.setEnabled(true);
-                    
+                    Data.polylinesInfo.remove(Data.polylinesInfo.size()-1);                   
                 }
             }
         }
@@ -1156,7 +1474,7 @@ public class MainWindow extends javax.swing.JFrame {
                 info.selected = true;
                 Data.rectanglesInfo.add(info);
                 newRectangle = true;
-                saveChangesButton.setEnabled(false);
+
 
             }
             else if (evt.getButton() == MouseEvent.BUTTON3 ||(evt.getButton() == MouseEvent.BUTTON1 && newRectangle))
@@ -1166,8 +1484,7 @@ public class MainWindow extends javax.swing.JFrame {
                     unselect();
                     newRectangle = false;
             
-                    saveChangesButton.setEnabled(true);
-                    saveChangesMenuItem.setEnabled(true);
+
                     
                 }
             }
@@ -1183,7 +1500,7 @@ public class MainWindow extends javax.swing.JFrame {
                 info.selected = true;
                 Data.ellipsesInfo.add(info);
                 newEllipse = true;
-                saveChangesButton.setEnabled(false);
+
 
             }
             else if (evt.getButton() == MouseEvent.BUTTON3 ||(evt.getButton() == MouseEvent.BUTTON1 && newEllipse))
@@ -1193,8 +1510,7 @@ public class MainWindow extends javax.swing.JFrame {
                     unselect();
                     newEllipse = false;
             
-                    saveChangesButton.setEnabled(true);
-                    saveChangesMenuItem.setEnabled(true);
+
                     
                 }
             }
@@ -1208,8 +1524,7 @@ public class MainWindow extends javax.swing.JFrame {
         int option = JOptionPane.showConfirmDialog(null, "Opravdu vymazat označený objekt?", "Vymazat objekt?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (option == JOptionPane.YES_OPTION)
         {
-            deleteButton.setEnabled(false);
-            deleteMenuItem.setEnabled(false);
+            
         
             for (int i = 0; i < Data.points.size(); i++)
             {
@@ -1261,8 +1576,7 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
             
-            saveChangesButton.setEnabled(true);
-            saveChangesMenuItem.setEnabled(true);
+            clearInfo();
         
             ((DrawingPanel)mapPanel).createImageFromData();
         }
@@ -1283,9 +1597,6 @@ public class MainWindow extends javax.swing.JFrame {
         if (newPolyline == true) {
             unselect();
             newPolyline = false;
-
-            saveChangesButton.setEnabled(true);
-            saveChangesMenuItem.setEnabled(true); 
         }
         
         ((DrawingPanel)mapPanel).createImageFromData();
@@ -1306,10 +1617,6 @@ public class MainWindow extends javax.swing.JFrame {
             Data.polylines.remove(Data.polylines.size() - 1);
             Data.polygonsInfo.add(Data.polylinesInfo.get(Data.polylinesInfo.size() - 1));
             Data.polylinesInfo.remove(Data.polylinesInfo.size() - 1);
-
-            saveChangesButton.setEnabled(true);
-            saveChangesMenuItem.setEnabled(true);
-
         }
     }//GEN-LAST:event_addPolygonRadioButtonItemStateChanged
 
@@ -1318,11 +1625,7 @@ public class MainWindow extends javax.swing.JFrame {
         if (newRectangle == true)
         {
             unselect();
-            newRectangle = false;
-            
-            saveChangesButton.setEnabled(true);
-            saveChangesMenuItem.setEnabled(true);
-                    
+            newRectangle = false;                  
         }
     }//GEN-LAST:event_addRectangleRadioButtonItemStateChanged
 
@@ -1331,19 +1634,279 @@ public class MainWindow extends javax.swing.JFrame {
         if (newEllipse == true)
         {
             unselect();
-            newEllipse = false;
-            
-            saveChangesButton.setEnabled(true);
-            saveChangesMenuItem.setEnabled(true);
-                    
+            newEllipse = false;                   
         }
     }//GEN-LAST:event_addEllipseRadioButtonItemStateChanged
 
+    private void saveChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveChangesButtonActionPerformed
+        // TODO add your handling code here:
+        saveChanges();
+    }//GEN-LAST:event_saveChangesButtonActionPerformed
+
+    private void saveChangesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveChangesMenuItemActionPerformed
+        // TODO add your handling code here:
+        saveChanges();
+    }//GEN-LAST:event_saveChangesMenuItemActionPerformed
+
+    private void addOwnerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addOwnerButtonActionPerformed
+        // TODO add your handling code here:
+        if (ownerNameField.getText().isEmpty() || ownerAddressField.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "Jméno nebo adresa majitele chybí!", "Chyba!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        Data.owners.add(new Owner(ownerNameField.getText(), ownerAddressField.getText()));
+        ownersListModel.addElement(ownerNameField.getText());
+        ownersList.setSelectedIndex(ownersListModel.getSize()-1);
+        
+    }//GEN-LAST:event_addOwnerButtonActionPerformed
+
+    private void updateOwnerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateOwnerButtonActionPerformed
+        // TODO add your handling code here:
+        if (ownerNameField.getText().isEmpty() || ownerAddressField.getText().isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "Jméno nebo adresa majitele chybí!", "Chyba!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        int index = ownersList.getSelectedIndex();
+        
+        Data.owners.get(index).jmeno = ownerNameField.getText();
+        Data.owners.get(index).adresa = ownerAddressField.getText();
+        
+        ownersListModel.setElementAt(ownerNameField.getText(), index);
+        /*
+        ownersComboBox.removeAllItems();
+        
+        for (int i = 0; i < Data.owners.size(); i++)
+        {
+            ownersComboBox.addItem(Data.owners.get(i).jmeno);
+        }
+        
+        
+        ownersComboBox.setSelectedIndex(index);
+          */     
+    }//GEN-LAST:event_updateOwnerButtonActionPerformed
+
+    private void deleteOwnerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteOwnerButtonActionPerformed
+        // TODO add your handling code here:
+        int index = ownersList.getSelectedIndex();
+        int id = Data.owners.get(index).id;
+        boolean used = false;
+        
+        for (int i = 0; i < Data.points.size(); i++) {
+            for (int j = 0; j < Data.pointsInfo.get(i).majitele.size(); j++)
+            {
+                if (Data.pointsInfo.get(i).majitele.get(j).id == id)
+                {
+                    used = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < Data.polylines.size(); i++) {
+            for (int j = 0; j < Data.polylinesInfo.get(i).majitele.size(); j++)
+            {
+                if (Data.polylinesInfo.get(i).majitele.get(j).id == id)
+                {
+                    used = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < Data.rectangles.size(); i++) {
+            for (int j = 0; j < Data.rectanglesInfo.get(i).majitele.size(); j++)
+            {
+                if (Data.rectanglesInfo.get(i).majitele.get(j).id == id)
+                {
+                    used = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < Data.ellipses.size(); i++) {
+            for (int j = 0; j < Data.ellipsesInfo.get(i).majitele.size(); j++)
+            {
+                if (Data.ellipsesInfo.get(i).majitele.get(j).id == id)
+                {
+                    used = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < Data.polygons.size(); i++) {
+            for (int j = 0; j < Data.polygonsInfo.get(i).majitele.size(); j++)
+            {
+                if (Data.polygonsInfo.get(i).majitele.get(j).id == id)
+                {
+                    used = true;
+                }
+            }
+        }
+        
+        if (used)
+        {
+            JOptionPane.showMessageDialog(null, "Tento majitel je aktuálně vedený jako současný či minulý majitel některého objektu, nelze vymazat!", "Chyba!", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        Data.owners.remove(index);
+        ownersListModel.removeElementAt(index);
+        if (ownersListModel.getSize() == 0)
+        {
+            ownersList.setSelectedIndex(-1);
+            
+        }
+        else
+        {
+            ownersList.setSelectedIndex(ownersListModel.getSize()-1);   
+        }
+        
+        
+    }//GEN-LAST:event_deleteOwnerButtonActionPerformed
+
+    private void ownersListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ownersListValueChanged
+        // TODO add your handling code here:
+        if (ownersList.getSelectedIndex() == -1)
+        {
+            updateOwnerButton.setEnabled(false);
+            deleteOwnerButton.setEnabled(false);
+            ownerNameField.setText("");
+            ownerAddressField.setText("");
+        }
+        else
+        {
+            updateOwnerButton.setEnabled(true);
+            deleteOwnerButton.setEnabled(true);
+        }
+        if (ownersListModel.getSize() == 0 || Data.owners.size() == 0 || ownersList.getSelectedIndex() == -1) return;
+        ownerNameField.setText(Data.owners.get(ownersList.getSelectedIndex()).jmeno);
+        ownerAddressField.setText(Data.owners.get(ownersList.getSelectedIndex()).adresa);
+    }//GEN-LAST:event_ownersListValueChanged
+
+    private void loadImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadImageButtonActionPerformed
+        // TODO add your handling code here:
+        for (int i = 0; i < Data.points.size(); i++) {
+            if (Data.pointsInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polylines.size(); i++) {
+            if (Data.polylinesInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+    }//GEN-LAST:event_loadImageButtonActionPerformed
+
+    private void saveImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveImageButtonActionPerformed
+        // TODO add your handling code here:
+        for (int i = 0; i < Data.points.size(); i++) {
+            if (Data.pointsInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polylines.size(); i++) {
+            if (Data.polylinesInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).selected) {
+                JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                } 
+                return;
+            }
+        }
+    }//GEN-LAST:event_saveImageButtonActionPerformed
+
+    private void rotateImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateImageButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rotateImageButtonActionPerformed
+
     private void unselect()
     {
-        deleteButton.setEnabled(false);
-        deleteMenuItem.setEnabled(false);
-        
         for (int i = 0; i < Data.points.size(); i++)
         {
             
@@ -1370,6 +1933,8 @@ public class MainWindow extends javax.swing.JFrame {
         {
             Data.polygonsInfo.get(i).selected = false;
         }
+        
+        clearInfo();
         
         ((DrawingPanel)mapPanel).createImageFromData();
     }
@@ -1443,6 +2008,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton addEllipseRadioButton;
+    private javax.swing.JButton addOwnerButton;
     private javax.swing.JRadioButton addPointRadioButton;
     private javax.swing.JRadioButton addPolygonRadioButton;
     private javax.swing.JRadioButton addPolylineRadioButton;
@@ -1451,56 +2017,180 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JButton deleteButton;
     private javax.swing.JMenuItem deleteMenuItem;
+    private javax.swing.JButton deleteOwnerButton;
+    private javax.swing.JTextArea descriptionField;
     private javax.swing.JPanel editPanel;
+    private javax.swing.JTextField existenceDoField;
+    private javax.swing.JTextField existenceOdField;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JPanel fillColorPanel;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JLabel infoMajitelLabel;
-    private javax.swing.JLabel infoNazevLabel;
-    private javax.swing.JLabel infoNazevLabel1;
-    private javax.swing.JLabel infoNazevLabel2;
-    private javax.swing.JLabel infoNazevLabel3;
-    private javax.swing.JLabel infoNazevLabel4;
-    private javax.swing.JPanel infoPanel;
-    private javax.swing.JLabel infoPopisLabel;
-    private javax.swing.JLabel infoTypLabel;
+    private javax.swing.JPanel imagePanel;
+    private javax.swing.JScrollPane infoPanel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JPanel lineColorPanel;
     private javax.swing.JSpinner lineThicknessSpinner;
     private javax.swing.JButton loadDataButton;
     private javax.swing.JMenuItem loadDataMenuItem;
+    private javax.swing.JButton loadImageButton;
     private javax.swing.JMenu mainMenu;
     private javax.swing.JPanel mapPanel;
     private javax.swing.JScrollPane mapScrollPanel;
     private javax.swing.JPanel mapSettingsPanel;
+    private javax.swing.JTextField objectNameField;
+    private javax.swing.JTextField ownerAddressField;
+    private javax.swing.JLabel ownerAddressLabel;
+    private javax.swing.JTextField ownerNameField;
+    private javax.swing.JLabel ownerNameLabel;
+    private javax.swing.JButton ownersButton;
+    private javax.swing.JList<String> ownersList;
+    private javax.swing.JScrollPane ownersPanel;
     private javax.swing.JPanel pointColorPanel;
     private javax.swing.JSpinner pointThicknessSpinner;
     private javax.swing.JLabel positionLabel;
+    private javax.swing.JTextField rekonstrukceDoField;
+    private javax.swing.JTextField rekonstrukceOdField;
+    private javax.swing.JButton rotateImageButton;
     private javax.swing.JButton saveChangesButton;
     private javax.swing.JMenuItem saveChangesMenuItem;
+    private javax.swing.JButton saveImageButton;
+    private javax.swing.JLabel sectorLabel;
     private javax.swing.JRadioButton selectRadioButton;
     private javax.swing.JPanel selectionColorPanel;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JComboBox<String> typeComboBox;
+    private javax.swing.JButton updateOwnerButton;
     // End of variables declaration//GEN-END:variables
 
     private void setInfo(ObjectInfo info) {
-        infoNazevLabel1.setText(info.nazev);
-        infoNazevLabel2.setText(info.typ);
-        infoNazevLabel3.setText(info.majitel);
-        infoNazevLabel4.setText(info.popis);
+        loadImageButton.setEnabled(info.editable);
+        saveImageButton.setEnabled(true);
+        rotateImageButton.setEnabled(info.editable);
+        
+        deleteButton.setEnabled(info.editable);
+        deleteMenuItem.setEnabled(info.editable);
+        
+        objectNameField.setEnabled(info.editable);
+        typeComboBox.setEnabled(info.editable);
+        ownersButton.setEnabled(info.editable);
+        existenceOdField.setEnabled(info.editable);
+        existenceDoField.setEnabled(info.editable);
+        rekonstrukceOdField.setEnabled(info.editable);
+        rekonstrukceDoField.setEnabled(info.editable);
+        descriptionField.setEnabled(info.editable);
+        
+        objectNameField.setText(info.nazev);
+        for (int i = 0; i < ObjectInfo.NUM_TYPES; i++)
+        {
+            if (info.typ == ObjectInfo.TYPES[i])
+            {
+                typeComboBox.setSelectedIndex(i);
+                break;
+            }
+        }
+        existenceOdField.setText(dateToString(info.existenceOd));
+        existenceDoField.setText(dateToString(info.existenceDo));
+        rekonstrukceOdField.setText(dateToString(info.rekonstrukceOd));
+        rekonstrukceDoField.setText(dateToString(info.rekonstrukceDo));
+        descriptionField.setText(info.popis);
+        sectorLabel.setText(info.sektor);
+        if (info.majitele.size() == 0) 
+        {
+            ownerNameLabel.setText("");
+            ownerAddressLabel.setText("");
+        }
+        else
+        {
+            ownerNameLabel.setText(info.majitele.get(info.majitele.size()-1).jmeno);
+            ownerAddressLabel.setText(info.majitele.get(info.majitele.size()-1).adresa);
+        }
+    }
+    
+    private void saveInfo(ObjectInfo info)
+    {
+        if (!info.editable) return;
+        
+        info.nazev = objectNameField.getText();
+        info.typ = ObjectInfo.TYPES[typeComboBox.getSelectedIndex()];
+        info.existenceOd = stringToDate(existenceOdField.getText());
+        info.existenceDo = stringToDate(existenceDoField.getText());
+        info.rekonstrukceOd = stringToDate(rekonstrukceOdField.getText());
+        info.rekonstrukceDo = stringToDate(rekonstrukceDoField.getText());
+        info.popis = descriptionField.getText();
+        info.sektor = sectorLabel.getText();
     }
     
     private void clearInfo() {
-        infoNazevLabel1.setText("");
-        infoNazevLabel2.setText("");
-        infoNazevLabel3.setText("");
-        infoNazevLabel4.setText("");
+        loadImageButton.setEnabled(false);
+        saveImageButton.setEnabled(false);
+        rotateImageButton.setEnabled(false);
+        
+        deleteButton.setEnabled(false);
+        deleteMenuItem.setEnabled(false);
+        
+        objectNameField.setEnabled(false);
+        typeComboBox.setEnabled(false);
+        ownersButton.setEnabled(false);
+        existenceOdField.setEnabled(false);
+        existenceDoField.setEnabled(false);
+        rekonstrukceOdField.setEnabled(false);
+        rekonstrukceDoField.setEnabled(false);
+        descriptionField.setEnabled(false);
+        
+        objectNameField.setText("");
+        existenceOdField.setText("");
+        existenceDoField.setText("");
+        rekonstrukceOdField.setText("");
+        rekonstrukceDoField.setText("");
+        descriptionField.setText("");
+        sectorLabel.setText("");
+        ownerNameLabel.setText("");
+        ownerAddressLabel.setText("");
     }
+    
+    private String dateToString(Date date)
+    {
+        if (date == null) return "";
+        DateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+        return dateFormat.format(date);
+    }
+    
+    private Date stringToDate(String date)
+    {
+        DateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+        try
+        {
+            return dateFormat.parse(date);
+        }
+        catch (ParseException ex)
+        {
+            return null;
+        }
+    }
+    
+    
 }

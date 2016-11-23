@@ -36,6 +36,8 @@ public class Data {
 
     //pro kazdy typ geometrickeho objektu jsou dve pole
     //jedno s geometrickymi objekty a jedno s informacemi o tech objektech
+    
+    public static ArrayList<Owner> owners = new ArrayList<>();
 
     public static ArrayList<Point> points = new ArrayList<>();
     public static ArrayList<ObjectInfo> pointsInfo = new ArrayList<>();
@@ -58,6 +60,12 @@ public class Data {
         //zjisti se rozmery mapy
         width = 1000;
         height = 1000;
+        
+        //pridam nejake ownery kvuli testovani
+        owners.add(new Owner());
+        owners.add(new Owner("Honza", "Brno"));
+        
+       
 
         try (Statement stmt = ConnectDialog.conn.createStatement()) {
             ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY");
@@ -69,7 +77,8 @@ public class Data {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        
+        
         //nejake objekty na testovani, protoze v databazi nic neni
         /*
         rectangles.add(new Rectangle(100, 100, 300, 200));

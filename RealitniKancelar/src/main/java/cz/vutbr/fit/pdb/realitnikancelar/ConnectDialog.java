@@ -135,6 +135,8 @@ public class ConnectDialog extends javax.swing.JDialog {
         String login  = loginTextField.getText();
         String password = passwordField.getText();
         
+        connected = true;
+        
         // 2. cast cviceni
         try {
             // create a OracleDataSource instance
@@ -143,9 +145,7 @@ public class ConnectDialog extends javax.swing.JDialog {
 
             ods.setUser(login);
             ods.setPassword(password);
-            /**
-             *
-             */
+
             // connect to the database
             conn = ods.getConnection();
             connected = true;

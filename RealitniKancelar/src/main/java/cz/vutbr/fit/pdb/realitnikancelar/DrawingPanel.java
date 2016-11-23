@@ -33,6 +33,7 @@ public class DrawingPanel extends JPanel {
     public BufferedImage image; //obrazek, kam se vsechno kresli
     
     DrawingPanel() { 
+    
     }
     
     //nakresli mapu, ktera odpovida aktualnimu obsahu tridy Data
