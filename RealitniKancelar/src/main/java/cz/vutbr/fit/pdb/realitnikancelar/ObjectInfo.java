@@ -42,6 +42,8 @@ public class ObjectInfo {
     private static TreeSet<Integer> ids = new TreeSet<Integer>();
     public boolean selected = false; //jestli je objekt vybrany
     public boolean hovered = false; //jestli je prave nad objektem mys
+    public boolean newObject; //jestli je to nove vytvoreny objekt, ktery jeste neni v DB
+    public boolean modifiedObject; //jestli je to objekt z DB, ktery byl v aplikaci modifikovany, a je potreba udelat update v DB
 
     public ObjectInfo() {
         this.id = nextId();
@@ -57,6 +59,11 @@ public class ObjectInfo {
         this.existenceDo = null;
         this.rekonstrukceOd = new Date(50, 1, 3);
         this.rekonstrukceDo = new Date(50, 1, 7);
+        
+        //byl prave vytvoren v aplikaci
+        this.newObject = true;
+        this.modifiedObject = false;
+        
         ids.add(this.id);
     }
     public ObjectInfo(Boolean load)
@@ -87,6 +94,11 @@ public class ObjectInfo {
         info.existenceDo = res.getDate("obdobiod");
         info.rekonstrukceOd = res.getDate("obdobiod");
         info.rekonstrukceDo = res.getDate("obdobiod");
+        
+        //prave jsme ho nacetli z DB
+        info.newObject = false;
+        info.modifiedObject = false;
+        
         ids.add(info.id);
         return info;
     }

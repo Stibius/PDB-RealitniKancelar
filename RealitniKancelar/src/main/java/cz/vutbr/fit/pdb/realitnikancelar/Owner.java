@@ -17,12 +17,19 @@ public class Owner {
     public int id;
     public String jmeno;
     public String adresa;
+    public boolean newOwner; //jestli je to nove vytvoreny owner, ktery jeste neni v DB
+    public boolean modifiedOwner; //jestli je to owner z DB, ktery byl v aplikaci modifikovany, a je potreba udelat update v DB
     private static TreeSet<Integer> ids = new TreeSet<Integer>();
     
     public Owner() {
         this.id = nextId();
         this.jmeno = "Novy majitel";
         this.adresa = "Adresa";
+        
+        //byl prave vytvoren v aplikaci
+        this.newOwner = true;
+        this.modifiedOwner = false;
+        
         ids.add(this.id);
     }
     
@@ -36,6 +43,11 @@ public class Owner {
         this.id = nextId();
         this.jmeno = jmeno;
         this.adresa = adresa;
+        
+        //byl prave vytvoren v aplikaci
+        this.newOwner = true;
+        this.modifiedOwner = false;
+        
         ids.add(this.id);
     }
     
@@ -53,6 +65,11 @@ public class Owner {
         majitel.jmeno = res.getString("nazev");
         majitel.adresa = res.getString("typ");
         ids.add(majitel.id);
+        
+        //prave jsme ho nacetli z DB
+        majitel.newOwner = false;
+        majitel.modifiedOwner = false;
+        
         return majitel;
     }
     

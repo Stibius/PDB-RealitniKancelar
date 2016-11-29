@@ -187,6 +187,7 @@ public class Data {
                 stmt.setObject(2, obj);
 
                 stmt.execute();
+                dataSaved();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -202,5 +203,36 @@ public class Data {
         for (int i = 0; i < polygons.size(); i++)
             objects.put(polygonsInfo.get(i), polygons.get(i));
         return objects;
+    }
+    
+    //vola se po ulozeni dat do DB
+    //pro vsechny objekty se nastavi, ze nejsou nove ani modifikovane
+    public static void dataSaved()
+    {
+        for (int i = 0; i < points.size(); i++)
+        {
+            pointsInfo.get(i).newObject = false;
+            pointsInfo.get(i).modifiedObject = false;
+        }
+        for (int i = 0; i < polylines.size(); i++)
+        {
+            polylinesInfo.get(i).newObject = false;
+            polylinesInfo.get(i).modifiedObject = false;
+        }
+        for (int i = 0; i < rectangles.size(); i++)
+        {
+            rectanglesInfo.get(i).newObject = false;
+            rectanglesInfo.get(i).modifiedObject = false;
+        }
+        for (int i = 0; i < ellipses.size(); i++)
+        {
+            ellipsesInfo.get(i).newObject = false;
+            ellipsesInfo.get(i).modifiedObject = false;
+        }
+        for (int i = 0; i < polygons.size(); i++)
+        {
+            polygonsInfo.get(i).newObject = false;
+            polygonsInfo.get(i).modifiedObject = false;
+        }
     }
 }

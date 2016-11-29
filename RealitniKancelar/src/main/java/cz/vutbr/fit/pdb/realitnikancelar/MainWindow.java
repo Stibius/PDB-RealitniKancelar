@@ -1203,6 +1203,7 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.pointsInfo.get(i).selected && Data.pointsInfo.get(i).editable)
             {
                 Data.points.get(i).translate(xDiff, yDiff);
+                Data.pointsInfo.get(i).modifiedObject = true;
             }
         }
         
@@ -1214,6 +1215,8 @@ public class MainWindow extends javax.swing.JFrame {
                 {
                     Data.polylines.get(i).get(j).translate(xDiff, yDiff);
                 }
+                
+                Data.polylinesInfo.get(i).modifiedObject = true;
             }
         }
         
@@ -1222,6 +1225,7 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.rectanglesInfo.get(i).selected && Data.rectanglesInfo.get(i).editable)
             {
                 Data.rectangles.get(i).translate(xDiff, yDiff);
+                Data.rectanglesInfo.get(i).modifiedObject = true;
             }
         }
         
@@ -1233,6 +1237,7 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.ellipses.get(i).getY() + yDiff,
                         Data.ellipses.get(i).getWidth(),
                         Data.ellipses.get(i).getHeight());
+                Data.ellipsesInfo.get(i).modifiedObject = true;
             }
         }
         
@@ -1241,6 +1246,7 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.polygonsInfo.get(i).selected && Data.polygonsInfo.get(i).editable)
             {
                 Data.polygons.get(i).translate(xDiff, yDiff);
+                Data.polygonsInfo.get(i).modifiedObject = true;
             }
         }
         
@@ -1694,6 +1700,7 @@ public class MainWindow extends javax.swing.JFrame {
         
         Data.owners.get(index).jmeno = ownerNameField.getText();
         Data.owners.get(index).adresa = ownerAddressField.getText();
+        Data.owners.get(index).modifiedOwner = true;
         
         ownersListModel.setElementAt(ownerNameField.getText(), index);
         /*
@@ -2180,6 +2187,7 @@ public class MainWindow extends javax.swing.JFrame {
         info.rekonstrukceDo = stringToDate(rekonstrukceDoField.getText());
         info.popis = descriptionField.getText();
         info.sektor = sectorLabel.getText();
+        info.modifiedObject = true;
     }
     
     private void clearInfo() {
