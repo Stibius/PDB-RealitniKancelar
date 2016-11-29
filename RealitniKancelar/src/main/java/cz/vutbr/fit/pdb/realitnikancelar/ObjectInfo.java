@@ -43,9 +43,13 @@ public class ObjectInfo {
     public boolean selected = false; //jestli je objekt vybrany
     public boolean hovered = false; //jestli je prave nad objektem mys
     public boolean newObject; //jestli je to nove vytvoreny objekt, ktery jeste neni v DB
-    public boolean modifiedObject; //jestli je to objekt z DB, ktery byl v aplikaci modifikovany, a je potreba udelat update v DB
-
-    public ObjectInfo() {
+    public boolean modifiedGeometry; //jestli je to objekt z DB, kteremu byla v aplikaci modifikovana geometrie, a je potreba udelat update v DB
+    public boolean modifiedInfo; //jestli je to objekt z DB, kteremu byly v aplikaci modifikovany informace, a je potreba udelat update v DB
+    public boolean modifiedImage; //jestli je to objekt z DB, kteremu byl v aplikaci modifikovan obrazek, a je potreba udelat update v DB
+    public boolean deletedObject; //pokud je true, tento objekt byl v aplikaci smazan, ignoruje se a z aplikace bude smazan az pri aktualizaci DB
+    
+    //load je true, pokud budou data pro tento objekt nactena z DB
+    public ObjectInfo(boolean load) {
         this.id = nextId();
         this.nazev = "Novy objekt";
         this.typ = "Typ objektu";
@@ -60,15 +64,14 @@ public class ObjectInfo {
         this.rekonstrukceOd = new Date(50, 1, 3);
         this.rekonstrukceDo = new Date(50, 1, 7);
         
-        //byl prave vytvoren v aplikaci
-        this.newObject = true;
-        this.modifiedObject = false;
+        //pokud se nejedna o nacteni z DB, je novy
+        this.newObject = !load;
+        this.deletedObject = false;
+        this.modifiedGeometry = false;
+        this.modifiedInfo =  false;
+        this.modifiedImage = false;
         
         ids.add(this.id);
-    }
-    public ObjectInfo(Boolean load)
-    {
-        return;
     }
 
     private int nextId() {
@@ -94,10 +97,6 @@ public class ObjectInfo {
         info.existenceDo = res.getDate("obdobiod");
         info.rekonstrukceOd = res.getDate("obdobiod");
         info.rekonstrukceDo = res.getDate("obdobiod");
-        
-        //prave jsme ho nacetli z DB
-        info.newObject = false;
-        info.modifiedObject = false;
         
         ids.add(info.id);
         return info;

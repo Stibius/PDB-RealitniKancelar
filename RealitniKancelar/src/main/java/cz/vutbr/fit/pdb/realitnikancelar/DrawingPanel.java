@@ -47,6 +47,7 @@ public class DrawingPanel extends JPanel {
         g.fillRect(0, 0, image.getWidth(), image.getHeight()); 
         
         for (int i = 0; i < Data.points.size(); i++) {
+            if (Data.pointsInfo.get(i).deletedObject) continue;
             if (Data.pointsInfo.get(i).hovered || Data.pointsInfo.get(i).selected)
             {
                 g.setColor(selectionLineColor); 
@@ -70,6 +71,7 @@ public class DrawingPanel extends JPanel {
         g.setStroke(new BasicStroke(lineThickness));
         
         for (int i = 0; i < Data.polylines.size(); i++) {
+            if (Data.polylinesInfo.get(i).deletedObject) continue;
             if (Data.polylinesInfo.get(i).hovered || Data.polylinesInfo.get(i).selected)
             {
                 g.setColor(selectionLineColor); 
@@ -90,6 +92,7 @@ public class DrawingPanel extends JPanel {
         }
         
         for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).deletedObject) continue;
             if (Data.rectanglesInfo.get(i).selected)
             {
                 g.setColor(selectionFillColor); 
@@ -101,6 +104,7 @@ public class DrawingPanel extends JPanel {
             g.fillRect(Data.rectangles.get(i).x, Data.rectangles.get(i).y, Data.rectangles.get(i).width, Data.rectangles.get(i).height);
         }
         for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).deletedObject) continue;
             if (Data.rectanglesInfo.get(i).hovered || Data.rectanglesInfo.get(i).selected)
             {
                 g.setColor(selectionLineColor);
@@ -113,6 +117,7 @@ public class DrawingPanel extends JPanel {
         }
         
         for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).deletedObject) continue;
             if (Data.ellipsesInfo.get(i).selected)
             {
                 g.setColor(selectionFillColor); 
@@ -124,6 +129,7 @@ public class DrawingPanel extends JPanel {
             g.fillOval((int)Data.ellipses.get(i).getX(), (int)Data.ellipses.get(i).getY(), (int)Data.ellipses.get(i).getWidth(), (int)Data.ellipses.get(i).getHeight());
         }
         for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).deletedObject) continue;
             if (Data.ellipsesInfo.get(i).hovered || Data.ellipsesInfo.get(i).selected)
             {
                 g.setColor(selectionLineColor);
@@ -136,6 +142,7 @@ public class DrawingPanel extends JPanel {
         }
 
         for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).deletedObject) continue;
             if (Data.polygonsInfo.get(i).selected)
             {
                 g.setColor(selectionFillColor);
@@ -147,6 +154,7 @@ public class DrawingPanel extends JPanel {
             g.fillPolygon(Data.polygons.get(i));
         }
         for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).deletedObject) continue;
             if (Data.polygonsInfo.get(i).hovered || Data.polygonsInfo.get(i).selected)
             {
                 g.setColor(selectionLineColor);

@@ -406,6 +406,11 @@ public class MainWindow extends javax.swing.JFrame {
         selectRadioButton.setText("Posouvání a mazání");
 
         addPointRadioButton.setText("Přidat bod");
+        addPointRadioButton.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                addPointRadioButtonItemStateChanged(evt);
+            }
+        });
 
         addPolylineRadioButton.setText("Přidat lomenou čáru");
         addPolylineRadioButton.addItemListener(new java.awt.event.ItemListener() {
@@ -962,6 +967,8 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void saveChanges() {
         
+        //nejdriv ulozime aktualni info oznaceneho objektu z GUI do data
+        
         for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).selected) {
                 saveInfo(Data.pointsInfo.get(i));
@@ -991,6 +998,8 @@ public class MainWindow extends javax.swing.JFrame {
                 saveInfo(Data.polygonsInfo.get(i));
             }
         }
+        
+        //ulozime data do DB
         
         try {
             Data.saveData();
@@ -1032,6 +1041,7 @@ public class MainWindow extends javax.swing.JFrame {
             unhover();
             
             for (int i = 0; i < Data.points.size(); i++) {
+                if (Data.pointsInfo.get(i).deletedObject) continue;
                 if (Point.distance(x, y, Data.points.get(i).x, Data.points.get(i).y) <= ((DrawingPanel) mapPanel).pointThickness / 2.0) {
                     Data.pointsInfo.get(i).hovered = true;
                     mapPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -1042,6 +1052,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             BasicStroke bstr = new BasicStroke(1);
             for (int i = 0; i < Data.polylines.size(); i++) {
+                if (Data.polylinesInfo.get(i).deletedObject) continue;
                 for (int j = 1; j < Data.polylines.get(i).size(); j++) {
                     Line2D line = new Line2D.Double(
                             Data.polylines.get(i).get(j - 1).x,
@@ -1059,6 +1070,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
 
             for (int i = 0; i < Data.rectangles.size(); i++) {
+                if (Data.rectanglesInfo.get(i).deletedObject) continue;
                 if (Data.rectangles.get(i).contains(x, y)) {
                     Data.rectanglesInfo.get(i).hovered = true;
                     mapPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -1068,6 +1080,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
 
             for (int i = 0; i < Data.ellipses.size(); i++) {
+                if (Data.ellipsesInfo.get(i).deletedObject) continue;
                 if (Data.ellipses.get(i).contains(x, y)) {
                     Data.ellipsesInfo.get(i).hovered = true;
                     mapPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -1077,6 +1090,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
 
             for (int i = 0; i < Data.polygons.size(); i++) {
+                if (Data.polygonsInfo.get(i).deletedObject) continue;
                 if (Data.polygons.get(i).contains(x, y)) {
                     Data.polygonsInfo.get(i).hovered = true;
                     mapPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -1203,7 +1217,7 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.pointsInfo.get(i).selected && Data.pointsInfo.get(i).editable)
             {
                 Data.points.get(i).translate(xDiff, yDiff);
-                Data.pointsInfo.get(i).modifiedObject = true;
+                Data.pointsInfo.get(i).modifiedGeometry = true;
             }
         }
         
@@ -1216,7 +1230,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polylines.get(i).get(j).translate(xDiff, yDiff);
                 }
                 
-                Data.polylinesInfo.get(i).modifiedObject = true;
+                Data.polylinesInfo.get(i).modifiedGeometry = true;
             }
         }
         
@@ -1225,7 +1239,7 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.rectanglesInfo.get(i).selected && Data.rectanglesInfo.get(i).editable)
             {
                 Data.rectangles.get(i).translate(xDiff, yDiff);
-                Data.rectanglesInfo.get(i).modifiedObject = true;
+                Data.rectanglesInfo.get(i).modifiedGeometry = true;
             }
         }
         
@@ -1237,7 +1251,7 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.ellipses.get(i).getY() + yDiff,
                         Data.ellipses.get(i).getWidth(),
                         Data.ellipses.get(i).getHeight());
-                Data.ellipsesInfo.get(i).modifiedObject = true;
+                Data.ellipsesInfo.get(i).modifiedGeometry= true;
             }
         }
         
@@ -1246,7 +1260,7 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.polygonsInfo.get(i).selected && Data.polygonsInfo.get(i).editable)
             {
                 Data.polygons.get(i).translate(xDiff, yDiff);
-                Data.polygonsInfo.get(i).modifiedObject = true;
+                Data.polygonsInfo.get(i).modifiedGeometry = true;
             }
         }
         
@@ -1328,45 +1342,7 @@ public class MainWindow extends javax.swing.JFrame {
         
         if (selectRadioButton.isSelected()) {
 
-            for (int i = 0; i < Data.points.size(); i++) {
-                if (Data.pointsInfo.get(i).selected) {
-                    Data.pointsInfo.get(i).selected = false;
-                    saveInfo(Data.pointsInfo.get(i));
-                    clearInfo();
-                }
-            }
-
-            for (int i = 0; i < Data.polylines.size(); i++) {
-                if (Data.polylinesInfo.get(i).selected) {
-                    Data.polylinesInfo.get(i).selected = false;
-                    saveInfo(Data.polylinesInfo.get(i));
-                    clearInfo();
-                }
-            }
-
-            for (int i = 0; i < Data.rectangles.size(); i++) {
-                if (Data.rectanglesInfo.get(i).selected) {
-                    Data.rectanglesInfo.get(i).selected = false;
-                    saveInfo(Data.rectanglesInfo.get(i));
-                    clearInfo();
-                }
-            }
-
-            for (int i = 0; i < Data.ellipses.size(); i++) {
-                if (Data.ellipsesInfo.get(i).selected) {
-                    Data.ellipsesInfo.get(i).selected = false;
-                    saveInfo(Data.ellipsesInfo.get(i));
-                    clearInfo();
-                }
-            }
-
-            for (int i = 0; i < Data.polygons.size(); i++) {
-                if (Data.polygonsInfo.get(i).selected) {
-                    Data.polygonsInfo.get(i).selected = false;
-                    saveInfo(Data.polygonsInfo.get(i));
-                    clearInfo();
-                }
-            }
+            unselect();
             
             for (int i = 0; i < Data.points.size(); i++) {
                 if (Data.pointsInfo.get(i).hovered) {
@@ -1416,7 +1392,7 @@ public class MainWindow extends javax.swing.JFrame {
         else if (addPointRadioButton.isSelected())
         {
             Data.points.add(new Point(evt.getX(), evt.getY()));
-            ObjectInfo info = new ObjectInfo();
+            ObjectInfo info = new ObjectInfo(false);
             Data.pointsInfo.add(info);
         }
         else if (addPolylineRadioButton.isSelected())
@@ -1429,7 +1405,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polylines.add(new ArrayList<Point>());
                     Data.polylines.get(Data.polylines.size()-1).add(new Point(evt.getX(), evt.getY()));
                     Data.polylines.get(Data.polylines.size()-1).add(new Point(evt.getX(), evt.getY()));
-                    ObjectInfo info = new ObjectInfo();
+                    ObjectInfo info = new ObjectInfo(false);
                     info.selected = true;
                     Data.polylinesInfo.add(info);
                     newPolyline = true;
@@ -1458,7 +1434,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polylines.add(new ArrayList<Point>());
                     Data.polylines.get(Data.polylines.size()-1).add(new Point(evt.getX(), evt.getY()));
                     Data.polylines.get(Data.polylines.size()-1).add(new Point(evt.getX(), evt.getY()));
-                    ObjectInfo info = new ObjectInfo();
+                    ObjectInfo info = new ObjectInfo(false);
                     info.selected = true;
                     Data.polylinesInfo.add(info);
                     newPolygon = true;
@@ -1496,7 +1472,7 @@ public class MainWindow extends javax.swing.JFrame {
                 origin.y = evt.getY();
                 Data.rectangles.add(new Rectangle());
                 Data.rectangles.get(Data.rectangles.size() - 1).setRect(origin.x, origin.y, 0, 0);
-                ObjectInfo info = new ObjectInfo();
+                ObjectInfo info = new ObjectInfo(false);
                 info.selected = true;
                 Data.rectanglesInfo.add(info);
                 newRectangle = true;
@@ -1522,7 +1498,7 @@ public class MainWindow extends javax.swing.JFrame {
                 origin.y = evt.getY();
                 Data.ellipses.add(new Ellipse2D.Double());
                 Data.ellipses.get(Data.ellipses.size() - 1).setFrame(origin.x, origin.y, 0, 0);
-                ObjectInfo info = new ObjectInfo();
+                ObjectInfo info = new ObjectInfo(false);
                 info.selected = true;
                 Data.ellipsesInfo.add(info);
                 newEllipse = true;
@@ -1556,9 +1532,9 @@ public class MainWindow extends javax.swing.JFrame {
             {
                 if (Data.pointsInfo.get(i).selected)
                 {
-                    Data.points.remove(i);
-                    Data.pointsInfo.remove(i);
-                    i--;
+                    Data.pointsInfo.get(i).deletedObject = true;
+                    Data.pointsInfo.get(i).selected = false;
+                    Data.pointsInfo.get(i).hovered = false;
                 }
             }
         
@@ -1566,9 +1542,9 @@ public class MainWindow extends javax.swing.JFrame {
             {
                 if (Data.polylinesInfo.get(i).selected)
                 {
-                    Data.polylines.remove(i);
-                    Data.polylinesInfo.remove(i);
-                    i--;
+                    Data.polylinesInfo.get(i).deletedObject = true;
+                    Data.polylinesInfo.get(i).selected = false;
+                    Data.polylinesInfo.get(i).hovered = false;
                 }
             }
         
@@ -1576,9 +1552,9 @@ public class MainWindow extends javax.swing.JFrame {
             {
                 if (Data.rectanglesInfo.get(i).selected)
                 {
-                    Data.rectangles.remove(i);
-                    Data.rectanglesInfo.remove(i);
-                    i--;
+                    Data.rectanglesInfo.get(i).deletedObject = true;
+                    Data.rectanglesInfo.get(i).selected = false;
+                    Data.rectanglesInfo.get(i).hovered= false;
                 }
             }
         
@@ -1586,9 +1562,9 @@ public class MainWindow extends javax.swing.JFrame {
             {
                 if (Data.ellipsesInfo.get(i).selected)
                 {
-                    Data.ellipses.remove(i);
-                    Data.ellipsesInfo.remove(i);
-                    i--;
+                    Data.ellipsesInfo.get(i).deletedObject = true;
+                    Data.ellipsesInfo.get(i).selected = false;
+                    Data.rectanglesInfo.get(i).hovered = false;
                 }
             }
         
@@ -1596,9 +1572,9 @@ public class MainWindow extends javax.swing.JFrame {
             {
                 if (Data.polygonsInfo.get(i).selected)
                 {
-                    Data.polygons.remove(i);
-                    Data.polygonsInfo.remove(i);
-                    i--;
+                    Data.polygonsInfo.get(i).deletedObject = true;
+                    Data.polygonsInfo.get(i).selected = false;
+                    Data.rectanglesInfo.get(i).hovered = false;
                 }
             }
             
@@ -1620,8 +1596,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPolylineRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPolylineRadioButtonItemStateChanged
         // TODO add your handling code here:
+        unselect();
         if (newPolyline == true) {
-            unselect();
             newPolyline = false;
         }
         
@@ -1630,8 +1606,8 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPolygonRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPolygonRadioButtonItemStateChanged
         // TODO add your handling code here:
+        unselect();
         if (newPolygon == true) {
-            unselect();
             newPolygon = false;
 
             Polygon polygon = new Polygon();
@@ -1648,18 +1624,18 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addRectangleRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addRectangleRadioButtonItemStateChanged
         // TODO add your handling code here:
+        unselect();
         if (newRectangle == true)
         {
-            unselect();
             newRectangle = false;                  
         }
     }//GEN-LAST:event_addRectangleRadioButtonItemStateChanged
 
     private void addEllipseRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addEllipseRadioButtonItemStateChanged
         // TODO add your handling code here:
+        unselect();
         if (newEllipse == true)
         {
-            unselect();
             newEllipse = false;                   
         }
     }//GEN-LAST:event_addEllipseRadioButtonItemStateChanged
@@ -1682,7 +1658,7 @@ public class MainWindow extends javax.swing.JFrame {
             return;
         }
         
-        Data.owners.add(new Owner(ownerNameField.getText(), ownerAddressField.getText()));
+        Data.owners.add(new Owner(ownerNameField.getText(), ownerAddressField.getText(), false));
         ownersListModel.addElement(ownerNameField.getText());
         ownersList.setSelectedIndex(ownersListModel.getSize()-1);
         
@@ -1725,7 +1701,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.points.size(); i++) {
             for (int j = 0; j < Data.pointsInfo.get(i).majitele.size(); j++)
             {
-                if (Data.pointsInfo.get(i).majitele.get(j).id == id)
+                if (!Data.pointsInfo.get(i).deletedObject && Data.pointsInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1735,7 +1711,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.polylines.size(); i++) {
             for (int j = 0; j < Data.polylinesInfo.get(i).majitele.size(); j++)
             {
-                if (Data.polylinesInfo.get(i).majitele.get(j).id == id)
+                if (!Data.polylinesInfo.get(i).deletedObject && Data.polylinesInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1745,7 +1721,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.rectangles.size(); i++) {
             for (int j = 0; j < Data.rectanglesInfo.get(i).majitele.size(); j++)
             {
-                if (Data.rectanglesInfo.get(i).majitele.get(j).id == id)
+                if (!Data.rectanglesInfo.get(i).deletedObject && Data.rectanglesInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1755,7 +1731,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.ellipses.size(); i++) {
             for (int j = 0; j < Data.ellipsesInfo.get(i).majitele.size(); j++)
             {
-                if (Data.ellipsesInfo.get(i).majitele.get(j).id == id)
+                if (!Data.ellipsesInfo.get(i).deletedObject && Data.ellipsesInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1765,7 +1741,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.polygons.size(); i++) {
             for (int j = 0; j < Data.polygonsInfo.get(i).majitele.size(); j++)
             {
-                if (Data.polygonsInfo.get(i).majitele.get(j).id == id)
+                if (!Data.polygonsInfo.get(i).deletedObject && Data.polygonsInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1778,7 +1754,7 @@ public class MainWindow extends javax.swing.JFrame {
             return;
         }
         
-        Data.owners.remove(index);
+        Data.owners.get(index).deletedOwner = true;
         ownersListModel.removeElementAt(index);
         if (ownersListModel.getSize() == 0)
         {
@@ -1808,8 +1784,17 @@ public class MainWindow extends javax.swing.JFrame {
             deleteOwnerButton.setEnabled(true);
         }
         if (ownersListModel.getSize() == 0 || Data.owners.size() == 0 || ownersList.getSelectedIndex() == -1) return;
-        ownerNameField.setText(Data.owners.get(ownersList.getSelectedIndex()).jmeno);
-        ownerAddressField.setText(Data.owners.get(ownersList.getSelectedIndex()).adresa);
+        int index = -1;
+        for (int i = 0; i < Data.owners.size(); i++)
+        {
+            if (!Data.owners.get(i).deletedOwner) index++;
+            if (index == ownersList.getSelectedIndex())
+            {
+                ownerNameField.setText(Data.owners.get(i).jmeno);
+                ownerAddressField.setText(Data.owners.get(i).adresa);
+                break;
+            }
+        }
     }//GEN-LAST:event_ownersListValueChanged
 
     private void loadImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadImageButtonActionPerformed
@@ -1820,6 +1805,7 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    Data.pointsInfo.get(i).modifiedImage = true;
                 } 
                 return;
             }
@@ -1831,6 +1817,7 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    Data.polylinesInfo.get(i).modifiedImage = true;
                 } 
                 return;
             }
@@ -1842,6 +1829,7 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    Data.rectanglesInfo.get(i).modifiedImage = true;
                 } 
                 return;
             }
@@ -1853,6 +1841,7 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    Data.ellipsesInfo.get(i).modifiedImage = true;
                 } 
                 return;
             }
@@ -1864,6 +1853,7 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    Data.polygonsInfo.get(i).modifiedImage = true;
                 } 
                 return;
             }
@@ -1931,6 +1921,40 @@ public class MainWindow extends javax.swing.JFrame {
     private void rotateImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateImageButtonActionPerformed
         // TODO add your handling code here:
         //tady se bude rotovat obrazkem
+        for (int i = 0; i < Data.points.size(); i++) {
+            if (Data.pointsInfo.get(i).selected) {
+                Data.pointsInfo.get(i).modifiedImage = true;
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polylines.size(); i++) {
+            if (Data.polylinesInfo.get(i).selected) {
+                Data.polylinesInfo.get(i).modifiedImage = true;
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).selected) {
+                Data.rectanglesInfo.get(i).modifiedImage = true;
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).selected) {
+                Data.ellipsesInfo.get(i).modifiedImage = true;
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).selected) {
+                Data.polygonsInfo.get(i).modifiedImage = true;
+                return;
+            }
+        }
     }//GEN-LAST:event_rotateImageButtonActionPerformed
 
     private void createDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createDataButtonActionPerformed
@@ -1943,6 +1967,11 @@ public class MainWindow extends javax.swing.JFrame {
         createData();
     }//GEN-LAST:event_createDataMenuItemActionPerformed
 
+    private void addPointRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPointRadioButtonItemStateChanged
+        // TODO add your handling code here:
+        unselect();
+    }//GEN-LAST:event_addPointRadioButtonItemStateChanged
+
     private void createData()
     {
         //tady se budou vkladat do databaze vzorova data a rovnou se i zobrazi
@@ -1950,31 +1979,39 @@ public class MainWindow extends javax.swing.JFrame {
     
     private void unselect()
     {
-        for (int i = 0; i < Data.points.size(); i++)
-        {
-            
-            Data.pointsInfo.get(i).selected = false;
+        for (int i = 0; i < Data.points.size(); i++) {
+            if (Data.pointsInfo.get(i).selected) {
+                saveInfo(Data.pointsInfo.get(i));
+                Data.pointsInfo.get(i).selected = false;
+            }
         }
-        
-        for (int i = 0; i < Data.polylines.size(); i++)
-        {
-            Data.polylinesInfo.get(i).selected = false;
+
+        for (int i = 0; i < Data.polylines.size(); i++) {
+            if (Data.polylinesInfo.get(i).selected) {
+                saveInfo(Data.polylinesInfo.get(i));
+                Data.polylinesInfo.get(i).selected = false;
+            }
         }
-        
-        for (int i = 0; i < Data.rectangles.size(); i++)
-        {
-            
-            Data.rectanglesInfo.get(i).selected = false;
+
+        for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).selected) {
+                saveInfo(Data.rectanglesInfo.get(i));
+                Data.rectanglesInfo.get(i).selected = false;
+            }
         }
-        
-        for (int i = 0; i < Data.ellipses.size(); i++)
-        {
-            Data.ellipsesInfo.get(i).selected = false;
+
+        for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).selected) {
+                saveInfo(Data.ellipsesInfo.get(i));
+                Data.ellipsesInfo.get(i).selected = false;
+            }
         }
-        
-        for (int i = 0; i < Data.polygons.size(); i++)
-        {
-            Data.polygonsInfo.get(i).selected = false;
+
+        for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).selected) {
+                saveInfo(Data.polygonsInfo.get(i));
+                Data.polygonsInfo.get(i).selected = false;
+            }
         }
         
         clearInfo();
@@ -2179,15 +2216,47 @@ public class MainWindow extends javax.swing.JFrame {
     {
         if (!info.editable) return;
         
-        info.nazev = objectNameField.getText();
-        info.typ = ObjectInfo.TYPES[typeComboBox.getSelectedIndex()];
-        info.existenceOd = stringToDate(existenceOdField.getText());
-        info.existenceDo = stringToDate(existenceDoField.getText());
-        info.rekonstrukceOd = stringToDate(rekonstrukceOdField.getText());
-        info.rekonstrukceDo = stringToDate(rekonstrukceDoField.getText());
-        info.popis = descriptionField.getText();
-        info.sektor = sectorLabel.getText();
-        info.modifiedObject = true;
+        if (info.nazev != objectNameField.getText())
+        {
+            info.nazev = objectNameField.getText();
+            info.modifiedInfo = true;
+        }
+        if (info.typ != ObjectInfo.TYPES[typeComboBox.getSelectedIndex()])
+        {
+            info.typ = ObjectInfo.TYPES[typeComboBox.getSelectedIndex()];
+            info.modifiedInfo = true;
+        }
+        if (info.existenceOd != stringToDate(existenceOdField.getText()))
+        {
+            info.existenceOd = stringToDate(existenceOdField.getText());
+            info.modifiedInfo = true;
+        }
+        if (info.existenceDo != stringToDate(existenceDoField.getText()))
+        {
+            info.existenceDo = stringToDate(existenceDoField.getText());
+            info.modifiedInfo = true;
+        }
+        if (info.rekonstrukceOd != stringToDate(rekonstrukceOdField.getText()))
+        {
+            info.rekonstrukceOd = stringToDate(rekonstrukceOdField.getText());
+            info.modifiedInfo = true;
+        }
+        if (info.rekonstrukceDo != stringToDate(rekonstrukceDoField.getText()))
+        {
+            info.rekonstrukceDo = stringToDate(rekonstrukceDoField.getText());
+            info.modifiedInfo = true;
+        }
+        if (info.popis != descriptionField.getText())
+        {
+            info.popis = descriptionField.getText();
+            info.modifiedInfo = true;
+        }
+        if (info.sektor != sectorLabel.getText())
+        {
+            info.sektor = sectorLabel.getText();
+            info.modifiedInfo = true;
+        }
+        
     }
     
     private void clearInfo() {

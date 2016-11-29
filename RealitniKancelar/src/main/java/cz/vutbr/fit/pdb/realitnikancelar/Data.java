@@ -57,13 +57,17 @@ public class Data {
 
     //tady se budou potom nacitat data z databaze, zatim tady vytvarim nejake objekty rucne
     public static void loadData() {
+        
+        //vymazat vsechna stara data z aplikace
+        removeAllFromApp();
+        
         //zjisti se rozmery mapy
         width = 1000;
         height = 1000;
         
         //pridam nejake ownery kvuli testovani
-        owners.add(new Owner());
-        owners.add(new Owner("Honza", "Brno"));
+        owners.add(new Owner(true));
+        owners.add(new Owner("Honza", "Brno", true));
         
        
 
@@ -167,6 +171,24 @@ public class Data {
         Shape current;
         ObjectInfo currentInfo;
         Connection conn = ConnectDialog.conn;
+        
+        for (int i = 0; i < owners.size(); i++)
+        {
+            if (!owners.get(i).modifiedOwner && 
+                    !owners.get(i).newOwner &&
+                    !owners.get(i).deletedOwner)
+            {
+                continue; //neni novy ani modifikovany ani smazany, preskocit
+            }
+            
+            if (owners.get(i).deletedOwner)
+            {
+                //byl smazany v aplikaci, je treba ho smazat z DB
+                continue;
+            }
+            
+            //je novy nebo modifikovany, updatovat nebo pridat v DB
+        }
 
         Map<ObjectInfo, Shape> objects = mergeShapes();
 
@@ -177,6 +199,24 @@ public class Data {
         for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet())
         {
             currentInfo = entry.getKey();
+            
+            if (!currentInfo.modifiedInfo && 
+                    !currentInfo.modifiedGeometry && 
+                    !currentInfo.modifiedImage &&
+                    !currentInfo.newObject &&
+                    !currentInfo.deletedObject)
+            {
+                continue; //neni novy ani modifikovany ani smazany, preskocit
+            }
+            
+            if (currentInfo.deletedObject)
+            {
+                //byl smazany v aplikaci, je treba ho smazat z DB
+                continue;
+            }
+            
+            //je novy nebo modifikovany, updatovat nebo pridat v DB
+            
             current = entry.getValue();
 
             JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
@@ -187,11 +227,12 @@ public class Data {
                 stmt.setObject(2, obj);
 
                 stmt.execute();
-                dataSaved();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        
+        dataSaved();
     }
 
     public static Map mergeShapes() {
@@ -207,32 +248,129 @@ public class Data {
     
     //vola se po ulozeni dat do DB
     //pro vsechny objekty se nastavi, ze nejsou nove ani modifikovane
+    //smazane se smazou z aplikace
     public static void dataSaved()
     {
+        removeDeletedFromApp();
+        
+        for (int i = 0; i < owners.size(); i++)
+        {
+            owners.get(i).newOwner = false;
+            owners.get(i).modifiedOwner = false;
+        }
         for (int i = 0; i < points.size(); i++)
         {
             pointsInfo.get(i).newObject = false;
-            pointsInfo.get(i).modifiedObject = false;
+            pointsInfo.get(i).modifiedGeometry = false;
+            pointsInfo.get(i).modifiedInfo =  false;
+            pointsInfo.get(i).modifiedImage = false;
         }
         for (int i = 0; i < polylines.size(); i++)
         {
             polylinesInfo.get(i).newObject = false;
-            polylinesInfo.get(i).modifiedObject = false;
+            polylinesInfo.get(i).modifiedGeometry = false;
+            polylinesInfo.get(i).modifiedInfo =  false;
+            polylinesInfo.get(i).modifiedImage = false;
         }
         for (int i = 0; i < rectangles.size(); i++)
         {
             rectanglesInfo.get(i).newObject = false;
-            rectanglesInfo.get(i).modifiedObject = false;
+            rectanglesInfo.get(i).modifiedGeometry = false;
+            rectanglesInfo.get(i).modifiedInfo =  false;
+            rectanglesInfo.get(i).modifiedImage = false;
         }
         for (int i = 0; i < ellipses.size(); i++)
         {
             ellipsesInfo.get(i).newObject = false;
-            ellipsesInfo.get(i).modifiedObject = false;
+            ellipsesInfo.get(i).modifiedGeometry = false;
+            ellipsesInfo.get(i).modifiedInfo =  false;
+            ellipsesInfo.get(i).modifiedImage = false;
         }
         for (int i = 0; i < polygons.size(); i++)
         {
             polygonsInfo.get(i).newObject = false;
-            polygonsInfo.get(i).modifiedObject = false;
+            polygonsInfo.get(i).modifiedGeometry = false;
+            polygonsInfo.get(i).modifiedInfo =  false;
+            polygonsInfo.get(i).modifiedImage = false;
+        }
+    }
+    
+    //smaze vsechna data z aplikace
+    public static void removeAllFromApp()
+    {
+        owners.clear();
+        
+        points.clear();
+        pointsInfo.clear();
+        
+        polylines.clear();
+        polylinesInfo.clear();
+        
+        rectangles.clear();
+        rectanglesInfo.clear();
+        
+        ellipses.clear();
+        ellipsesInfo.clear();
+        
+        polygons.clear();
+        polygonsInfo.clear();
+    }
+    
+    //vymaze objekty s priznakem deleted z aplikace
+    public static void removeDeletedFromApp()
+    {
+        for (int i = 0; i < owners.size(); i++)
+        {
+            if (owners.get(i).deletedOwner)
+            {        
+                owners.remove(i);
+                i--;
+            }
+        }
+        for (int i = 0; i < points.size(); i++)
+        {
+            if (pointsInfo.get(i).deletedObject)
+            {        
+                points.remove(i);
+                pointsInfo.remove(i);
+                i--;
+            }
+        }
+        for (int i = 0; i < polylines.size(); i++)
+        {
+            if (polylinesInfo.get(i).deletedObject)
+            {        
+                polylines.remove(i);
+                polylinesInfo.remove(i);
+                i--;
+            }
+        }
+        for (int i = 0; i < rectangles.size(); i++)
+        {
+            if (rectanglesInfo.get(i).deletedObject)
+            {        
+                rectangles.remove(i);
+                rectanglesInfo.remove(i);
+                i--;
+            }
+        }
+        for (int i = 0; i < ellipses.size(); i++)
+        {
+            if (ellipsesInfo.get(i).deletedObject)
+            {        
+                ellipses.remove(i);
+                ellipsesInfo.remove(i);
+                i--;
+            }
+        }
+        for (int i = 0; i < polygons.size(); i++)
+        {
+            if (polygonsInfo.get(i).deletedObject)
+            {        
+                polygons.remove(i);
+                polygonsInfo.remove(i);
+                i--;
+            }
         }
     }
 }

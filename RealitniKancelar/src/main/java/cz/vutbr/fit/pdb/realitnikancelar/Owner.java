@@ -19,34 +19,34 @@ public class Owner {
     public String adresa;
     public boolean newOwner; //jestli je to nove vytvoreny owner, ktery jeste neni v DB
     public boolean modifiedOwner; //jestli je to owner z DB, ktery byl v aplikaci modifikovany, a je potreba udelat update v DB
+    public boolean deletedOwner; //pokud je true, tento majitel byl v aplikaci smazan, ignoruje se a z aplikace bude smazan az pri aktualizaci DB
     private static TreeSet<Integer> ids = new TreeSet<Integer>();
     
-    public Owner() {
+    //load je true, pokud budou data pro tento objekt nactena z DB
+    public Owner(boolean load) {
         this.id = nextId();
         this.jmeno = "Novy majitel";
         this.adresa = "Adresa";
         
-        //byl prave vytvoren v aplikaci
-        this.newOwner = true;
+        //pokud se nejedna o nacteni z DB, je novy
+        this.newOwner = !load;
         this.modifiedOwner = false;
+        this.deletedOwner = false;
         
         ids.add(this.id);
     }
     
-    public Owner(Boolean load)
-    {
-        return;
-    }
-    
-    public Owner(String jmeno, String adresa)
+    //load je true, pokud byla data pro tento objekt nactena z DB
+    public Owner(String jmeno, String adresa, boolean load)
     {
         this.id = nextId();
         this.jmeno = jmeno;
         this.adresa = adresa;
         
-        //byl prave vytvoren v aplikaci
-        this.newOwner = true;
+        //pokud se nejedna o nacteni z DB, je novy
+        this.newOwner = !load;
         this.modifiedOwner = false;
+        this.deletedOwner = false;
         
         ids.add(this.id);
     }
@@ -66,9 +66,8 @@ public class Owner {
         majitel.adresa = res.getString("typ");
         ids.add(majitel.id);
         
-        //prave jsme ho nacetli z DB
-        majitel.newOwner = false;
-        majitel.modifiedOwner = false;
+   
+        
         
         return majitel;
     }

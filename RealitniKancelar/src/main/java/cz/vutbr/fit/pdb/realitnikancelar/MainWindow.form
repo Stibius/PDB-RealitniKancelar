@@ -549,6 +549,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="P&#x159;idat bod"/>
               </Properties>
+              <Events>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="addPointRadioButtonItemStateChanged"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="addPolylineRadioButton">
               <Properties>
