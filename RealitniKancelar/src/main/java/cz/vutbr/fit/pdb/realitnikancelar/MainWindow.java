@@ -33,6 +33,8 @@ import javax.swing.JList;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -1828,8 +1830,15 @@ public class MainWindow extends javax.swing.JFrame {
                 JFileChooser fc = new JFileChooser();
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    System.out.println(fc.getSelectedFile().getAbsolutePath());
-                    Data.rectanglesInfo.get(i).modifiedImage = true;
+                        System.out.println(fc.getSelectedFile().getAbsolutePath());
+                        Data.rectanglesInfo.get(i).modifiedImage = true;
+                    try {
+                        Data.rectanglesInfo.get(i).saveFotoToDB(fc.getSelectedFile().getAbsolutePath());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                
+
                 } 
                 return;
             }

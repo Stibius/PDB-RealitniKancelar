@@ -6,13 +6,17 @@
 package cz.vutbr.fit.pdb.realitnikancelar;
 
 import java.awt.*;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.ArrayList;
+import oracle.jdbc.OraclePreparedStatement;
+import oracle.jdbc.OracleResultSet;
 import oracle.ord.im.OrdImage;
 
 /**
@@ -48,7 +52,10 @@ public class ObjectInfo {
     public boolean modifiedImage; //jestli je to objekt z DB, kteremu byl v aplikaci modifikovan obrazek, a je potreba udelat update v DB
     public boolean deletedObject; //pokud je true, tento objekt byl v aplikaci smazan, ignoruje se a z aplikace bude smazan az pri aktualizaci DB
     
+    OrdImage imgIcon;
+            
     //load je true, pokud budou data pro tento objekt nactena z DB
+    @SuppressWarnings("deprecation")
     public ObjectInfo(boolean load) {
         this.id = nextId();
         this.nazev = "Novy objekt";
@@ -72,6 +79,7 @@ public class ObjectInfo {
         this.modifiedImage = false;
         
         ids.add(this.id);
+        
     }
 
     private int nextId() {
@@ -99,7 +107,117 @@ public class ObjectInfo {
         info.rekonstrukceDo = res.getDate("obdobiod");
         
         ids.add(info.id);
+        info.imgIcon = info.loadFotoFromDB();
         return info;
     }
     //obrazek tady taky bude
+    
+    /**
+     * Funkce vytvoří nový prostor pro obrázek v databázi a následně ho tam uloží. 
+     * Bere obrázek z lokálního disku.
+     * @param filename
+     * @throws java.sql.SQLException
+     */
+    public void saveFotoToDB(String filename) throws SQLException {
+        ConnectDialog.conn.setAutoCommit(false);
+        System.out.println("nový objekt: "+this.newObject+"\n");
+        try {
+            int imgID;
+            String insertSQL;
+            //Vytvoření místa v databázi pro nový obrázek
+            try (Statement stmt1 = ConnectDialog.conn.createStatement()) {
+                //Vytvoření místa v databázi pro nový obrázek
+                ResultSet res = stmt1.executeQuery("SELECT obrazky_seq.NEXTVAL from DUAL");
+                imgID = 0;
+                while (res.next()) {
+                    imgID = Integer.parseInt(res.getString(1));
+                }   insertSQL = "INSERT INTO obrazky(id, objekt, img) VALUES"+
+                        " ("+imgID+","+this.id+",ordsys.ordimage.init())";
+                stmt1.executeUpdate(insertSQL);
+            }
+            
+            OrdImage imgProxy;
+            //Načtení vytvořeného místa pro nahrání obrázku
+            try ( 
+                    Statement stmt2 = ConnectDialog.conn.createStatement()) {
+                String selSQL = "SELECT img FROM obrazky WHERE id = "+imgID+
+                        " FOR UPDATE";
+                try (OracleResultSet rset = (OracleResultSet) stmt2.executeQuery(selSQL)) {
+                    rset.next();
+                    imgProxy = (OrdImage) rset.getORAData("img", OrdImage.getORADataFactory());
+                }
+            }
+            
+            //Načtení obrázku z disku do databáze
+            imgProxy.loadDataFromFile(filename);
+            imgProxy.setProperties();
+            
+            //Update tabulky
+            String updateSQL1 = "UPDATE obrazky SET"+" img=? WHERE id = "+imgID;
+            System.out.println("insertSQL: "+insertSQL+"\n");
+            try (OraclePreparedStatement pstmt = (OraclePreparedStatement)
+                    ConnectDialog.conn.prepareStatement (updateSQL1)) {
+                pstmt.setORAData (1,imgProxy) ;
+                pstmt.executeUpdate() ;
+            }
+            
+            try ( //Update tabulky StillImage
+                    Statement stmt3 = ConnectDialog.conn.createStatement()) {
+                String updateSQL2 = "UPDATE obrazky p SET " +
+                        " p.img_si = SI_StillImage(p.img.getContent())where id = " + imgID ;
+                stmt3.executeUpdate(updateSQL2) ;
+                String updateSQL3 = "UPDATE obrazky p SET " +
+                        " p.img_ac=SI_AverageColor(p.img_si), " +
+                        " p.img_ch=SI_ColorHistogram(p.img_si), " +
+                        " p.img_pc=SI_PositionalColor(p.img_si), " +
+                        " p.img_tx=SI_Texture(p.img_si) where id = " + imgID;
+                stmt3.executeUpdate(updateSQL3);
+            }
+            ConnectDialog.conn.commit();
+            ConnectDialog.conn.setAutoCommit(true);
+
+        } catch (SQLException e) {
+            System.err.println("SQLexc: "+e.getMessage());
+        } catch (NumberFormatException | IOException e) {
+            System.err.println("Exeption: "+e.getMessage());
+        }
+    }
+    /**
+     * Funkce načte obrázek z databáze a vrátí jej.
+     */
+    public OrdImage loadFotoFromDB () throws SQLException {
+        try (Statement stmt = ConnectDialog.conn.createStatement()) {
+            OracleResultSet rset = (OracleResultSet) stmt.executeQuery(
+                    "select * from obrazky where objekt = 0");
+            
+            rset.next();
+            int id = rset.getInt("id");
+            OrdImage imgProxy = (OrdImage)
+                    rset.getORAData("img", OrdImage.getORADataFactory());
+            // retrieve the media attributes
+            int height = imgProxy.getHeight();
+            int width = imgProxy.getWidth();
+            System.out.println("Photo "+ id +": "+ height +"x"+ width);
+
+            //imgProxy.getDataInFile("./car"+ id +"-out.jpg");
+            
+            
+            rset.close();
+            return imgProxy;
+        }
+    }
+    
+    /**
+     * Funkce updatuje obrázek uložený v databázi, provádí i otočení.
+     */
+    public void updateFotoToDB () throws SQLException {
+        
+    }
+    
+    /**
+     * Funkce najde 4 podobné obrázky objektů pro vybraný objekt.
+     */
+    public void findSimilarFoto (){
+        
+    }
 }
