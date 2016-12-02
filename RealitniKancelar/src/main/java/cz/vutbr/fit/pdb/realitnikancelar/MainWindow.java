@@ -35,6 +35,10 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.File;
+import java.io.IOException;
+import java.awt.Dimension;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -1807,7 +1811,18 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
-                    Data.pointsInfo.get(i).modifiedImage = true;
+                    String path = fc.getSelectedFile().getAbsolutePath();
+                    try {
+                        ((DrawingPanel)imagePanel).image = ImageIO.read(new File(path));
+                        int width = ((DrawingPanel)imagePanel).image.getWidth();
+                        int height = ((DrawingPanel)imagePanel).image.getHeight();
+                        Dimension dim = new Dimension(width, height);
+                        imagePanel.setPreferredSize(dim);
+                        imagePanel.setSize(dim);
+                        imagePanel.repaint();
+                        Data.pointsInfo.get(i).modifiedImage = true;
+                    } catch (IOException e) {
+                    }   
                 } 
                 return;
             }
@@ -1819,7 +1834,18 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
-                    Data.polylinesInfo.get(i).modifiedImage = true;
+                    String path = fc.getSelectedFile().getAbsolutePath();
+                    try {
+                        ((DrawingPanel)imagePanel).image = ImageIO.read(new File(path));
+                        int width = ((DrawingPanel)imagePanel).image.getWidth();
+                        int height = ((DrawingPanel)imagePanel).image.getHeight();
+                        Dimension dim = new Dimension(width, height);
+                        imagePanel.setPreferredSize(dim);
+                        imagePanel.setSize(dim);
+                        imagePanel.repaint();
+                        Data.polylinesInfo.get(i).modifiedImage = true;
+                    } catch (IOException e) {
+                    }
                 } 
                 return;
             }
@@ -1830,6 +1856,19 @@ public class MainWindow extends javax.swing.JFrame {
                 JFileChooser fc = new JFileChooser();
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    String path = fc.getSelectedFile().getAbsolutePath();
+                    try {
+                        ((DrawingPanel)imagePanel).image = ImageIO.read(new File(path));
+                        int width = ((DrawingPanel)imagePanel).image.getWidth();
+                        int height = ((DrawingPanel)imagePanel).image.getHeight();
+                        Dimension dim = new Dimension(width, height);
+                        imagePanel.setPreferredSize(dim);
+                        imagePanel.setSize(dim);
+                        imagePanel.repaint();
+                        Data.rectanglesInfo.get(i).modifiedImage = true;
+                    } catch (IOException e) {
+                    }
                         System.out.println(fc.getSelectedFile().getAbsolutePath());
                         Data.rectanglesInfo.get(i).modifiedImage = true;
                     try {
@@ -1837,8 +1876,6 @@ public class MainWindow extends javax.swing.JFrame {
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                
-
                 } 
                 return;
             }
@@ -1850,7 +1887,18 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
-                    Data.ellipsesInfo.get(i).modifiedImage = true;
+                    String path = fc.getSelectedFile().getAbsolutePath();
+                    try {
+                        ((DrawingPanel)imagePanel).image = ImageIO.read(new File(path));
+                        int width = ((DrawingPanel)imagePanel).image.getWidth();
+                        int height = ((DrawingPanel)imagePanel).image.getHeight();
+                        Dimension dim = new Dimension(width, height);
+                        imagePanel.setPreferredSize(dim);
+                        imagePanel.setSize(dim);
+                        imagePanel.repaint();
+                        Data.ellipsesInfo.get(i).modifiedImage = true;
+                    } catch (IOException e) {
+                    }
                 } 
                 return;
             }
@@ -1862,7 +1910,18 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
-                    Data.polygonsInfo.get(i).modifiedImage = true;
+                    String path = fc.getSelectedFile().getAbsolutePath();
+                    try {
+                        ((DrawingPanel)imagePanel).image = ImageIO.read(new File(path));
+                        int width = ((DrawingPanel)imagePanel).image.getWidth();
+                        int height = ((DrawingPanel)imagePanel).image.getHeight();
+                        Dimension dim = new Dimension(width, height);
+                        imagePanel.setPreferredSize(dim);
+                        imagePanel.setSize(dim);
+                        imagePanel.repaint();
+                        Data.polygonsInfo.get(i).modifiedImage = true;
+                    } catch (IOException e) {
+                    }
                 } 
                 return;
             }
