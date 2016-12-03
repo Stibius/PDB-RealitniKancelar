@@ -4,6 +4,7 @@ import oracle.spatial.geometry.JGeometry;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
@@ -38,6 +39,10 @@ public class ShapeHelper {
         Shape shape;
 
         switch (jGeometry.getType()) {
+            case JGeometry.GTYPE_CURVE:
+                shape = jGeometry.createShape();
+                Data.line = true;
+                break;
             // it is a polygon
             case JGeometry.GTYPE_POLYGON:
                 shape = jGeometry.createShape();
@@ -78,6 +83,12 @@ public class ShapeHelper {
 
             shapeType = SHAPE_TYPE_POLYGON;
             dbShape = DB_SHAPE_POLYGON_OR_LINE;
+        } else if (shape instanceof Path2D) {
+            dbType = DB_TYPE_LINE;
+            dbInfoType = DB_INFO_LINE;
+
+            shapeType = SHAPE_TYPE_LINE;
+            dbShape = DB_SHAPE_POLYGON_OR_LINE;
         } else
             throw new InvalidObjectException("Invalid shape type");
 
@@ -90,7 +101,7 @@ public class ShapeHelper {
                 //typ segmentu
                 int type = pi.currentSegment(coords);
                 //polygon?
-                if (shapeType == SHAPE_TYPE_POLYGON) {
+                if (shapeType == SHAPE_TYPE_POLYGON || shapeType == SHAPE_TYPE_LINE) {
                     if (type != PathIterator.SEG_LINETO && type != PathIterator.SEG_MOVETO) {
                         continue;
                     }

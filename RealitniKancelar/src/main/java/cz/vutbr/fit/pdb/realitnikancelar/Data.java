@@ -6,10 +6,7 @@
 package cz.vutbr.fit.pdb.realitnikancelar;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.io.InvalidObjectException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,6 +21,8 @@ import oracle.sql.STRUCT;
  *         Tady budou ulozeny veskere informace o objektech.
  */
 public class Data {
+    public static boolean line = false;
+
     public static class JGeometry2ShapeException extends Exception {
     }
 
@@ -160,7 +159,7 @@ public class Data {
             ellipses.add((Ellipse2D) shape);
             ellipsesInfo.add(info);
             return;
-        } else if (shape instanceof GeneralPath) {
+        } else if (shape instanceof GeneralPath && !line) {
             Polygon shapePoly = new Polygon();
             PathIterator iterator = shape.getPathIterator(null);
             float[] floats = new float[6];
@@ -173,9 +172,32 @@ public class Data {
                 }
                 iterator.next();
             }
-            polygons.add((Polygon) shapePoly);
+            polygons.add(shapePoly);
             polygonsInfo.add(info);
             return;
+        } else if (line) {
+            ArrayList<Point> body = new ArrayList<>();
+            PathIterator iterator = shape.getPathIterator(null);
+            float[] floats = new float[6];
+            while (!iterator.isDone()) {
+                int type = iterator.currentSegment(floats);
+                int x = (int) floats[0];
+                int y = (int) floats[1];
+                if(type != PathIterator.SEG_CLOSE) {
+                    Point bod = new Point(x,y);
+                    body.add(bod);
+                }
+                iterator.next();
+            }
+            if (body.size() == 1) {
+                points.add(body.get(0));
+                pointsInfo.add(info);
+            }
+            else {
+                polylines.add(body);
+                polylinesInfo.add(info);
+            }
+
         }
 
 }
@@ -277,6 +299,31 @@ public class Data {
             objects.put(ellipsesInfo.get(i), ellipses.get(i));
         for (int i = 0; i < polygons.size(); i++)
             objects.put(polygonsInfo.get(i), polygons.get(i));
+        for (int i = 0; i < points.size(); i++) {
+            Path2D line = new Path2D.Double();
+            Point2D p = points.get(i);
+
+            line.moveTo(p.getX(), p.getY());
+
+            for (int j = 1; j < points.size(); j++) {
+                p = points.get(i);
+                line.lineTo(p.getX(), p.getY());
+            }
+            objects.put(pointsInfo.get(i), line);
+        }
+        for (int i = 0; i < polylines.size(); i++) {
+            Path2D line = new Path2D.Double();
+            Point2D p = polylines.get(i).get(0);
+
+            line.moveTo(p.getX(), p.getY());
+
+            for (int j = 1; j < polylines.get(i).size(); j++) {
+                p = polylines.get(i).get(j);
+                line.lineTo(p.getX(), p.getY());
+            }
+            objects.put(polylinesInfo.get(i), line);
+        }
+
         return objects;
     }
     
