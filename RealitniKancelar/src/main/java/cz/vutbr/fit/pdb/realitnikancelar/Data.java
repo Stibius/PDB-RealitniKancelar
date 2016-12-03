@@ -7,6 +7,8 @@ package cz.vutbr.fit.pdb.realitnikancelar;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.io.InvalidObjectException;
 import java.sql.*;
@@ -158,8 +160,25 @@ public class Data {
             ellipses.add((Ellipse2D) shape);
             ellipsesInfo.add(info);
             return;
+        } else if (shape instanceof GeneralPath) {
+            Polygon shapePoly = new Polygon();
+            PathIterator iterator = shape.getPathIterator(null);
+            float[] floats = new float[6];
+            while (!iterator.isDone()) {
+                int type = iterator.currentSegment(floats);
+                int x = (int) floats[0];
+                int y = (int) floats[1];
+                if(type != PathIterator.SEG_CLOSE) {
+                    shapePoly.addPoint(x, y);
+                }
+                iterator.next();
+            }
+            polygons.add((Polygon) shapePoly);
+            polygonsInfo.add(info);
+            return;
         }
-    }
+
+}
 
     // ukladani dat do DB
     public static void saveData() throws InvalidObjectException, SQLException {
@@ -168,7 +187,7 @@ public class Data {
         Shape current;
         ObjectInfo currentInfo;
         Connection conn = ConnectDialog.conn;
-        
+
         for (int i = 0; i < owners.size(); i++)
         {
             if (!owners.get(i).modifiedOwner && 

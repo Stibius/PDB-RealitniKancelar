@@ -91,6 +91,9 @@ public class ShapeHelper {
                 int type = pi.currentSegment(coords);
                 //polygon?
                 if (shapeType == SHAPE_TYPE_POLYGON) {
+                    if (type != PathIterator.SEG_LINETO && type != PathIterator.SEG_MOVETO) {
+                        continue;
+                    }
                     result.add(coords[0]);
                     result.add(coords[1]);
                 } else if (shapeType == SHAPE_TYPE_CIRCLE) {

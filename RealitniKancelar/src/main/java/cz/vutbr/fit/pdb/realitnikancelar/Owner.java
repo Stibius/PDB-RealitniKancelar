@@ -105,6 +105,7 @@ public class Owner {
 
     public static Owner defaultOwner() {
         //BACHA, pro testovaci ucely maze vsechny majitele
+        /*
         Connection conn = ConnectDialog.conn;
         PreparedStatement del = null;
         try {
@@ -130,7 +131,7 @@ public class Owner {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         return new Owner(0, "Neznámý majitel","Neznámá adresa");
     }
 }

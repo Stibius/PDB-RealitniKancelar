@@ -1415,6 +1415,7 @@ public class MainWindow extends javax.swing.JFrame {
                     info.selected = true;
                     Data.polylinesInfo.add(info);
                     newPolyline = true;
+                    setInfo(info);
                 }
                 else
                 {
@@ -1444,6 +1445,7 @@ public class MainWindow extends javax.swing.JFrame {
                     info.selected = true;
                     Data.polylinesInfo.add(info);
                     newPolygon = true;
+                    setInfo(info);
                 }
                 else
                 {
@@ -1469,6 +1471,7 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polylinesInfo.remove(Data.polylinesInfo.size()-1);                   
                 }
             }
+
         }
         else if (addRectangleRadioButton.isSelected())
         {
@@ -1509,6 +1512,7 @@ public class MainWindow extends javax.swing.JFrame {
                 info.selected = true;
                 Data.ellipsesInfo.add(info);
                 newEllipse = true;
+                setInfo(info);
 
 
             }

@@ -17,6 +17,7 @@ public class Sektor {
 
     public static Sektor testovaciSektor() throws SQLException {
         Sektor sektor = new Sektor();
+        /*
         Connection conn = ConnectDialog.conn;
         PreparedStatement del = conn.prepareStatement("DELETE FROM sektor");
         del.execute();
@@ -24,7 +25,7 @@ public class Sektor {
                 " nazev,geometrie) VALUES (0,'Test sektor',NULL)");
         {
             stmt.execute();
-        }
+        }*/
         return sektor;
     }
 
