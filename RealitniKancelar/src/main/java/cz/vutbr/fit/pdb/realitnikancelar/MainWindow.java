@@ -1712,7 +1712,9 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.points.size(); i++) {
             for (int j = 0; j < Data.pointsInfo.get(i).majitele.size(); j++)
             {
-                if (!Data.pointsInfo.get(i).deletedObject && Data.pointsInfo.get(i).majitele.get(j).id == id)
+                if (!Data.pointsInfo.get(i).deletedObject && 
+                        Data.pointsInfo.get(i).majitele.get(j) != null &&
+                        Data.pointsInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1722,7 +1724,9 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.polylines.size(); i++) {
             for (int j = 0; j < Data.polylinesInfo.get(i).majitele.size(); j++)
             {
-                if (!Data.polylinesInfo.get(i).deletedObject && Data.polylinesInfo.get(i).majitele.get(j).id == id)
+                if (!Data.polylinesInfo.get(i).deletedObject && 
+                        Data.polylinesInfo.get(i).majitele.get(j) != null &&
+                        Data.polylinesInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1732,7 +1736,9 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.rectangles.size(); i++) {
             for (int j = 0; j < Data.rectanglesInfo.get(i).majitele.size(); j++)
             {
-                if (!Data.rectanglesInfo.get(i).deletedObject && Data.rectanglesInfo.get(i).majitele.get(j).id == id)
+                if (!Data.rectanglesInfo.get(i).deletedObject && 
+                        Data.rectanglesInfo.get(i).majitele.get(j) != null &&
+                        Data.rectanglesInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1742,7 +1748,9 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.ellipses.size(); i++) {
             for (int j = 0; j < Data.ellipsesInfo.get(i).majitele.size(); j++)
             {
-                if (!Data.ellipsesInfo.get(i).deletedObject && Data.ellipsesInfo.get(i).majitele.get(j).id == id)
+                if (!Data.ellipsesInfo.get(i).deletedObject && 
+                        Data.ellipsesInfo.get(i).majitele.get(j) != null &&
+                        Data.ellipsesInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -1752,7 +1760,9 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.polygons.size(); i++) {
             for (int j = 0; j < Data.polygonsInfo.get(i).majitele.size(); j++)
             {
-                if (!Data.polygonsInfo.get(i).deletedObject && Data.polygonsInfo.get(i).majitele.get(j).id == id)
+                if (!Data.polygonsInfo.get(i).deletedObject && 
+                        Data.polygonsInfo.get(i).majitele.get(j) != null &&
+                        Data.polygonsInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -2273,9 +2283,10 @@ public class MainWindow extends javax.swing.JFrame {
         rekonstrukceDoField.setText(dateToString(info.rekonstrukceDo));
         descriptionField.setText(info.popis);
         sectorLabel.setText(String.valueOf(info.sektor));
+        
         if (info.majitele.size() == 0 || info.majitele.get(info.majitele.size()-1) == null) 
         {
-            ownerNameLabel.setText("");
+            ownerNameLabel.setText("Bez majitele");
             ownerAddressLabel.setText("");
         }
         else
