@@ -7,17 +7,13 @@ package cz.vutbr.fit.pdb.realitnikancelar;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.InvalidObjectException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-import oracle.jdbc.pool.OracleDataSource;
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 
@@ -144,7 +140,7 @@ public class Data {
         Shape shape;
 
         image = res.getBytes("geometrie");
-        ObjectInfo info = ObjectInfo.create(res);
+        ObjectInfo info = ObjectInfo.createFromDB(res);
 
         //process shape
         tempGeo = JGeometry.load(image);
@@ -167,7 +163,8 @@ public class Data {
 
     // ukladani dat do DB
     public static void saveData() throws InvalidObjectException, SQLException {
-
+        //Vytvorime testovaci sektor, bacha, smaze vsechny ostatni
+        Sektor.testovaciSektor();
         Shape current;
         ObjectInfo currentInfo;
         Connection conn = ConnectDialog.conn;
@@ -220,11 +217,29 @@ public class Data {
             current = entry.getValue();
 
             JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
-            try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id, geometrie) VALUES (?, ?)")) {
-                stmt.setInt(1, currentInfo.id);
-
+            //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
+            try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id," +
+                    " nazev,typ,editable,popis,majitel,sektor,geometrie,majitelOd," +
+                    "majitelDo, existenceOd,existenceDo,rekonstrukceOd,rekonstrukceDo) " +
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)" +
+                    "")) {
                 STRUCT obj = JGeometry.store(conn, jGeo);
-                stmt.setObject(2, obj);
+                stmt.setInt(1, currentInfo.id);
+                stmt.setString(2, currentInfo.nazev);
+                stmt.setString(3, currentInfo.typ);
+                stmt.setBoolean(4, currentInfo.editable);
+                stmt.setString(5, currentInfo.popis);
+                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
+                stmt.setInt(6, currentInfo.majitele.get(0).id);
+                stmt.setInt(7, currentInfo.sektor);
+                stmt.setObject(8, obj);
+                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
+                stmt.setDate(9, new java.sql.Date(currentInfo.majitelOd.get(0).getTime()));
+                stmt.setDate(10, new java.sql.Date(currentInfo.majitelDo.get(0).getTime()));
+                stmt.setDate(11, new java.sql.Date( currentInfo.existenceOd.getTime()));
+                stmt.setDate(12, new java.sql.Date( currentInfo.existenceDo.getTime()));
+                stmt.setDate(13, new java.sql.Date( currentInfo.rekonstrukceOd.getTime()));
+                stmt.setDate(14, new java.sql.Date( currentInfo.rekonstrukceDo.getTime()));
 
                 stmt.execute();
             } catch (Exception e) {

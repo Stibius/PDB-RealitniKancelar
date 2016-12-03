@@ -38,7 +38,7 @@ public class ObjectInfo {
     public ArrayList<Owner> majitele = new ArrayList<>();
     public ArrayList<Date> majitelOd = new ArrayList<>();
     public ArrayList<Date> majitelDo = new ArrayList<>();
-    public String sektor;
+    public Integer sektor;
     public Date existenceOd;
     public Date existenceDo;
     public Date rekonstrukceOd;
@@ -62,12 +62,13 @@ public class ObjectInfo {
         this.typ = "Typ objektu";
         this.editable = true;
         this.popis = "popis";
-        this.majitele = new ArrayList<>();
-        this.sektor = "sektor";
-        this.majitelOd = new ArrayList<>();
-        this.majitelDo = new ArrayList<>();
-        this.existenceOd = new Date(0, 1, 1);
-        this.existenceDo = null;
+        this.majitele.add(Owner.defaultOwner());
+        //this.majitele = new ArrayList<>();
+        this.sektor = 0;
+        this.majitelOd.add(new Date(50, 1, 3));
+        this.majitelDo.add(new Date(50, 1, 3));
+        this.existenceOd = new Date(50, 1, 3);
+        this.existenceDo = new Date(50, 1, 3);
         this.rekonstrukceOd = new Date(50, 1, 3);
         this.rekonstrukceDo = new Date(50, 1, 7);
         
@@ -90,24 +91,24 @@ public class ObjectInfo {
         return 0;
     }
 
-    public static ObjectInfo create(ResultSet res) throws SQLException {
+    public static ObjectInfo createFromDB(ResultSet res) throws SQLException {
         ObjectInfo info = new ObjectInfo(true);
         info.id = res.getInt("id");
         info.nazev = res.getString("nazev");
         info.typ = res.getString("typ");
         info.editable = true;
         info.popis = res.getString("popis");
-        //info.majitel = res.getString("majitel");
-        info.sektor = res.getString("sektor");
-        //info.majitelOd = res.getDate("obdobiod");
-        //info.majitelDo = res.getDate("obdobiod");
-        info.existenceOd = res.getDate("obdobiod");
-        info.existenceDo = res.getDate("obdobiod");
-        info.rekonstrukceOd = res.getDate("obdobiod");
-        info.rekonstrukceDo = res.getDate("obdobiod");
+        info.majitele.add(Owner.getOwner(res.getInt("majitel")));
+        info.sektor = res.getInt("sektor");
+        info.majitelOd.add(res.getDate("majitelod"));
+        info.majitelDo.add(res.getDate("majiteldo"));
+        info.existenceOd = res.getDate("existenceOd");
+        info.existenceDo = res.getDate("existenceDo");
+        info.rekonstrukceOd = res.getDate("rekonstrukceOd");
+        info.rekonstrukceDo = res.getDate("rekonstrukceDo");
         
         ids.add(info.id);
-        info.imgIcon = info.loadFotoFromDB();
+        //info.imgIcon = info.loadFotoFromDB();
         return info;
     }
     //obrazek tady taky bude

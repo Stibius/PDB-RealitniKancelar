@@ -5,9 +5,9 @@
  */
 package cz.vutbr.fit.pdb.realitnikancelar;
 
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.TreeSet;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  *
@@ -33,6 +33,18 @@ public class Owner {
         this.modifiedOwner = false;
         this.deletedOwner = false;
         
+        ids.add(this.id);
+    }
+    public Owner(Integer id, String jmeno, String adresa) {
+        this.id = id;
+        this.jmeno = jmeno;
+        this.adresa = adresa;
+
+        //pokud se nejedna o nacteni z DB, je novy
+        this.newOwner = false;
+        this.modifiedOwner = false;
+        this.deletedOwner = false;
+
         ids.add(this.id);
     }
     
@@ -71,6 +83,54 @@ public class Owner {
         
         return majitel;
     }
-    
-    
+
+
+    public static Owner getOwner(Integer majitel) {
+        if (majitel != null) {
+            try (Statement stmt = ConnectDialog.conn.createStatement()) {
+                ResultSet res = stmt.executeQuery("SELECT * FROM MAJITELE WHERE id = " +
+                        ""+majitel);
+                if (res.next()) {
+                    return new Owner(res.getInt("id"), res.getString("jmeno"),res
+                            .getString("adresa"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public static Owner defaultOwner() {
+        //BACHA, pro testovaci ucely maze vsechny majitele
+        Connection conn = ConnectDialog.conn;
+        PreparedStatement del = null;
+        try {
+            del = conn.prepareStatement("DELETE FROM majitele");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            del.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        PreparedStatement stmt = null;
+        try {
+            stmt = conn.prepareStatement("INSERT INTO majitele (id," +
+                    " jmeno,adresa) VALUES (0,'Neznámý majitel','Neznámá adresa')");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        {
+            try {
+                stmt.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Owner(0, "Neznámý majitel","Neznámá adresa");
+    }
 }

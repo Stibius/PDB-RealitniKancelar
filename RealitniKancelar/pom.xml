@@ -85,7 +85,9 @@
         <dependency>
             <groupId>oracle.ord.im</groupId>
             <artifactId>ordim</artifactId>
-            <version>12.1.0.2.0</version>
+            <version>RELEASE</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/ordim.jar</systemPath>
         </dependency>
     </dependencies>
     <repositories>

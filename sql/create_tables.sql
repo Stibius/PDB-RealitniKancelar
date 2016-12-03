@@ -18,9 +18,12 @@ CREATE TABLE objekty (
     majitel NUMBER NOT null,
     sektor NUMBER NOT null,
     geometrie SDO_GEOMETRY,
-    intervalMajitele WM_PERIOD,
-    existence WM_PERIOD,
-    rekonstrukce WM_PERIOD,
+    majitelOd DATE,
+    majitelDo DATE,
+    existenceOd DATE,
+    existenceDo DATE,
+    rekonstrukceOd DATE,
+    rekonstrukceDo DATE,
     
     CONSTRAINT pk_objekt PRIMARY KEY (id)
 );

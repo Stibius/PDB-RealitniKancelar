@@ -137,7 +137,7 @@ public class ConnectDialog extends javax.swing.JDialog {
         
         // 2. cast cviceni
         try {
-            // create a OracleDataSource instance
+            // createFromDB a OracleDataSource instance
             OracleDataSource ods = new OracleDataSource();
             ods.setURL("jdbc:oracle:thin:@//berta.fit.vutbr.cz:1526/pdb1");
 

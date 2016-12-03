@@ -1482,6 +1482,7 @@ public class MainWindow extends javax.swing.JFrame {
                 info.selected = true;
                 Data.rectanglesInfo.add(info);
                 newRectangle = true;
+                setInfo(info);
 
 
             }
@@ -2267,7 +2268,7 @@ public class MainWindow extends javax.swing.JFrame {
         rekonstrukceOdField.setText(dateToString(info.rekonstrukceOd));
         rekonstrukceDoField.setText(dateToString(info.rekonstrukceDo));
         descriptionField.setText(info.popis);
-        sectorLabel.setText(info.sektor);
+        sectorLabel.setText(String.valueOf(info.sektor));
         if (info.majitele.size() == 0) 
         {
             ownerNameLabel.setText("");
@@ -2319,12 +2320,13 @@ public class MainWindow extends javax.swing.JFrame {
             info.popis = descriptionField.getText();
             info.modifiedInfo = true;
         }
+        /* BACHA, PROZATIM VYPINAM SEKTORY
         if (info.sektor != sectorLabel.getText())
         {
             info.sektor = sectorLabel.getText();
             info.modifiedInfo = true;
         }
-        
+        */
     }
     
     private void clearInfo() {
