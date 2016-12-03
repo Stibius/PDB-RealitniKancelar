@@ -62,8 +62,8 @@ public class ObjectInfo {
         this.typ = "Typ objektu";
         this.editable = true;
         this.popis = "popis";
-        this.majitele.add(Owner.defaultOwner());
         //this.majitele = new ArrayList<>();
+        this.majitele.add(Owner.defaultOwner());
         this.sektor = 0;
         this.majitelOd.add(new Date(50, 1, 3));
         this.majitelDo.add(new Date(50, 1, 3));

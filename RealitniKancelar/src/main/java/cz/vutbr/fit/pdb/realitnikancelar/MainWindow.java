@@ -2273,7 +2273,7 @@ public class MainWindow extends javax.swing.JFrame {
         rekonstrukceDoField.setText(dateToString(info.rekonstrukceDo));
         descriptionField.setText(info.popis);
         sectorLabel.setText(String.valueOf(info.sektor));
-        if (info.majitele.size() == 0) 
+        if (info.majitele.size() == 0 || info.majitele.get(info.majitele.size()-1) == null) 
         {
             ownerNameLabel.setText("");
             ownerAddressLabel.setText("");
