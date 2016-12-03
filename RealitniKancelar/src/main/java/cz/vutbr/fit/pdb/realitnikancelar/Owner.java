@@ -104,34 +104,7 @@ public class Owner {
     }
 
     public static Owner defaultOwner() {
-        //BACHA, pro testovaci ucely maze vsechny majitele
-        /*
-        Connection conn = ConnectDialog.conn;
-        PreparedStatement del = null;
-        try {
-            del = conn.prepareStatement("DELETE FROM majitele");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            del.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        PreparedStatement stmt = null;
-        try {
-            stmt = conn.prepareStatement("INSERT INTO majitele (id," +
-                    " jmeno,adresa) VALUES (0,'Neznámý majitel','Neznámá adresa')");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        {
-            try {
-                stmt.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }*/
-        return new Owner(0, "Neznámý majitel","Neznámá adresa");
+        //Nastavi vychoziho majitele. Ma id 0 a je v SQL skriptu
+        return Owner.getOwner(0);
     }
 }

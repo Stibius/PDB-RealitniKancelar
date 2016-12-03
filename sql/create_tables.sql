@@ -136,3 +136,6 @@ ALTER TABLE OBRAZKY
 ADD CONSTRAINT fk_obr_objekt
 FOREIGN KEY (objekt)
 REFERENCES objekty(id) on delete cascade;
+
+INSERT INTO majitele (id,jmeno,adresa) VALUES (0,'Neznámý majitel','Neznámá adresa');
+INSERT INTO sektor (id,nazev,geometrie) VALUES (0,'Test sektor',NULL);
