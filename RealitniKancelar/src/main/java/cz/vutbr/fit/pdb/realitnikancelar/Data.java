@@ -33,7 +33,7 @@ public class Data {
 
     //pro kazdy typ geometrickeho objektu jsou dve pole
     //jedno s geometrickymi objekty a jedno s informacemi o tech objektech
-    
+
     public static ArrayList<Owner> owners = new ArrayList<>();
 
     public static ArrayList<Point> points = new ArrayList<>();
@@ -54,19 +54,18 @@ public class Data {
 
     //tady se budou potom nacitat data z databaze, zatim tady vytvarim nejake objekty rucne
     public static void loadData() {
-        
+
         //vymazat vsechna stara data z aplikace
         removeAllFromApp();
-        
+
         //zjisti se rozmery mapy
         width = 1000;
         height = 1000;
-        
+
         //pridam nejake ownery kvuli testovani
         owners.add(new Owner(true));
         owners.add(new Owner("Honza", "Brno", true));
-        
-       
+
 
         try (Statement stmt = ConnectDialog.conn.createStatement()) {
             ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY");
@@ -78,8 +77,8 @@ public class Data {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        
+
+
         //nejake objekty na testovani, protoze v databazi nic neni
         /*
         rectangles.add(new Rectangle(100, 100, 300, 200));
@@ -167,7 +166,7 @@ public class Data {
                 int type = iterator.currentSegment(floats);
                 int x = (int) floats[0];
                 int y = (int) floats[1];
-                if(type != PathIterator.SEG_CLOSE) {
+                if (type != PathIterator.SEG_CLOSE) {
                     shapePoly.addPoint(x, y);
                 }
                 iterator.next();
@@ -183,8 +182,8 @@ public class Data {
                 int type = iterator.currentSegment(floats);
                 int x = (int) floats[0];
                 int y = (int) floats[1];
-                if(type != PathIterator.SEG_CLOSE) {
-                    Point bod = new Point(x,y);
+                if (type != PathIterator.SEG_CLOSE) {
+                    Point bod = new Point(x, y);
                     body.add(bod);
                 }
                 iterator.next();
@@ -192,15 +191,14 @@ public class Data {
             if (body.size() == 1) {
                 points.add(body.get(0));
                 pointsInfo.add(info);
-            }
-            else {
+            } else {
                 polylines.add(body);
                 polylinesInfo.add(info);
             }
 
         }
 
-}
+    }
 
     // ukladani dat do DB
     public static void saveData() throws InvalidObjectException, SQLException {
@@ -210,84 +208,129 @@ public class Data {
         ObjectInfo currentInfo;
         Connection conn = ConnectDialog.conn;
 
-        for (int i = 0; i < owners.size(); i++)
-        {
-            if (!owners.get(i).modifiedOwner && 
+        for (int i = 0; i < owners.size(); i++) {
+            if (!owners.get(i).modifiedOwner &&
                     !owners.get(i).newOwner &&
-                    !owners.get(i).deletedOwner)
-            {
+                    !owners.get(i).deletedOwner) {
                 continue; //neni novy ani modifikovany ani smazany, preskocit
             }
-            
-            if (owners.get(i).deletedOwner)
-            {
+
+            if (owners.get(i).deletedOwner) {
                 //byl smazany v aplikaci, je treba ho smazat z DB
                 continue;
             }
-            
+
             //je novy nebo modifikovany, updatovat nebo pridat v DB
         }
 
         Map<ObjectInfo, Shape> objects = mergeShapes();
 
-        //vycistit objekty
-        PreparedStatement del = conn.prepareStatement("DELETE FROM objekty");
-        del.execute();
-
-        for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet())
-        {
+        for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
             currentInfo = entry.getKey();
-            
-            if (!currentInfo.modifiedInfo && 
-                    !currentInfo.modifiedGeometry && 
-                    !currentInfo.modifiedImage &&
-                    !currentInfo.newObject &&
-                    !currentInfo.deletedObject)
-            {
-                continue; //neni novy ani modifikovany ani smazany, preskocit
-            }
-            
-            if (currentInfo.deletedObject)
-            {
-                //byl smazany v aplikaci, je treba ho smazat z DB
-                continue;
-            }
-            
-            //je novy nebo modifikovany, updatovat nebo pridat v DB
-            
             current = entry.getValue();
 
-            JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
-            //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
-            try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id," +
-                    " nazev,typ,editable,popis,majitel,sektor,geometrie,majitelOd," +
-                    "majitelDo, existenceOd,existenceDo,rekonstrukceOd,rekonstrukceDo) " +
-                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)" +
-                    "")) {
-                STRUCT obj = JGeometry.store(conn, jGeo);
-                stmt.setInt(1, currentInfo.id);
-                stmt.setString(2, currentInfo.nazev);
-                stmt.setString(3, currentInfo.typ);
-                stmt.setBoolean(4, currentInfo.editable);
-                stmt.setString(5, currentInfo.popis);
-                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                stmt.setInt(6, currentInfo.majitele.get(0).id);
-                stmt.setInt(7, currentInfo.sektor);
-                stmt.setObject(8, obj);
-                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                stmt.setDate(9, new java.sql.Date(currentInfo.majitelOd.get(0).getTime()));
-                stmt.setDate(10, new java.sql.Date(currentInfo.majitelDo.get(0).getTime()));
-                stmt.setDate(11, new java.sql.Date( currentInfo.existenceOd.getTime()));
-                stmt.setDate(12, new java.sql.Date( currentInfo.existenceDo.getTime()));
-                stmt.setDate(13, new java.sql.Date( currentInfo.rekonstrukceOd.getTime()));
-                stmt.setDate(14, new java.sql.Date( currentInfo.rekonstrukceDo.getTime()));
+            if (!currentInfo.modifiedInfo &&
+                    !currentInfo.modifiedGeometry &&
+                    !currentInfo.modifiedImage &&
+                    !currentInfo.newObject &&
+                    !currentInfo.deletedObject) {
+                continue; //neni novy ani modifikovany ani smazany, preskocit
+            }
 
-                stmt.execute();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (currentInfo.deletedObject) {
+                String query = "DELETE FROM objekty WHERE id='" + currentInfo.id + "'";
+                try {
+                    Statement stmt = conn.createStatement();
+                    stmt.executeQuery(query);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                continue;
+            }
+
+            //je novy
+            if (currentInfo.newObject) {
+                JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
+                //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
+                try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id," +
+                        " nazev,typ,editable,popis,majitel,sektor,geometrie,majitelOd," +
+                        "majitelDo, existenceOd,existenceDo,rekonstrukceOd,rekonstrukceDo) " +
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)" +
+                        "")) {
+                    STRUCT obj = JGeometry.store(conn, jGeo);
+                    stmt.setInt(1, currentInfo.id);
+                    stmt.setString(2, currentInfo.nazev);
+                    stmt.setString(3, currentInfo.typ);
+                    stmt.setBoolean(4, currentInfo.editable);
+                    stmt.setString(5, currentInfo.popis);
+                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
+                    stmt.setInt(6, currentInfo.majitele.get(0).id);
+                    stmt.setInt(7, currentInfo.sektor);
+                    stmt.setObject(8, obj);
+                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
+                    stmt.setDate(9, new java.sql.Date(currentInfo.majitelOd.get(0).getTime()));
+                    stmt.setDate(10, new java.sql.Date(currentInfo.majitelDo.get(0).getTime()));
+                    stmt.setDate(11, new java.sql.Date(currentInfo.existenceOd.getTime()));
+                    stmt.setDate(12, new java.sql.Date(currentInfo.existenceDo.getTime()));
+                    stmt.setDate(13, new java.sql.Date(currentInfo.rekonstrukceOd.getTime()));
+                    stmt.setDate(14, new java.sql.Date(currentInfo.rekonstrukceDo.getTime()));
+
+                    stmt.execute();
+                    continue;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            //je modifikovana geometrie
+            if (currentInfo.modifiedGeometry) {
+                JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
+                //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
+                try (PreparedStatement stmt = conn.prepareStatement("UPDATE objekty SET " +
+                        "geometrie = ? WHERE id = ?")) {
+                    STRUCT obj = JGeometry.store(conn, jGeo);
+                    stmt.setObject(1, obj);
+                    stmt.setInt(2, currentInfo.id);
+
+                    stmt.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            //modifikovane informace
+            if (currentInfo.modifiedInfo) {
+                //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
+                try (PreparedStatement stmt = conn.prepareStatement("UPDATE objekty " +
+                        "SET nazev=?,typ=?,editable=?,popis=?,majitel=?,sektor=?," +
+                        "majitelOd=?," +
+                        "majitelDo=?, existenceOd=?,existenceDo=?,rekonstrukceOd=?," +
+                        "rekonstrukceDo=? WHERE id = ?")) {
+                    stmt.setString(1, currentInfo.nazev);
+                    stmt.setString(2, currentInfo.typ);
+                    stmt.setBoolean(3, currentInfo.editable);
+                    stmt.setString(4, currentInfo.popis);
+                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
+                    stmt.setInt(5, currentInfo.majitele.get(0).id);
+                    stmt.setInt(6, currentInfo.sektor);
+                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
+                    stmt.setDate(7, new java.sql.Date(currentInfo.majitelOd.get(0)
+                            .getTime()));
+                    stmt.setDate(8, new java.sql.Date(currentInfo.majitelDo.get(0)
+                            .getTime()));
+                    stmt.setDate(9, new java.sql.Date(currentInfo.existenceOd.getTime()));
+                    stmt.setDate(10, new java.sql.Date(currentInfo.existenceDo.getTime()));
+                    stmt.setDate(11, new java.sql.Date(currentInfo.rekonstrukceOd.getTime
+                            ()));
+                    stmt.setDate(12, new java.sql.Date(currentInfo.rekonstrukceDo.getTime
+                            ()));
+                    stmt.setInt(13, currentInfo.id);
+
+                    stmt.execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-        
+
         dataSaved();
     }
 
@@ -326,128 +369,107 @@ public class Data {
 
         return objects;
     }
-    
+
     //vola se po ulozeni dat do DB
     //pro vsechny objekty se nastavi, ze nejsou nove ani modifikovane
     //smazane se smazou z aplikace
-    public static void dataSaved()
-    {
+    public static void dataSaved() {
         removeDeletedFromApp();
-        
-        for (int i = 0; i < owners.size(); i++)
-        {
+
+        for (int i = 0; i < owners.size(); i++) {
             owners.get(i).newOwner = false;
             owners.get(i).modifiedOwner = false;
         }
-        for (int i = 0; i < points.size(); i++)
-        {
+        for (int i = 0; i < points.size(); i++) {
             pointsInfo.get(i).newObject = false;
             pointsInfo.get(i).modifiedGeometry = false;
-            pointsInfo.get(i).modifiedInfo =  false;
+            pointsInfo.get(i).modifiedInfo = false;
             pointsInfo.get(i).modifiedImage = false;
         }
-        for (int i = 0; i < polylines.size(); i++)
-        {
+        for (int i = 0; i < polylines.size(); i++) {
             polylinesInfo.get(i).newObject = false;
             polylinesInfo.get(i).modifiedGeometry = false;
-            polylinesInfo.get(i).modifiedInfo =  false;
+            polylinesInfo.get(i).modifiedInfo = false;
             polylinesInfo.get(i).modifiedImage = false;
         }
-        for (int i = 0; i < rectangles.size(); i++)
-        {
+        for (int i = 0; i < rectangles.size(); i++) {
             rectanglesInfo.get(i).newObject = false;
             rectanglesInfo.get(i).modifiedGeometry = false;
-            rectanglesInfo.get(i).modifiedInfo =  false;
+            rectanglesInfo.get(i).modifiedInfo = false;
             rectanglesInfo.get(i).modifiedImage = false;
         }
-        for (int i = 0; i < ellipses.size(); i++)
-        {
+        for (int i = 0; i < ellipses.size(); i++) {
             ellipsesInfo.get(i).newObject = false;
             ellipsesInfo.get(i).modifiedGeometry = false;
-            ellipsesInfo.get(i).modifiedInfo =  false;
+            ellipsesInfo.get(i).modifiedInfo = false;
             ellipsesInfo.get(i).modifiedImage = false;
         }
-        for (int i = 0; i < polygons.size(); i++)
-        {
+        for (int i = 0; i < polygons.size(); i++) {
             polygonsInfo.get(i).newObject = false;
             polygonsInfo.get(i).modifiedGeometry = false;
-            polygonsInfo.get(i).modifiedInfo =  false;
+            polygonsInfo.get(i).modifiedInfo = false;
             polygonsInfo.get(i).modifiedImage = false;
         }
     }
-    
+
     //smaze vsechna data z aplikace
-    public static void removeAllFromApp()
-    {
+    public static void removeAllFromApp() {
         owners.clear();
-        
+
         points.clear();
         pointsInfo.clear();
-        
+
         polylines.clear();
         polylinesInfo.clear();
-        
+
         rectangles.clear();
         rectanglesInfo.clear();
-        
+
         ellipses.clear();
         ellipsesInfo.clear();
-        
+
         polygons.clear();
         polygonsInfo.clear();
     }
-    
+
     //vymaze objekty s priznakem deleted z aplikace
-    public static void removeDeletedFromApp()
-    {
-        for (int i = 0; i < owners.size(); i++)
-        {
-            if (owners.get(i).deletedOwner)
-            {        
+    public static void removeDeletedFromApp() {
+        for (int i = 0; i < owners.size(); i++) {
+            if (owners.get(i).deletedOwner) {
                 owners.remove(i);
                 i--;
             }
         }
-        for (int i = 0; i < points.size(); i++)
-        {
-            if (pointsInfo.get(i).deletedObject)
-            {        
+        for (int i = 0; i < points.size(); i++) {
+            if (pointsInfo.get(i).deletedObject) {
                 points.remove(i);
                 pointsInfo.remove(i);
                 i--;
             }
         }
-        for (int i = 0; i < polylines.size(); i++)
-        {
-            if (polylinesInfo.get(i).deletedObject)
-            {        
+        for (int i = 0; i < polylines.size(); i++) {
+            if (polylinesInfo.get(i).deletedObject) {
                 polylines.remove(i);
                 polylinesInfo.remove(i);
                 i--;
             }
         }
-        for (int i = 0; i < rectangles.size(); i++)
-        {
-            if (rectanglesInfo.get(i).deletedObject)
-            {        
+        for (int i = 0; i < rectangles.size(); i++) {
+            if (rectanglesInfo.get(i).deletedObject) {
                 rectangles.remove(i);
                 rectanglesInfo.remove(i);
                 i--;
             }
         }
-        for (int i = 0; i < ellipses.size(); i++)
-        {
-            if (ellipsesInfo.get(i).deletedObject)
-            {        
+        for (int i = 0; i < ellipses.size(); i++) {
+            if (ellipsesInfo.get(i).deletedObject) {
                 ellipses.remove(i);
                 ellipsesInfo.remove(i);
                 i--;
             }
         }
-        for (int i = 0; i < polygons.size(); i++)
-        {
-            if (polygonsInfo.get(i).deletedObject)
-            {        
+        for (int i = 0; i < polygons.size(); i++) {
+            if (polygonsInfo.get(i).deletedObject) {
                 polygons.remove(i);
                 polygonsInfo.remove(i);
                 i--;
