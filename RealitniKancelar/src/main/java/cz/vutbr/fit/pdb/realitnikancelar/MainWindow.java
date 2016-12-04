@@ -1356,6 +1356,16 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.pointsInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
+                    try {
+                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    ((DrawingPanel)imagePanel).image = Data.pointsInfo.get(i).imgIcon;
+                    imagePanel.repaint();
                 }
             }
 
@@ -1365,6 +1375,16 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polylinesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
+                    try {
+                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    ((DrawingPanel)imagePanel).image = Data.polylinesInfo.get(i).imgIcon;
+                    imagePanel.repaint();
                 } 
             }
 
@@ -1374,6 +1394,17 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.rectanglesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
+                    try {
+                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    ((DrawingPanel)imagePanel).image = Data.rectanglesInfo.get(i).imgIcon;
+                    imagePanel.repaint();
+                    
                 } 
             }
 
@@ -1383,6 +1414,16 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.ellipsesInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
+                    try {
+                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    ((DrawingPanel)imagePanel).image = Data.ellipsesInfo.get(i).imgIcon;
+                    imagePanel.repaint();
                 } 
             }
 
@@ -1392,6 +1433,16 @@ public class MainWindow extends javax.swing.JFrame {
                     Data.polygonsInfo.get(i).selected = true;
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
+                    try {
+                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    ((DrawingPanel)imagePanel).image = Data.polygonsInfo.get(i).imgIcon;
+                    imagePanel.repaint();
                 } 
             }
         }
@@ -1890,6 +1941,8 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.rectanglesInfo.get(i).saveFotoToDB(fc.getSelectedFile().getAbsolutePath());
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } 
                 return;
@@ -2098,7 +2151,8 @@ public class MainWindow extends javax.swing.JFrame {
         }
         
         clearInfo();
-        
+        ((DrawingPanel)imagePanel).image = null;
+        imagePanel.repaint();
         ((DrawingPanel)mapPanel).createImageFromData();
     }
     
