@@ -15,7 +15,7 @@ CREATE TABLE objekty (
     typ VARCHAR(32),
     editable VARCHAR(1),
     popis VARCHAR(250),
-    majitel NUMBER NOT null,
+    majitel NUMBER,
     sektor NUMBER NOT null,
     geometrie SDO_GEOMETRY,
     majitelOd DATE,

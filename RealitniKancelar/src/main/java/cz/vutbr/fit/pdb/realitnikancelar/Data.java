@@ -264,7 +264,12 @@ public class Data {
                     stmt.setBoolean(4, currentInfo.editable);
                     stmt.setString(5, currentInfo.popis);
                 /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                    stmt.setInt(6, currentInfo.majitele.get(0).id);
+                    if (currentInfo.majitele.size() == 0) {
+                        stmt.setNull(6, Types.INTEGER);
+                    }
+                    else {
+                        stmt.setInt(6, currentInfo.majitele.get(0).id);
+                    }
                     stmt.setInt(7, currentInfo.sektor);
                     stmt.setObject(8, obj);
                 /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
@@ -309,7 +314,12 @@ public class Data {
                     stmt.setBoolean(3, currentInfo.editable);
                     stmt.setString(4, currentInfo.popis);
                 /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                    stmt.setInt(5, currentInfo.majitele.get(0).id);
+                    if (currentInfo.majitele.size() == 0) {
+                        stmt.setNull(5, Types.INTEGER);
+                    }
+                    else {
+                        stmt.setInt(5, currentInfo.majitele.get(0).id);
+                    }
                     stmt.setInt(6, currentInfo.sektor);
                 /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
                     stmt.setDate(7, new java.sql.Date(currentInfo.majitelOd.get(0)

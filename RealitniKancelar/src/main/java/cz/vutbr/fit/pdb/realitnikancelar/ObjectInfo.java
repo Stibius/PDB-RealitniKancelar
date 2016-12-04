@@ -62,8 +62,7 @@ public class ObjectInfo {
         this.typ = "Typ objektu";
         this.editable = true;
         this.popis = "popis";
-        //this.majitele = new ArrayList<>();
-        this.majitele.add(Owner.defaultOwner());
+        this.majitele = new ArrayList<>();
         this.sektor = 0;
         this.majitelOd.add(new Date(50, 1, 3));
         this.majitelDo.add(new Date(50, 1, 3));
@@ -98,7 +97,10 @@ public class ObjectInfo {
         info.typ = res.getString("typ");
         info.editable = true;
         info.popis = res.getString("popis");
-        info.majitele.add(Owner.getOwner(res.getInt("majitel")));
+        if (res.getObject("majitel") != null) {
+            //je null, tak se nic
+            info.majitele.add(Owner.getOwner(res.getInt("majitel")));
+        }
         info.sektor = res.getInt("sektor");
         info.majitelOd.add(res.getDate("majitelod"));
         info.majitelDo.add(res.getDate("majiteldo"));
