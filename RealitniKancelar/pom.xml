@@ -17,6 +17,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -30,6 +31,16 @@
     </build>
     <dependencies>
 
+        <dependency>
+            <groupId>com.oracle.adf</groupId>
+            <artifactId>ordim</artifactId>
+            <version>12.1.3-0-0</version>
+        </dependency>
+        <dependency>
+        <groupId>oracle.sdo.locator</groupId>
+  <artifactId>sdoapi</artifactId>
+  <version>1.0</version>
+</dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -66,31 +77,17 @@
         <!--  Oracle Multimedia Database  -->
         <!--  Oracle SDO Locator Objects  -->
         <dependency>
-            <groupId>oracle.sdo.locator</groupId>
-            <artifactId>sdoapi</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>oracle.sdo.locator</groupId>
-            <artifactId>sdoapi</artifactId>
-            <version>RELEASE</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/sdoapi.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>unknown.binary</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>oracle.ord.im</groupId>
-            <artifactId>ordim</artifactId>
-            <version>RELEASE</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/ordim.jar</systemPath>
-        </dependency>
     </dependencies>
     <repositories>
+        <repository>
+            <id>unknown-jars-temp-repo</id>
+            <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
+            <url>file:${project.basedir}/lib</url>
+        </repository>
         <repository>
             <id>maven.oracle.com</id>
             <releases>
@@ -102,16 +99,7 @@
             <url>https://maven.oracle.com</url>
             <layout>default</layout>
         </repository>
-        <repository>
-            <id>in-project</id>
-            <name>In Project Repository</name>
-            <url>file://${project.basedir}/libs</url>
-        </repository>
-        <repository>
-            <id>unknown-jars-temp-repo</id>
-            <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
-            <url>file:${project.basedir}/lib</url>
-        </repository>
+        
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -119,4 +107,5 @@
             <url>https://maven.oracle.com</url>
         </pluginRepository>
     </pluginRepositories>
+    
 </project>
