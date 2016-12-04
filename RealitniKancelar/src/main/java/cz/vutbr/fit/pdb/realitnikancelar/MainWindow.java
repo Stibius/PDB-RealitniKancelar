@@ -1889,6 +1889,7 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.pointsInfo.get(i).modifiedImage = true;
                     } catch (IOException e) {
                     }   
+                    Data.pointsInfo.get(i).imgPath = fc.getSelectedFile().getAbsolutePath();
                 } 
                 return;
             }
@@ -1912,6 +1913,7 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.polylinesInfo.get(i).modifiedImage = true;
                     } catch (IOException e) {
                     }
+                    Data.polylinesInfo.get(i).imgPath = fc.getSelectedFile().getAbsolutePath();
                 } 
                 return;
             }
@@ -1935,15 +1937,7 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.rectanglesInfo.get(i).modifiedImage = true;
                     } catch (IOException e) {
                     }
-                        System.out.println(fc.getSelectedFile().getAbsolutePath());
-                        Data.rectanglesInfo.get(i).modifiedImage = true;
-                    try {
-                        Data.rectanglesInfo.get(i).saveFotoToDB(fc.getSelectedFile().getAbsolutePath());
-                    } catch (SQLException ex) {
-                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    Data.rectanglesInfo.get(i).imgPath = fc.getSelectedFile().getAbsolutePath();
                 } 
                 return;
             }
@@ -1967,6 +1961,7 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.ellipsesInfo.get(i).modifiedImage = true;
                     } catch (IOException e) {
                     }
+                    Data.ellipsesInfo.get(i).imgPath = fc.getSelectedFile().getAbsolutePath();
                 } 
                 return;
             }
@@ -1990,6 +1985,7 @@ public class MainWindow extends javax.swing.JFrame {
                         Data.polygonsInfo.get(i).modifiedImage = true;
                     } catch (IOException e) {
                     }
+                    Data.polygonsInfo.get(i).imgPath = fc.getSelectedFile().getAbsolutePath();
                 } 
                 return;
             }
@@ -2004,6 +2000,13 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showSaveDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    try {
+                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }                    
                 } 
                 return;
             }
@@ -2015,6 +2018,13 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showSaveDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    try {
+                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } 
                 return;
             }
@@ -2026,6 +2036,13 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showSaveDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    try {
+                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } 
                 return;
             }
@@ -2037,6 +2054,13 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showSaveDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    try {
+                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }                    
                 } 
                 return;
             }
@@ -2048,6 +2072,13 @@ public class MainWindow extends javax.swing.JFrame {
                 int returnVal = fc.showSaveDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    try {
+                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                    } catch (SQLException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }                    
                 } 
                 return;
             }
@@ -2074,6 +2105,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).selected) {
                 Data.rectanglesInfo.get(i).modifiedImage = true;
+                Data.rectanglesInfo.get(i).rotateImage = true;
                 return;
             }
         }

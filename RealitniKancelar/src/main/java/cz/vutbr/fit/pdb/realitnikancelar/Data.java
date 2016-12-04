@@ -7,11 +7,14 @@ package cz.vutbr.fit.pdb.realitnikancelar;
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
@@ -281,6 +284,13 @@ public class Data {
                     stmt.setDate(14, new java.sql.Date(currentInfo.rekonstrukceDo.getTime()));
 
                     stmt.execute();
+                    if(currentInfo.modifiedImage){
+                        try {
+                            currentInfo.saveFotoToDB();
+                        } catch (IOException ex) {
+                            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     continue;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -339,6 +349,15 @@ public class Data {
                     e.printStackTrace();
                 }
             }
+            //modifikace obrázku
+            if(currentInfo.modifiedImage){
+                try {
+                    currentInfo.saveFotoToDB();
+                } catch (IOException ex) {
+                    Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+                
         }
 
         dataSaved();
