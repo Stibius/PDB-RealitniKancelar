@@ -74,6 +74,7 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         
         objectNameLabel.setText(currentInfo.nazev);
         
+        ownersComboBoxModel.removeAllElements();
         for (int i = 0; i < MainWindow.ownersListNames.size(); i++)
         {
             ownersComboBoxModel.addElement(MainWindow.ownersListNames.get(i));
