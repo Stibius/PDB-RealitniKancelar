@@ -80,10 +80,10 @@ DROP SEQUENCE majitele_seq;
 CREATE SEQUENCE majitele_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE majitele (
-    id NUMBER NOT null,
+    id_majitele NUMBER NOT null,
     jmeno VARCHAR(80) NOT null,
     adresa VARCHAR(80) NOT null,
-    CONSTRAINT pk_majitel PRIMARY KEY (id)
+    CONSTRAINT pk_majitel PRIMARY KEY (id_majitele)
 );
 --==========================================
 -- sektor
@@ -136,16 +136,15 @@ ADD CONSTRAINT fk_obr_objekt
 FOREIGN KEY (objekt)
 REFERENCES objekty(id) on delete cascade;
 
--- INSERT INTO sektor (id,nazev,geometrie) VALUES (0,'Test sektor',NULL);
---INSERT INTO majitele (id,jmeno,adresa) VALUES (0,'Neznámý majitel','Neznámá adresa');
---INSERT INTO majitele (id,jmeno,adresa) VALUES (1,'Majitel2','Adresa2');
---INSERT INTO majitele_objekty (IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (0,0,TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000');
---INSERT INTO majitele_objekty (IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (0,1,TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000');
+INSERT INTO sektor (id,nazev,geometrie) VALUES (0,'Test sektor',NULL);
+INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (0,'Neznámý majitel','Neznámá adresa');
+INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (1,'Majitel2','Adresa2');
+INSERT INTO majitele_objekty (IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (0,0,TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000');
+INSERT INTO majitele_objekty (IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (0,1,TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000');
 
---INSERT INTO OBJEKTY (ID,NAZEV,TYP,EDITABLE,POPIS,SEKTOR,GEOMETRIE,EXISTENCEOD,EXISTENCEDO,REKONSTRUKCE) VALUES 
---(0,'Novy objekt','Dům','1','popis',0,SDO_GEOMETRY(2003, NULL, NULL, -- 2D polygon
---		SDO_ELEM_INFO_ARRAY(1, 1003, 3), -- exterior rectangle (left-bottom, right-top)
---		SDO_ORDINATE_ARRAY(20,35, 65,50)),TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000')
---;
+INSERT INTO OBJEKTY (ID,NAZEV,TYP,EDITABLE,POPIS,SEKTOR,GEOMETRIE,EXISTENCEOD,EXISTENCEDO,REKONSTRUKCE) VALUES
+(0,'Novy objekt','Dům','1','popis',0,SDO_GEOMETRY(2003, NULL, NULL, -- 2D polygon
+		SDO_ELEM_INFO_ARRAY(1, 1003, 3), -- exterior rectangle (left-bottom, right-top)
+		SDO_ORDINATE_ARRAY(20,35, 65,50)),TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000')
+;
 
---SELECT * FROM OBJEKTY JOIN MAJITELE_OBJEKTY ON objekty.ID=majitele_objekty.IDOBJEKTU JOIN MAJITELE ON majitele_objekty.IDMAJITELE=majitele.ID;

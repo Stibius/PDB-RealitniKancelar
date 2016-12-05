@@ -88,10 +88,12 @@ public class Owner {
     public static Owner getOwner(Integer majitel) {
         if (majitel != null) {
             try (Statement stmt = ConnectDialog.conn.createStatement()) {
-                ResultSet res = stmt.executeQuery("SELECT * FROM MAJITELE WHERE id = " +
+                ResultSet res = stmt.executeQuery("SELECT * FROM MAJITELE WHERE " +
+                        "id_majitele" +
+                        " = " +
                         ""+majitel);
                 if (res.next()) {
-                    return new Owner(res.getInt("id"), res.getString("jmeno"),res
+                    return new Owner(res.getInt("id_majitele"), res.getString("jmeno"),res
                             .getString("adresa"));
                 }
             } catch (SQLException e) {
@@ -107,5 +109,21 @@ public class Owner {
     public static Owner defaultOwner() {
         //Nastavi vychoziho majitele. Ma id 0 a je v SQL skriptu
         return Owner.getOwner(0);
+    }
+
+    public static ArrayList<Owner> loadOwners() {
+        ArrayList<Owner> owns = new ArrayList<>();
+        try (Statement stmt = ConnectDialog.conn.createStatement()) {
+            ResultSet res = stmt.executeQuery("SELECT * FROM majitele");
+            while (res.next()) {
+                owns.add(new Owner(res.getInt("id_majitele"),res.getString("jmeno"), res
+                        .getString("adresa")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return owns;
     }
 }

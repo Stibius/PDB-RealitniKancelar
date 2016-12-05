@@ -66,17 +66,14 @@ public class Data {
         height = 1000;
 
         //pridam nejake ownery kvuli testovani
-        owners.add(new Owner(true));
-        owners.add(new Owner("Honza", "Brno", true));
+        owners = Owner.loadOwners();
         ObjectInfo info = null;
 
         try (Statement stmt = ConnectDialog.conn.createStatement()) {
-            ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY " +
-                    "JOIN MAJITELE_OBJEKTY ON objekty.ID=majitele_objekty.IDOBJEKTU " +
-                    "JOIN MAJITELE ON majitele_objekty.IDMAJITELE=majitele.ID");
+            ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY LEFT OUTER JOIN MAJITELE_OBJEKTY ON objekty.ID=majitele_objekty.IDOBJEKTU LEFT OUTER JOIN MAJITELE ON majitele_objekty.IDMAJITELE=majitele.id_majitele");
             while (res.next()) {
                 //pokud nemame zadne info, ObjectInfo neexistuje, tudiz ani objekt
-                if (info == null) {
+                if (!ObjectInfo.ids.contains(res.getInt("id"))) {
                     info = loadShape(res);
                 }
                 //ObjectInfo mame, pridame jenom dalsi majitele, dalsi objekt nechceme
