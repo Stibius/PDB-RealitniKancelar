@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.JList;
 import java.text.SimpleDateFormat;
@@ -64,8 +63,7 @@ public class MainWindow extends javax.swing.JFrame {
     private boolean newRectangle = false;
     private boolean newEllipse = false;
     
-    public static DefaultComboBoxModel ownersListModel = new DefaultComboBoxModel();
-    public static ArrayList<String> ownersListNames = new ArrayList<String>();
+    private static DefaultListModel ownersListModel = new DefaultListModel();
     
     /**
      * Creates new form MainWindow
@@ -224,11 +222,6 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel15.setText("Poslední majitel:");
 
         ownersButton.setText("Historie a editace majitelů");
-        ownersButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ownersButtonActionPerformed(evt);
-            }
-        });
 
         jLabel16.setText("Datum výstavby:");
 
@@ -962,13 +955,11 @@ public class MainWindow extends javax.swing.JFrame {
             mapScrollPanel.revalidate();
             
             ownersListModel.removeAllElements();
-            ownersListNames.clear();
             
             //pridame majitele do GUIcka
             for (int i = 0; i < Data.owners.size(); i++)
             {
                 ownersListModel.addElement(Data.owners.get(i).jmeno);
-                ownersListNames.add(Data.owners.get(i).jmeno);
             }
             
             
@@ -1731,7 +1722,6 @@ public class MainWindow extends javax.swing.JFrame {
         
         Data.owners.add(new Owner(ownerNameField.getText(), ownerAddressField.getText(), false));
         ownersListModel.addElement(ownerNameField.getText());
-        ownersListNames.add(ownerNameField.getText());
         ownersList.setSelectedIndex(ownersListModel.getSize()-1);
         
     }//GEN-LAST:event_addOwnerButtonActionPerformed
@@ -1750,13 +1740,7 @@ public class MainWindow extends javax.swing.JFrame {
         Data.owners.get(index).adresa = ownerAddressField.getText();
         Data.owners.get(index).modifiedOwner = true;
         
-        ownersListNames.set(index, ownerNameField.getText());
-        ownersListModel.removeAllElements();
-        for (int i = 0; i < ownersListNames.size(); i++)
-        {
-            ownersListModel.addElement(ownersListNames.get(i));
-        }
-        
+        ownersListModel.setElementAt(ownerNameField.getText(), index);
         /*
         ownersComboBox.removeAllItems();
         
@@ -1844,7 +1828,6 @@ public class MainWindow extends javax.swing.JFrame {
         
         Data.owners.get(index).deletedOwner = true;
         ownersListModel.removeElementAt(index);
-        ownersListNames.remove(index);
         if (ownersListModel.getSize() == 0)
         {
             ownersList.setSelectedIndex(-1);
@@ -2156,11 +2139,6 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         unselect();
     }//GEN-LAST:event_addPointRadioButtonItemStateChanged
-
-    private void ownersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownersButtonActionPerformed
-        // TODO add your handling code here:
-        new OwnerHistoryDialog(this, true).setVisible(true);
-    }//GEN-LAST:event_ownersButtonActionPerformed
 
     private void createData()
     {
@@ -2480,14 +2458,14 @@ public class MainWindow extends javax.swing.JFrame {
         ownerAddressLabel.setText("");
     }
     
-    public static String dateToString(Date date)
+    private String dateToString(Date date)
     {
         if (date == null) return "";
         DateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
         return dateFormat.format(date);
     }
     
-    public static Date stringToDate(String date)
+    private Date stringToDate(String date)
     {
         DateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
         try
