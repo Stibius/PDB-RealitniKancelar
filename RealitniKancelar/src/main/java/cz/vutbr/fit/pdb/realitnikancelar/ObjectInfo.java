@@ -120,91 +120,15 @@ public class ObjectInfo {
         //info.imgIcon = info.loadFotoFromDB();
         return info;
     }
-    //obrazek tady taky bude
     
     /**
-     * Funkce vytvoří nový prostor pro obrázek v databázi a následně ho tam uloží. 
+     * Funkce vytvoří nový prostor pro obrázek v databázi a následně ho tam uloží.
+     * Funkce také updatuje stávající obrázek.
      * Bere obrázek z lokálního disku.
-     * @param filename
      * @throws java.sql.SQLException
-     
-    public void saveFotoToDB() throws SQLException, IOException {
-        ConnectDialog.conn.setAutoCommit(false);
-        int imgID;
-        String insertSQL;
-        //Vytvoření místa v databázi pro nový obrázek
-        if(this.newObject){
-            Statement stmt1 = ConnectDialog.conn.createStatement();
-            //Vytvoření místa v databázi pro nový obrázek
-            ResultSet res = stmt1.executeQuery("SELECT obrazky_seq.NEXTVAL from DUAL");
-            imgID = 0;
-            while (res.next()) {
-                imgID = Integer.parseInt(res.getString(1));
-            }   
-            insertSQL = "INSERT INTO obrazky(id, objekt, img) VALUES"+
-                    " ("+imgID+","+this.id+",ordsys.ordimage.init())";
-            stmt1.executeUpdate(insertSQL);
-            stmt1.close();           
-        }
-        //Načtení místa pro nahrání obrázku
-        Statement stmt2 = ConnectDialog.conn.createStatement();
-        String selSQL = "SELECT img FROM obrazky WHERE objekt = "+this.id+
-                " FOR UPDATE";
-        OracleResultSet rset = (OracleResultSet) stmt2.executeQuery(selSQL);
-        boolean hasResult = rset.next();
-        //obrazek není nový, ale není ani v DB
-        if(!hasResult){
-            Statement stmt1 = ConnectDialog.conn.createStatement();
-            //Vytvoření místa v databázi pro nový obrázek
-            rset = (OracleResultSet) stmt1.executeQuery("SELECT obrazky_seq.NEXTVAL from DUAL");
-            imgID = 0;
-            while (rset.next()) {
-                imgID = Integer.parseInt(rset.getString(1));
-            }   
-            insertSQL = "INSERT INTO obrazky(id, objekt, img) VALUES"+
-                    " ("+imgID+","+this.id+",ordsys.ordimage.init())";
-            stmt1.executeUpdate(insertSQL);
-            stmt1.close();
-            selSQL = "SELECT img FROM obrazky WHERE objekt = "+this.id+
-                " FOR UPDATE";
-            rset = (OracleResultSet) stmt2.executeQuery(selSQL);
-            rset.next();
-        }
+     * @throws java.io.IOException
+     */
 
-        OrdImage imgProxy = (OrdImage) rset.getORAData("img", OrdImage.getORADataFactory());
-        rset.close();
-        stmt2.close();
-
-        //Načtení obrázku z disku do databáze
-        imgProxy.loadDataFromFile(this.imgPath);
-        if (this.rotateImage)
-            imgProxy.process("rotate=90");
-        imgProxy.setProperties();
-
-        //Update tabulky
-        String updateSQL1 = "UPDATE obrazky SET"+" img=? WHERE objekt = "+this.id;
-
-        OraclePreparedStatement pstmt = (OraclePreparedStatement)
-                ConnectDialog.conn.prepareStatement (updateSQL1);
-        pstmt.setORAData (1,imgProxy) ;
-        pstmt.executeUpdate();
-        pstmt.close();
-
-        //Update tabulky StillImage
-        Statement stmt3 = ConnectDialog.conn.createStatement();
-        String updateSQL2 = "UPDATE obrazky p SET " +
-                " p.img_si = SI_StillImage(p.img.getContent())where objekt = " + this.id ;
-        stmt3.executeUpdate(updateSQL2) ;
-        String updateSQL3 = "UPDATE obrazky p SET " +
-                " p.img_ac=SI_AverageColor(p.img_si), " +
-                " p.img_ch=SI_ColorHistogram(p.img_si), " +
-                " p.img_pc=SI_PositionalColor(p.img_si), " +
-                " p.img_tx=SI_Texture(p.img_si) where id = " + this.id;
-        stmt3.executeUpdate(updateSQL3);
-        ConnectDialog.conn.commit();
-        ConnectDialog.conn.setAutoCommit(true);
-    }
-    */
     public void saveFotoToDB() throws SQLException, IOException {
         //Vytvoření místa v databázi pro nový obrázek
         if(this.newObject){
@@ -260,6 +184,11 @@ public class ObjectInfo {
             }    
         }
     }
+    /**
+     * Funkce uloží nový obrázek do databáze.
+     * @throws SQLException
+     * @throws IOException 
+     */
     public void saveNewFotoToDB() throws SQLException, IOException{
         ConnectDialog.conn.setAutoCommit(false);
         int imgID = 0;
@@ -318,7 +247,9 @@ public class ObjectInfo {
         ConnectDialog.conn.setAutoCommit(true);
     }
     /**
-     * Funkce načte obrázek z databáze a vrátí jej.
+     * Funkce načte obrázek z databáze.
+     * @throws java.sql.SQLException
+     * @throws java.io.IOException
      */
     public void loadFotoFromDB () throws SQLException, IOException {
         Statement stmt = ConnectDialog.conn.createStatement();
@@ -346,6 +277,9 @@ public class ObjectInfo {
     
     /**
      * Funkce stáhne obrázek z databáze a uloží je.
+     * @param path
+     * @throws java.sql.SQLException
+     * @throws java.io.IOException
      */
     public void saveFotoFromDB (String path) throws SQLException, IOException {
         Statement stmt = ConnectDialog.conn.createStatement();
