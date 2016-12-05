@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 /**
@@ -1357,7 +1358,7 @@ public class MainWindow extends javax.swing.JFrame {
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
                     try {
-                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        Data.pointsInfo.get(i).loadFotoFromDB();
                         
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -1376,7 +1377,7 @@ public class MainWindow extends javax.swing.JFrame {
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
                     try {
-                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        Data.polylinesInfo.get(i).loadFotoFromDB();
                         
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -1415,7 +1416,7 @@ public class MainWindow extends javax.swing.JFrame {
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
                     try {
-                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        Data.ellipsesInfo.get(i).loadFotoFromDB();
                         
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -1434,7 +1435,7 @@ public class MainWindow extends javax.swing.JFrame {
                     deleteButton.setEnabled(true);
                     deleteMenuItem.setEnabled(true);
                     try {
-                        Data.rectanglesInfo.get(i).loadFotoFromDB();
+                        Data.polygonsInfo.get(i).loadFotoFromDB();
                         
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
@@ -2001,7 +2002,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
                     try {
-                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                        Data.pointsInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
@@ -2019,7 +2020,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
                     try {
-                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                        Data.polylinesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
@@ -2055,7 +2056,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
                     try {
-                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                        Data.ellipsesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
@@ -2073,7 +2074,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
                     try {
-                        Data.rectanglesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                        Data.polygonsInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
@@ -2088,9 +2089,23 @@ public class MainWindow extends javax.swing.JFrame {
     private void rotateImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rotateImageButtonActionPerformed
         // TODO add your handling code here:
         //tady se bude rotovat obrazkem
+        int width = ((DrawingPanel)imagePanel).image.getWidth();
+        int height = ((DrawingPanel)imagePanel).image.getHeight();
+        BufferedImage rotateImg = new BufferedImage(height, width, ((DrawingPanel)imagePanel).image.getType());
+
+        for(int i=0; i<width; i++) {
+            for(int j=0; j<height; j++) {
+                rotateImg.setRGB(height-1-j, width-1-i, ((DrawingPanel)imagePanel).image.getRGB(i, j));
+            }
+        }
+        
+        ((DrawingPanel)imagePanel).image = rotateImg;
+        imagePanel.repaint();
+        
         for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).selected) {
                 Data.pointsInfo.get(i).modifiedImage = true;
+                Data.pointsInfo.get(i).rotateImage = true;
                 return;
             }
         }
@@ -2098,6 +2113,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).selected) {
                 Data.polylinesInfo.get(i).modifiedImage = true;
+                Data.polylinesInfo.get(i).rotateImage = true;
                 return;
             }
         }
@@ -2106,6 +2122,7 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.rectanglesInfo.get(i).selected) {
                 Data.rectanglesInfo.get(i).modifiedImage = true;
                 Data.rectanglesInfo.get(i).rotateImage = true;
+                ((DrawingPanel)imagePanel).image.getWidth();
                 return;
             }
         }
@@ -2113,6 +2130,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.ellipses.size(); i++) {
             if (Data.ellipsesInfo.get(i).selected) {
                 Data.ellipsesInfo.get(i).modifiedImage = true;
+                Data.ellipsesInfo.get(i).rotateImage = true;
                 return;
             }
         }
@@ -2120,6 +2138,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < Data.polygons.size(); i++) {
             if (Data.polygonsInfo.get(i).selected) {
                 Data.polygonsInfo.get(i).modifiedImage = true;
+                Data.polygonsInfo.get(i).rotateImage = true;
                 return;
             }
         }

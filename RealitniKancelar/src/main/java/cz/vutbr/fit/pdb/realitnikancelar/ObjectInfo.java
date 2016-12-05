@@ -83,6 +83,7 @@ public class ObjectInfo {
         this.modifiedInfo =  false;
         this.modifiedImage = false;
         this.rotateImage = false;
+        this.imgPath = "./img/nophoto.jpg";
         
         ids.add(this.id);
         
@@ -126,7 +127,7 @@ public class ObjectInfo {
      * Bere obrázek z lokálního disku.
      * @param filename
      * @throws java.sql.SQLException
-     */
+     
     public void saveFotoToDB() throws SQLException, IOException {
         ConnectDialog.conn.setAutoCommit(false);
         int imgID;
@@ -150,7 +151,26 @@ public class ObjectInfo {
         String selSQL = "SELECT img FROM obrazky WHERE objekt = "+this.id+
                 " FOR UPDATE";
         OracleResultSet rset = (OracleResultSet) stmt2.executeQuery(selSQL);
-        rset.next();
+        boolean hasResult = rset.next();
+        //obrazek není nový, ale není ani v DB
+        if(!hasResult){
+            Statement stmt1 = ConnectDialog.conn.createStatement();
+            //Vytvoření místa v databázi pro nový obrázek
+            rset = (OracleResultSet) stmt1.executeQuery("SELECT obrazky_seq.NEXTVAL from DUAL");
+            imgID = 0;
+            while (rset.next()) {
+                imgID = Integer.parseInt(rset.getString(1));
+            }   
+            insertSQL = "INSERT INTO obrazky(id, objekt, img) VALUES"+
+                    " ("+imgID+","+this.id+",ordsys.ordimage.init())";
+            stmt1.executeUpdate(insertSQL);
+            stmt1.close();
+            selSQL = "SELECT img FROM obrazky WHERE objekt = "+this.id+
+                " FOR UPDATE";
+            rset = (OracleResultSet) stmt2.executeQuery(selSQL);
+            rset.next();
+        }
+
         OrdImage imgProxy = (OrdImage) rset.getORAData("img", OrdImage.getORADataFactory());
         rset.close();
         stmt2.close();
@@ -182,6 +202,119 @@ public class ObjectInfo {
                 " p.img_tx=SI_Texture(p.img_si) where id = " + this.id;
         stmt3.executeUpdate(updateSQL3);
         ConnectDialog.conn.commit();
+        ConnectDialog.conn.setAutoCommit(true);
+    }
+    */
+    public void saveFotoToDB() throws SQLException, IOException {
+        //Vytvoření místa v databázi pro nový obrázek
+        if(this.newObject){
+            this.saveNewFotoToDB();
+        }
+        else{
+            ConnectDialog.conn.setAutoCommit(false);    
+            // retrieve the previously created ORDImage object for future updating
+            Statement stmt2 = ConnectDialog.conn.createStatement();
+            String selSQL = "select img from obrazky where objekt="+this.id+" for update";
+            OracleResultSet rset = (OracleResultSet) stmt2.executeQuery(selSQL);
+            if(!rset.next()){
+                this.saveNewFotoToDB();
+            }
+            else{
+                OrdImage imgProxy = (OrdImage)
+                rset.getORAData("img", OrdImage.getORADataFactory());
+                rset.close();
+                stmt2.close();
+
+                // load the media data from a file to the ORDImage Java object
+                imgProxy.loadDataFromFile(this.imgPath);
+                if (this.rotateImage){
+                     imgProxy.process("rotate=90");                   
+                }
+                // set the properties of the Oracle Mm object from the Java object
+                imgProxy.setProperties();
+
+                // update the table with ORDImage Java object (data already loaded)
+                String updateSQL1 = "update obrazky set"+
+                " img=? where objekt = "+this.id;
+                OraclePreparedStatement pstmt = (OraclePreparedStatement)
+                        ConnectDialog.conn.prepareStatement(updateSQL1);
+                pstmt.setORAData(1, imgProxy);
+                pstmt.executeUpdate();
+                pstmt.close();
+
+                // update the table with StillImage object and features
+                Statement stmt3 = ConnectDialog.conn.createStatement();
+                String updateSQL2 = "update obrazky p set"+
+                " p.img_si=SI_StillImage(p.img.getContent()) where objekt = "+this.id;
+                stmt3.executeUpdate(updateSQL2);
+                String updateSQL3 = "update obrazky p set"+
+                " p.img_ac=SI_AverageColor(p.img_si),"+
+                " p.img_ch=SI_ColorHistogram(p.img_si),"+
+                " p.img_pc=SI_PositionalColor(p.img_si),"+
+                " p.img_tx=SI_Texture(p.img_si) where objekt = "+this.id;
+                stmt3.executeUpdate(updateSQL3);
+                stmt3.close();
+
+                ConnectDialog.conn.commit(); // commit the thransaction
+                ConnectDialog.conn.setAutoCommit(true); 
+            }    
+        }
+    }
+    public void saveNewFotoToDB() throws SQLException, IOException{
+        ConnectDialog.conn.setAutoCommit(false);
+        int imgID = 0;
+        // insert a new record with an empty ORDImage object
+        Statement stmt1 = ConnectDialog.conn.createStatement();
+        ResultSet res = stmt1.executeQuery("SELECT obrazky_seq.NEXTVAL from DUAL");         
+        while (res.next()) {
+                imgID = Integer.parseInt(res.getString(1));
+        }   
+        String insertSQL = "insert into obrazky(id, objekt, img) values"+
+                " ("+imgID+","+this.id+", ordsys.ordimage.init())";
+        stmt1.executeUpdate(insertSQL);
+        stmt1.close();
+
+        // retrieve the previously created ORDImage object for future updating
+        Statement stmt2 = ConnectDialog.conn.createStatement();
+        String selSQL = "select img from obrazky where objekt="+this.id+" for update";
+        OracleResultSet rset = (OracleResultSet) stmt2.executeQuery(selSQL);
+        rset.next();
+        OrdImage imgProxy = (OrdImage)
+                rset.getORAData("img", OrdImage.getORADataFactory());
+        rset.close();
+        stmt2.close();
+
+        // load the media data from a file to the ORDImage Java object
+        imgProxy.loadDataFromFile(this.imgPath);
+        if (this.rotateImage){
+            imgProxy.process("rotate=90");
+        }
+        // set the properties of the Oracle Mm object from the Java object
+        imgProxy.setProperties();
+
+        // update the table with ORDImage Java object (data already loaded)
+        String updateSQL1 = "update obrazky set"+
+        " img=? where objekt = "+this.id;
+        OraclePreparedStatement pstmt = (OraclePreparedStatement)
+                ConnectDialog.conn.prepareStatement(updateSQL1);
+        pstmt.setORAData(1, imgProxy);
+        pstmt.executeUpdate();
+        pstmt.close();
+
+        // update the table with StillImage object and features
+        Statement stmt3 = ConnectDialog.conn.createStatement();
+        String updateSQL2 = "update obrazky p set"+
+        " p.img_si=SI_StillImage(p.img.getContent()) where objekt = "+this.id;
+        stmt3.executeUpdate(updateSQL2);
+        String updateSQL3 = "update obrazky p set"+
+        " p.img_ac=SI_AverageColor(p.img_si),"+
+        " p.img_ch=SI_ColorHistogram(p.img_si),"+
+        " p.img_pc=SI_PositionalColor(p.img_si),"+
+        " p.img_tx=SI_Texture(p.img_si) where objekt = "+this.id;
+        stmt3.executeUpdate(updateSQL3);
+        stmt3.close();
+
+        ConnectDialog.conn.commit(); // commit the thransaction
         ConnectDialog.conn.setAutoCommit(true);
     }
     /**
