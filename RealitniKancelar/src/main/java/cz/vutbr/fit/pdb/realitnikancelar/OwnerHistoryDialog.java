@@ -400,7 +400,6 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         try
         {
             currentInfo.majitelOd.set(index2, MainWindow.stringToDate(odField.getText()));
-            currentInfo.modifiedInfo = true;
         }
         catch (IllegalArgumentException e)
         {
@@ -409,7 +408,6 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         try
         {
             currentInfo.majitelDo.set(index2, MainWindow.stringToDate(doField.getText()));
-            currentInfo.modifiedInfo = true;
         }
         catch (IllegalArgumentException e)
         {
@@ -430,6 +428,7 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         }
         
         ownersHistoryList.setSelectedIndex(index2);
+        currentInfo.modifiedInfo = true;
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
