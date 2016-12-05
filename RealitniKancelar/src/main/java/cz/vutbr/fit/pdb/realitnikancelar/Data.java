@@ -257,8 +257,8 @@ public class Data {
                 //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
                 try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id," +
                         " nazev,typ,editable,popis,majitel,sektor,geometrie,majitelOd," +
-                        "majitelDo, existenceOd,existenceDo,rekonstrukceOd,rekonstrukceDo) " +
-                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)" +
+                        "majitelDo, existenceOd,existenceDo,rekonstrukce) " +
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)" +
                         "")) {
                     STRUCT obj = JGeometry.store(conn, jGeo);
                     stmt.setInt(1, currentInfo.id);
@@ -280,8 +280,7 @@ public class Data {
                     stmt.setDate(10, new java.sql.Date(currentInfo.majitelDo.get(0).getTime()));
                     stmt.setDate(11, new java.sql.Date(currentInfo.existenceOd.getTime()));
                     stmt.setDate(12, new java.sql.Date(currentInfo.existenceDo.getTime()));
-                    stmt.setDate(13, new java.sql.Date(currentInfo.rekonstrukceOd.getTime()));
-                    stmt.setDate(14, new java.sql.Date(currentInfo.rekonstrukceDo.getTime()));
+                    stmt.setDate(13, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
 
                     stmt.execute();
                     if(currentInfo.modifiedImage){
@@ -317,8 +316,8 @@ public class Data {
                 try (PreparedStatement stmt = conn.prepareStatement("UPDATE objekty " +
                         "SET nazev=?,typ=?,editable=?,popis=?,majitel=?,sektor=?," +
                         "majitelOd=?," +
-                        "majitelDo=?, existenceOd=?,existenceDo=?,rekonstrukceOd=?," +
-                        "rekonstrukceDo=? WHERE id = ?")) {
+                        "majitelDo=?, existenceOd=?,existenceDo=?,rekonstrukce=?" +
+                        "WHERE id = ?")) {
                     stmt.setString(1, currentInfo.nazev);
                     stmt.setString(2, currentInfo.typ);
                     stmt.setBoolean(3, currentInfo.editable);
@@ -338,11 +337,8 @@ public class Data {
                             .getTime()));
                     stmt.setDate(9, new java.sql.Date(currentInfo.existenceOd.getTime()));
                     stmt.setDate(10, new java.sql.Date(currentInfo.existenceDo.getTime()));
-                    stmt.setDate(11, new java.sql.Date(currentInfo.rekonstrukceOd.getTime
-                            ()));
-                    stmt.setDate(12, new java.sql.Date(currentInfo.rekonstrukceDo.getTime
-                            ()));
-                    stmt.setInt(13, currentInfo.id);
+                    stmt.setDate(11, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
+                    stmt.setInt(12, currentInfo.id);
 
                     stmt.execute();
                 } catch (Exception e) {

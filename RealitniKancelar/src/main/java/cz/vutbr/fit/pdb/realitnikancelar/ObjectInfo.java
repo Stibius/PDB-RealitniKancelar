@@ -44,8 +44,7 @@ public class ObjectInfo {
     public Integer sektor;
     public Date existenceOd;
     public Date existenceDo;
-    public Date rekonstrukceOd;
-    public Date rekonstrukceDo;
+    public Date rekonstrukce;
     private static TreeSet<Integer> ids = new TreeSet<Integer>();
     public boolean selected = false; //jestli je objekt vybrany
     public boolean hovered = false; //jestli je prave nad objektem mys
@@ -73,8 +72,7 @@ public class ObjectInfo {
         this.majitelDo.add(new Date(50, 1, 3));
         this.existenceOd = new Date(50, 1, 3);
         this.existenceDo = new Date(50, 1, 3);
-        this.rekonstrukceOd = new Date(50, 1, 3);
-        this.rekonstrukceDo = new Date(50, 1, 7);
+        this.rekonstrukce = new Date(50, 1, 3);
         
         //pokud se nejedna o nacteni z DB, je novy
         this.newObject = !load;
@@ -112,8 +110,7 @@ public class ObjectInfo {
         info.majitelDo.add(res.getDate("majiteldo"));
         info.existenceOd = res.getDate("existenceOd");
         info.existenceDo = res.getDate("existenceDo");
-        info.rekonstrukceOd = res.getDate("rekonstrukceOd");
-        info.rekonstrukceDo = res.getDate("rekonstrukceDo");
+        info.rekonstrukce = res.getDate("rekonstrukce");
         
         ids.add(info.id);
         //info.imgIcon = info.loadFotoFromDB();

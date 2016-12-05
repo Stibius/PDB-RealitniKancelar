@@ -150,8 +150,6 @@ public class MainWindow extends javax.swing.JFrame {
         existenceDoField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         descriptionField = new javax.swing.JTextArea();
-        rekonstrukceDoField = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         loadImageButton = new javax.swing.JButton();
         saveImageButton = new javax.swing.JButton();
@@ -247,8 +245,6 @@ public class MainWindow extends javax.swing.JFrame {
         descriptionField.setRows(5);
         jScrollPane2.setViewportView(descriptionField);
 
-        jLabel11.setText(" - ");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -290,11 +286,7 @@ public class MainWindow extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(existenceOdField)
                                 .addComponent(rekonstrukceOdField)
-                                .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabel11)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(rekonstrukceDoField))
+                                .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel19)
                             .addGap(77, 77, 77)
@@ -331,9 +323,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(rekonstrukceOdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rekonstrukceDoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
+                    .addComponent(rekonstrukceOdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
@@ -2317,7 +2307,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane infoPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel15;
@@ -2360,7 +2349,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel pointColorPanel;
     private javax.swing.JSpinner pointThicknessSpinner;
     private javax.swing.JLabel positionLabel;
-    private javax.swing.JTextField rekonstrukceDoField;
     private javax.swing.JTextField rekonstrukceOdField;
     private javax.swing.JButton rotateImageButton;
     private javax.swing.JButton saveChangesButton;
@@ -2389,7 +2377,6 @@ public class MainWindow extends javax.swing.JFrame {
         existenceOdField.setEnabled(info.editable);
         existenceDoField.setEnabled(info.editable);
         rekonstrukceOdField.setEnabled(info.editable);
-        rekonstrukceDoField.setEnabled(info.editable);
         descriptionField.setEnabled(info.editable);
         
         objectNameField.setText(info.nazev);
@@ -2403,8 +2390,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         existenceOdField.setText(dateToString(info.existenceOd));
         existenceDoField.setText(dateToString(info.existenceDo));
-        rekonstrukceOdField.setText(dateToString(info.rekonstrukceOd));
-        rekonstrukceDoField.setText(dateToString(info.rekonstrukceDo));
+        rekonstrukceOdField.setText(dateToString(info.rekonstrukce));
         descriptionField.setText(info.popis);
         sectorLabel.setText(String.valueOf(info.sektor));
         
@@ -2444,14 +2430,9 @@ public class MainWindow extends javax.swing.JFrame {
             info.existenceDo = stringToDate(existenceDoField.getText());
             info.modifiedInfo = true;
         }
-        if (info.rekonstrukceOd != stringToDate(rekonstrukceOdField.getText()))
+        if (info.rekonstrukce != stringToDate(rekonstrukceOdField.getText()))
         {
-            info.rekonstrukceOd = stringToDate(rekonstrukceOdField.getText());
-            info.modifiedInfo = true;
-        }
-        if (info.rekonstrukceDo != stringToDate(rekonstrukceDoField.getText()))
-        {
-            info.rekonstrukceDo = stringToDate(rekonstrukceDoField.getText());
+            info.rekonstrukce = stringToDate(rekonstrukceOdField.getText());
             info.modifiedInfo = true;
         }
         if (info.popis != descriptionField.getText())
@@ -2482,14 +2463,12 @@ public class MainWindow extends javax.swing.JFrame {
         existenceOdField.setEnabled(false);
         existenceDoField.setEnabled(false);
         rekonstrukceOdField.setEnabled(false);
-        rekonstrukceDoField.setEnabled(false);
         descriptionField.setEnabled(false);
         
         objectNameField.setText("");
         existenceOdField.setText("");
         existenceDoField.setText("");
         rekonstrukceOdField.setText("");
-        rekonstrukceDoField.setText("");
         descriptionField.setText("");
         sectorLabel.setText("");
         ownerNameLabel.setText("");
