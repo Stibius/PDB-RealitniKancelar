@@ -89,7 +89,6 @@ public class Data {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.print("aaa");
 
         //nejake objekty na testovani, protoze v databazi nic neni
         /*
@@ -248,6 +247,7 @@ public class Data {
                 continue; //neni novy ani modifikovany ani smazany, preskocit
             }
 
+            /* Pokud je smazany, smazeme ho i z DB */
             if (currentInfo.deletedObject) {
                 String query = "DELETE FROM objekty WHERE id='" + currentInfo.id + "'";
                 try {
@@ -259,37 +259,46 @@ public class Data {
                 continue;
             }
 
-            //je novy
+            /* Pokud je novy, udelame plny insert */
             if (currentInfo.newObject) {
                 JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
-                //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
-                try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id," +
-                        " nazev,typ,editable,popis,majitel,sektor,geometrie,majitelOd," +
-                        "majitelDo, existenceOd,existenceDo,rekonstrukce) " +
-                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)" +
-                        "")) {
+
+                try {
+                    /* Nejdriv naplnime tabulku 'objekty' */
+                    PreparedStatement stmt = conn.prepareStatement("INSERT INTO objekty (id," +
+                            " nazev,typ,editable,popis,sektor,geometrie," +
+                            "existenceOd,existenceDo,rekonstrukce) " +
+                            "VALUES (?,?,?,?,?,?,?,?,?,?)" +
+                            "");
                     STRUCT obj = JGeometry.store(conn, jGeo);
                     stmt.setInt(1, currentInfo.id);
                     stmt.setString(2, currentInfo.nazev);
                     stmt.setString(3, currentInfo.typ);
                     stmt.setBoolean(4, currentInfo.editable);
                     stmt.setString(5, currentInfo.popis);
-                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                    if (currentInfo.majitele.size() == 0) {
-                        stmt.setNull(6, Types.INTEGER);
-                    } else {
-                        stmt.setInt(6, currentInfo.majitele.get(0).id);
-                    }
-                    stmt.setInt(7, currentInfo.sektor);
-                    stmt.setObject(8, obj);
-                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                    stmt.setDate(9, new java.sql.Date(currentInfo.majitelOd.get(0).getTime()));
-                    stmt.setDate(10, new java.sql.Date(currentInfo.majitelDo.get(0).getTime()));
-                    stmt.setDate(11, new java.sql.Date(currentInfo.existenceOd.getTime()));
-                    stmt.setDate(12, new java.sql.Date(currentInfo.existenceDo.getTime()));
-                    stmt.setDate(13, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
-
+                    stmt.setInt(6, currentInfo.sektor);
+                    stmt.setObject(7, obj);
+                    stmt.setDate(8, new java.sql.Date(currentInfo.existenceOd.getTime()));
+                    stmt.setDate(9, new java.sql.Date(currentInfo.existenceDo.getTime()));
+                    stmt.setDate(10, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
                     stmt.execute();
+
+                    /* Ted tabulku 'majitele_objekty' */
+                    stmt = conn.prepareStatement("INSERT INTO majitele_objekty " +
+                            "(IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (?,?,?,?)");
+
+                    for (int i = 0; i < currentInfo.majitele.size(); i++) {
+                        stmt.setInt(1, currentInfo.id);
+                        stmt.setInt(2, currentInfo.majitele.get(i).id);
+                        stmt.setDate(3, new java.sql.Date(currentInfo.majitelOd.get(i)
+                                .getTime()));
+                        stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
+                                .getTime()));
+                        stmt.addBatch();
+                    }
+                    stmt.executeBatch();
+
+                    /* Ted obrazek */
                     if (currentInfo.modifiedImage) {
                         try {
                             currentInfo.saveFotoToDB();
@@ -302,7 +311,8 @@ public class Data {
                     e.printStackTrace();
                 }
             }
-            //je modifikovana geometrie
+
+            /* Je zmenena geometrie, aktualizujeme */
             if (currentInfo.modifiedGeometry) {
                 JGeometry jGeo = ShapeHelper.shape2jGeometry(current);
                 //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
@@ -317,36 +327,49 @@ public class Data {
                     e.printStackTrace();
                 }
             }
-            //modifikovane informace
+
+            /* Modifikovane informace, aktualizujeme */
             if (currentInfo.modifiedInfo) {
-                //Nejspis se to musi vsechno vyjmenovat pokud chceme doplnovat pozdeji
-                try (PreparedStatement stmt = conn.prepareStatement("UPDATE objekty " +
-                        "SET nazev=?,typ=?,editable=?,popis=?,majitel=?,sektor=?," +
-                        "majitelOd=?," +
-                        "majitelDo=?, existenceOd=?,existenceDo=?,rekonstrukce=?" +
-                        "WHERE id = ?")) {
+                /* Nejdriv update tabulky 'objekty' */
+                try {
+                    PreparedStatement stmt = conn.prepareStatement("UPDATE objekty " +
+                            "SET nazev=?,typ=?,editable=?,popis=?,sektor=?," +
+                            "existenceOd=?,existenceDo=?,rekonstrukce=?" +
+                            "WHERE id = ?");
+
                     stmt.setString(1, currentInfo.nazev);
                     stmt.setString(2, currentInfo.typ);
                     stmt.setBoolean(3, currentInfo.editable);
                     stmt.setString(4, currentInfo.popis);
-                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                    if (currentInfo.majitele.size() == 0) {
-                        stmt.setNull(5, Types.INTEGER);
-                    } else {
-                        stmt.setInt(5, currentInfo.majitele.get(0).id);
-                    }
-                    stmt.setInt(6, currentInfo.sektor);
-                /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
-                    stmt.setDate(7, new java.sql.Date(currentInfo.majitelOd.get(0)
-                            .getTime()));
-                    stmt.setDate(8, new java.sql.Date(currentInfo.majitelDo.get(0)
-                            .getTime()));
-                    stmt.setDate(9, new java.sql.Date(currentInfo.existenceOd.getTime()));
-                    stmt.setDate(10, new java.sql.Date(currentInfo.existenceDo.getTime()));
-                    stmt.setDate(11, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
-                    stmt.setInt(12, currentInfo.id);
+                    stmt.setInt(5, currentInfo.sektor);
+                    stmt.setDate(6, new java.sql.Date(currentInfo.existenceOd.getTime()));
+                    stmt.setDate(7, new java.sql.Date(currentInfo.existenceDo.getTime()));
+                    stmt.setDate(8, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
+                    stmt.setInt(9, currentInfo.id);
 
                     stmt.execute();
+
+                    /* Ted tabulka 'majitele_objekty'
+                    Kvuli vsem moznym zmenam v majitelich, obdobich, poradi atd je
+                    nejlepsi udelat full-refresh
+                     */
+                    Statement delStmt = conn.createStatement();
+                    delStmt.executeQuery("DELETE FROM majitele_objekty WHERE idobjektu = " +
+                            "'"+currentInfo.id + "'");
+                    /* Ted je vlozime nazpet */
+                    stmt = conn.prepareStatement("INSERT INTO majitele_objekty " +
+                            "(IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (?,?,?,?)");
+
+                    for (int i = 0; i < currentInfo.majitele.size(); i++) {
+                        stmt.setInt(1, currentInfo.id);
+                        stmt.setInt(2, currentInfo.majitele.get(i).id);
+                        stmt.setDate(3, new java.sql.Date(currentInfo.majitelOd.get(i)
+                                .getTime()));
+                        stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
+                                .getTime()));
+                        stmt.addBatch();
+                    }
+                    stmt.executeBatch();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
