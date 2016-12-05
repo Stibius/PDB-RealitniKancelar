@@ -269,12 +269,13 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
                     .addComponent(doField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addButton)
-                    .addComponent(upButton)
-                    .addComponent(downButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(editButton)
-                    .addComponent(deleteButton))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(upButton)
+                        .addComponent(downButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(editButton)
+                        .addComponent(deleteButton)))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -438,18 +439,7 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         
         currentInfo.modifiedInfo = true;
         
-        ownersHistoryListModel.removeAllElements();
-        for (int i = 0; i < currentInfo.majitele.size(); i++)
-        {
-            if (currentInfo.majitele.get(i) == null)
-            {
-                ownersHistoryListModel.addElement("Bez majitele");
-            }
-            else
-            {
-                ownersHistoryListModel.addElement(currentInfo.majitele.get(i).jmeno);
-            }
-        }
+        ownersHistoryListModel.removeElementAt(index);
         
         ownersHistoryList.setSelectedIndex(ownersHistoryListModel.getSize()-1);
     }//GEN-LAST:event_deleteButtonActionPerformed

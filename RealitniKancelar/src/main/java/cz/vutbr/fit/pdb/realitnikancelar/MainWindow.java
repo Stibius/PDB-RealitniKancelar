@@ -158,6 +158,7 @@ public class MainWindow extends javax.swing.JFrame {
         rotateImageButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         imagePanel = new DrawingPanel();
+        similarImagesButton = new javax.swing.JButton();
         editPanel = new javax.swing.JPanel();
         selectRadioButton = new javax.swing.JRadioButton();
         addPointRadioButton = new javax.swing.JRadioButton();
@@ -384,21 +385,28 @@ public class MainWindow extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(imagePanel);
 
+        similarImagesButton.setText("Vyhledat podobné");
+        similarImagesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                similarImagesButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(42, 42, 42)
-                .addComponent(loadImageButton)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(rotateImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loadImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(saveImageButton)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(saveImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(similarImagesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(56, 56, 56))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(155, 155, 155)
-                .addComponent(rotateImageButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane3)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -408,7 +416,9 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(loadImageButton)
                     .addComponent(saveImageButton))
                 .addGap(18, 18, 18)
-                .addComponent(rotateImageButton)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rotateImageButton)
+                    .addComponent(similarImagesButton))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3))
         );
@@ -2162,6 +2172,11 @@ public class MainWindow extends javax.swing.JFrame {
         new OwnerHistoryDialog(this, true).setVisible(true);
     }//GEN-LAST:event_ownersButtonActionPerformed
 
+    private void similarImagesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_similarImagesButtonActionPerformed
+        // TODO add your handling code here:
+        new SimilarImagesDialog(this, true).setVisible(true);
+    }//GEN-LAST:event_similarImagesButtonActionPerformed
+
     private void createData()
     {
         //tady se budou vkladat do databaze vzorova data a rovnou se i zobrazi
@@ -2354,6 +2369,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel sectorLabel;
     private javax.swing.JRadioButton selectRadioButton;
     private javax.swing.JPanel selectionColorPanel;
+    private javax.swing.JButton similarImagesButton;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JComboBox<String> typeComboBox;
     private javax.swing.JButton updateOwnerButton;
