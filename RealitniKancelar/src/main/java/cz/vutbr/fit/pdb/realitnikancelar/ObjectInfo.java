@@ -22,6 +22,7 @@ import oracle.jdbc.OraclePreparedStatement;
 import oracle.jdbc.OracleResultSet;
 import oracle.ord.im.OrdImage;
 
+
 /**
  *
  * @author Honza
@@ -84,11 +85,11 @@ public class ObjectInfo {
         this.popis = "popis";
         this.majitele = new ArrayList<>();
         this.sektor = 0;
-        this.majitelOd.add(new Date(50, 1, 3));
-        this.majitelDo.add(new Date(50, 1, 3));
-        this.existenceOd = new Date(50, 1, 3);
-        this.existenceDo = new Date(50, 1, 3);
-        this.rekonstrukce = new Date(50, 1, 3);
+        this.majitelOd.add(new Date(50, 10, 3));
+        this.majitelDo.add(new Date(50, 10, 3));
+        this.existenceOd = new Date(50, 10, 3);
+        this.existenceDo = new Date(50, 10, 3);
+        this.rekonstrukce = new Date(50, 10, 3);
         
         //pokud se nejedna o nacteni z DB, je novy
         this.newObject = !load;

@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.lang.IllegalArgumentException;
 
 /**
  *
@@ -2439,21 +2440,49 @@ public class MainWindow extends javax.swing.JFrame {
             info.typ = ObjectInfo.TYPES[typeComboBox.getSelectedIndex()];
             info.modifiedInfo = true;
         }
-        if (info.existenceOd != stringToDate(existenceOdField.getText()))
+        
+        try
         {
-            info.existenceOd = stringToDate(existenceOdField.getText());
-            info.modifiedInfo = true;
+            Date date = stringToDate(existenceOdField.getText());
+            if (info.existenceOd != date)
+            {
+                info.existenceOd = date;
+                info.modifiedInfo = true;
+            }
         }
-        if (info.existenceDo != stringToDate(existenceDoField.getText()))
+        catch (IllegalArgumentException e)
+        { 
+            existenceOdField.setText(dateToString(info.existenceOd));
+        }
+        
+        try
         {
-            info.existenceDo = stringToDate(existenceDoField.getText());
-            info.modifiedInfo = true;
+            Date date = stringToDate(existenceDoField.getText());
+            if (info.existenceDo != date)
+            {
+                info.existenceDo = date;
+                info.modifiedInfo = true;
+            }
         }
-        if (info.rekonstrukce != stringToDate(rekonstrukceOdField.getText()))
+        catch (IllegalArgumentException e)
+        { 
+            existenceDoField.setText(dateToString(info.existenceDo));
+        }
+        
+        try
         {
-            info.rekonstrukce = stringToDate(rekonstrukceOdField.getText());
-            info.modifiedInfo = true;
+            Date date = stringToDate(rekonstrukceOdField.getText());
+            if (info.rekonstrukce != date)
+            {
+                info.rekonstrukce = date;
+                info.modifiedInfo = true;
+            }
         }
+        catch (IllegalArgumentException e)
+        { 
+            rekonstrukceOdField.setText(dateToString(info.rekonstrukce));
+        }
+            
         if (info.popis != descriptionField.getText())
         {
             info.popis = descriptionField.getText();
@@ -2497,21 +2526,46 @@ public class MainWindow extends javax.swing.JFrame {
     public static String dateToString(Date date)
     {
         if (date == null) return "";
-        DateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
-        return dateFormat.format(date);
+        
+        int day = date.getDate();
+
+        int month = date.getMonth() + 1;
+
+        int year = date.getYear() + 1900;
+
+        String sdate = Integer.toString(day) + "." + Integer.toString(month) + "." + Integer.toString(year);
+
+        return sdate;
     }
     
-    public static Date stringToDate(String date)
+    public static Date stringToDate(String sdate) throws IllegalArgumentException 
     {
-        DateFormat dateFormat = new SimpleDateFormat("dd.mm.yyyy");
+        if (sdate == "") return null;
+        
+        int index1 = sdate.indexOf(".", 0);
+        if (index1 == -1 || index1 == sdate.length()-1) throw new IllegalArgumentException();
+        
+        int index2 = sdate.indexOf(".", index1+1);
+        if (index2 == -1 || index2 == sdate.length()-1) throw new IllegalArgumentException();
+        
+        int day, month, year;
+        
         try
         {
-            return dateFormat.parse(date);
-        }
-        catch (ParseException ex)
+            day = Integer.parseInt(sdate.substring(0, index1));
+            month = Integer.parseInt(sdate.substring(index1+1, index2)) - 1;
+            year = Integer.parseInt(sdate.substring(index2+1)) - 1900;
+        } 
+        catch (NumberFormatException e)
         {
-            return null;
+             throw new IllegalArgumentException();
         }
+        
+        if (day < 1 || day > 31) throw new IllegalArgumentException();
+        if (month < 0 || month > 11)  throw new IllegalArgumentException();
+        if (year < 0)  throw new IllegalArgumentException();
+        
+        return new Date(year, month, day); 
     }
     
     

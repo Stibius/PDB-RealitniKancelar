@@ -9,6 +9,7 @@ import static cz.vutbr.fit.pdb.realitnikancelar.Data.mergeShapes;
 import java.awt.Shape;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
+import java.lang.IllegalArgumentException;
 
 /**
  *
@@ -351,6 +352,24 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // TODO add your handling code here:
         int index = ownerComboBox.getSelectedIndex();
+        
+        try
+        {
+            currentInfo.majitelOd.add(MainWindow.stringToDate(odField.getText()));
+        }
+        catch (IllegalArgumentException e)
+        {
+            currentInfo.majitelOd.add(null);
+        }
+        try
+        {
+            currentInfo.majitelDo.add(MainWindow.stringToDate(doField.getText()));
+        }
+        catch (IllegalArgumentException e)
+        {
+            currentInfo.majitelDo.add(null);
+        }
+        
         if (index == ownersComboBoxModel.getSize()-1)
         {
             currentInfo.majitele.add(null);
@@ -361,8 +380,7 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
             currentInfo.majitele.add(Data.owners.get(index));
             ownersHistoryListModel.addElement(currentInfo.majitele.get(currentInfo.majitele.size()-1).jmeno);
         }
-        currentInfo.majitelOd.add(MainWindow.stringToDate(odField.getText()));
-        currentInfo.majitelDo.add(MainWindow.stringToDate(doField.getText()));
+        
         ownersHistoryList.setSelectedIndex(currentInfo.majitele.size()-1);
         currentInfo.modifiedInfo = true;
     }//GEN-LAST:event_addButtonActionPerformed
@@ -379,9 +397,24 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         {
             currentInfo.majitele.set(index2, Data.owners.get(index));
         }
-        currentInfo.majitelOd.set(index2, MainWindow.stringToDate(odField.getText()));
-        currentInfo.majitelDo.set(index2, MainWindow.stringToDate(doField.getText()));
-        currentInfo.modifiedInfo = true;
+        try
+        {
+            currentInfo.majitelOd.set(index2, MainWindow.stringToDate(odField.getText()));
+            currentInfo.modifiedInfo = true;
+        }
+        catch (IllegalArgumentException e)
+        {
+            odField.setText(MainWindow.dateToString(currentInfo.majitelOd.get(index2)));
+        }
+        try
+        {
+            currentInfo.majitelDo.set(index2, MainWindow.stringToDate(doField.getText()));
+            currentInfo.modifiedInfo = true;
+        }
+        catch (IllegalArgumentException e)
+        {
+            doField.setText(MainWindow.dateToString(currentInfo.majitelDo.get(index2)));
+        }
         
         ownersHistoryListModel.removeAllElements();
         for (int i = 0; i < currentInfo.majitele.size(); i++)
