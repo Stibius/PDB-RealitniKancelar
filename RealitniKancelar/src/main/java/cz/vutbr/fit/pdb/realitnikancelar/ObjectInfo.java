@@ -45,7 +45,7 @@ public class ObjectInfo {
     public Date existenceOd;
     public Date existenceDo;
     public Date rekonstrukce;
-    private static TreeSet<Integer> ids = new TreeSet<Integer>();
+    public static TreeSet<Integer> ids = new TreeSet<Integer>();
     public boolean selected = false; //jestli je objekt vybrany
     public boolean hovered = false; //jestli je prave nad objektem mys
     public boolean newObject; //jestli je to nove vytvoreny objekt, ktery jeste neni v DB
@@ -57,7 +57,23 @@ public class ObjectInfo {
     
     BufferedImage imgIcon;
     String imgPath;
-            
+
+    /**
+     * Inicializace prazdneho ObjectInfo
+     */
+    public ObjectInfo() {
+        this.deletedObject = false;
+        this.modifiedGeometry = false;
+        this.modifiedInfo =  false;
+        this.modifiedImage = false;
+        this.rotateImage = false;
+        this.newObject = false; //implicitne se nejedna o novy objekt
+    }
+
+    /**
+     * Inicializace noveho ObjectInfo
+     * @param load
+     */
     //load je true, pokud budou data pro tento objekt nactena z DB
     @SuppressWarnings("deprecation")
     public ObjectInfo(boolean load) {
@@ -95,19 +111,14 @@ public class ObjectInfo {
     }
 
     public static ObjectInfo createFromDB(ResultSet res) throws SQLException {
-        ObjectInfo info = new ObjectInfo(true);
+        ObjectInfo info = new ObjectInfo();
         info.id = res.getInt("id");
         info.nazev = res.getString("nazev");
         info.typ = res.getString("typ");
         info.editable = true;
         info.popis = res.getString("popis");
-        if (res.getObject("majitel") != null) {
-            //je null, tak se nic
-            info.majitele.add(Owner.getOwner(res.getInt("majitel")));
-        }
+        info.addOwner(res); //prida majitele a doby od do
         info.sektor = res.getInt("sektor");
-        info.majitelOd.add(res.getDate("majitelod"));
-        info.majitelDo.add(res.getDate("majiteldo"));
         info.existenceOd = res.getDate("existenceOd");
         info.existenceDo = res.getDate("existenceDo");
         info.rekonstrukce = res.getDate("rekonstrukce");
@@ -121,7 +132,6 @@ public class ObjectInfo {
     /**
      * Funkce vytvoří nový prostor pro obrázek v databázi a následně ho tam uloží. 
      * Bere obrázek z lokálního disku.
-     * @param filename
      * @throws java.sql.SQLException
      */
     public void saveFotoToDB() throws SQLException, IOException {
@@ -232,5 +242,18 @@ public class ObjectInfo {
      */
     public void findSimilarFoto (){
         
+    }
+
+    public void addOwner(ResultSet res) {
+        try {
+            if (res.getObject("idmajitele") != null) {
+                //je null, tak se nic
+                this.majitele.add(Owner.getOwner(res.getInt("idmajitele")));
+                this.majitelOd.add(res.getDate("majitelod"));
+                this.majitelDo.add(res.getDate("majiteldo"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

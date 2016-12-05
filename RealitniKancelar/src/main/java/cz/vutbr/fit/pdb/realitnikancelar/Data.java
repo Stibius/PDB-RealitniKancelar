@@ -68,19 +68,28 @@ public class Data {
         //pridam nejake ownery kvuli testovani
         owners.add(new Owner(true));
         owners.add(new Owner("Honza", "Brno", true));
-
+        ObjectInfo info = null;
 
         try (Statement stmt = ConnectDialog.conn.createStatement()) {
-            ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY");
+            ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY " +
+                    "JOIN MAJITELE_OBJEKTY ON objekty.ID=majitele_objekty.IDOBJEKTU " +
+                    "JOIN MAJITELE ON majitele_objekty.IDMAJITELE=majitele.ID");
             while (res.next()) {
-                loadShape(res);
+                //pokud nemame zadne info, ObjectInfo neexistuje, tudiz ani objekt
+                if (info == null) {
+                    info = loadShape(res);
+                }
+                //ObjectInfo mame, pridame jenom dalsi majitele, dalsi objekt nechceme
+                else {
+                    info.addOwner(res);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        System.out.print("aaa");
 
         //nejake objekty na testovani, protoze v databazi nic neni
         /*
@@ -137,18 +146,17 @@ public class Data {
         */
     }
 
-    private static void loadShape(ResultSet res) throws Exception, SQLException {
+    private static ObjectInfo loadShape(ResultSet res) throws Exception, SQLException {
+        ObjectInfo info = ObjectInfo.createFromDB(res);
         byte[] image = new byte[0];
         JGeometry tempGeo;
         Shape shape;
-
         image = res.getBytes("geometrie");
-        ObjectInfo info = ObjectInfo.createFromDB(res);
-
         //process shape
         tempGeo = JGeometry.load(image);
         shape = ShapeHelper.jGeometry2Shape(tempGeo);
         populatePanel(shape, info);
+        return info;
     }
 
     private static void populatePanel(Shape shape, ObjectInfo info) {
@@ -269,8 +277,7 @@ public class Data {
                 /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
                     if (currentInfo.majitele.size() == 0) {
                         stmt.setNull(6, Types.INTEGER);
-                    }
-                    else {
+                    } else {
                         stmt.setInt(6, currentInfo.majitele.get(0).id);
                     }
                     stmt.setInt(7, currentInfo.sektor);
@@ -283,7 +290,7 @@ public class Data {
                     stmt.setDate(13, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
 
                     stmt.execute();
-                    if(currentInfo.modifiedImage){
+                    if (currentInfo.modifiedImage) {
                         try {
                             currentInfo.saveFotoToDB();
                         } catch (IOException ex) {
@@ -325,8 +332,7 @@ public class Data {
                 /* BACHA, ZATIM JENOM JEDEN MAJITEL*/
                     if (currentInfo.majitele.size() == 0) {
                         stmt.setNull(5, Types.INTEGER);
-                    }
-                    else {
+                    } else {
                         stmt.setInt(5, currentInfo.majitele.get(0).id);
                     }
                     stmt.setInt(6, currentInfo.sektor);
@@ -346,14 +352,14 @@ public class Data {
                 }
             }
             //modifikace obrázku
-            if(currentInfo.modifiedImage){
+            if (currentInfo.modifiedImage) {
                 try {
                     currentInfo.saveFotoToDB();
                 } catch (IOException ex) {
                     Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-                
+
         }
 
         dataSaved();
