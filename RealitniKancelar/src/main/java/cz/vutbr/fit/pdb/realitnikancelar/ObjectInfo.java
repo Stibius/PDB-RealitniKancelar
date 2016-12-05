@@ -44,9 +44,8 @@ public class ObjectInfo {
     public Integer sektor;
     public Date existenceOd;
     public Date existenceDo;
-    public Date rekonstrukceOd;
-    public Date rekonstrukceDo;
-    private static TreeSet<Integer> ids = new TreeSet<Integer>();
+    public Date rekonstrukce;
+    public static TreeSet<Integer> ids = new TreeSet<Integer>();
     public boolean selected = false; //jestli je objekt vybrany
     public boolean hovered = false; //jestli je prave nad objektem mys
     public boolean newObject; //jestli je to nove vytvoreny objekt, ktery jeste neni v DB
@@ -58,7 +57,23 @@ public class ObjectInfo {
     
     BufferedImage imgIcon;
     String imgPath;
-            
+
+    /**
+     * Inicializace prazdneho ObjectInfo
+     */
+    public ObjectInfo() {
+        this.deletedObject = false;
+        this.modifiedGeometry = false;
+        this.modifiedInfo =  false;
+        this.modifiedImage = false;
+        this.rotateImage = false;
+        this.newObject = false; //implicitne se nejedna o novy objekt
+    }
+
+    /**
+     * Inicializace noveho ObjectInfo
+     * @param load
+     */
     //load je true, pokud budou data pro tento objekt nactena z DB
     @SuppressWarnings("deprecation")
     public ObjectInfo(boolean load) {
@@ -73,8 +88,7 @@ public class ObjectInfo {
         this.majitelDo.add(new Date(50, 1, 3));
         this.existenceOd = new Date(50, 1, 3);
         this.existenceDo = new Date(50, 1, 3);
-        this.rekonstrukceOd = new Date(50, 1, 3);
-        this.rekonstrukceDo = new Date(50, 1, 7);
+        this.rekonstrukce = new Date(50, 1, 3);
         
         //pokud se nejedna o nacteni z DB, je novy
         this.newObject = !load;
@@ -98,23 +112,17 @@ public class ObjectInfo {
     }
 
     public static ObjectInfo createFromDB(ResultSet res) throws SQLException {
-        ObjectInfo info = new ObjectInfo(true);
+        ObjectInfo info = new ObjectInfo();
         info.id = res.getInt("id");
         info.nazev = res.getString("nazev");
         info.typ = res.getString("typ");
         info.editable = true;
         info.popis = res.getString("popis");
-        if (res.getObject("majitel") != null) {
-            //je null, tak se nic
-            info.majitele.add(Owner.getOwner(res.getInt("majitel")));
-        }
+        info.addOwner(res); //prida majitele a doby od do
         info.sektor = res.getInt("sektor");
-        info.majitelOd.add(res.getDate("majitelod"));
-        info.majitelDo.add(res.getDate("majiteldo"));
         info.existenceOd = res.getDate("existenceOd");
         info.existenceDo = res.getDate("existenceDo");
-        info.rekonstrukceOd = res.getDate("rekonstrukceOd");
-        info.rekonstrukceDo = res.getDate("rekonstrukceDo");
+        info.rekonstrukce = res.getDate("rekonstrukce");
         
         ids.add(info.id);
         //info.imgIcon = info.loadFotoFromDB();
@@ -302,5 +310,18 @@ public class ObjectInfo {
      */
     public void findSimilarFoto (){
         
+    }
+
+    public void addOwner(ResultSet res) {
+        try {
+            if (res.getObject("idmajitele") != null) {
+                //je null, tak se nic
+                this.majitele.add(Owner.getOwner(res.getInt("idmajitele")));
+                this.majitelOd.add(res.getDate("majitelod"));
+                this.majitelDo.add(res.getDate("majiteldo"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
