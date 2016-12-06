@@ -10,13 +10,14 @@ import java.awt.geom.*;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import oracle.spatial.geometry.JGeometry;
+
+import javax.swing.*;
 
 /**
  * @author Honza
@@ -160,18 +161,73 @@ public class Data {
     public static void saveData() throws InvalidObjectException, SQLException {
         //Vytvorime testovaci sektor, bacha, smaze vsechny ostatni
         Sektor.testovaciSektor();
+        Map<ObjectInfo, Shape> objects = mergeShapes();
+
+        /* KONTROLA PREKRYVU MAJITELU */
+        if (checkValidOwnerDates(objects) == false) {
+            return;
+        }
 
         /* MAJITELE */
         saveOwners();
         /* KONEC MAJITELU */
 
         /* OBJEKTY */
-        Map<ObjectInfo, Shape> objects = mergeShapes();
-
         saveObjects(objects);
         /* KONEC OBJEKTU */
 
         dataSaved();
+    }
+
+    private static Boolean checkValidOwnerDates(Map<ObjectInfo, Shape> objects) {
+        ObjectInfo currentInfo;
+        for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
+            currentInfo = entry.getKey();
+            for (int i = 0; i < currentInfo.majitele.size(); i++)
+                for (int j = i + 1; j < currentInfo.majitele.size(); j++) {
+                    Date StartA = currentInfo.majitelOd.get(i);
+                    Date EndA = currentInfo.majitelDo.get(i);
+                    Date StartB = currentInfo.majitelOd.get(j);
+                    Date EndB = currentInfo.majitelDo.get(j);
+                    if (dateOverlap(StartA, EndA, StartB, EndB)) {
+                        JOptionPane.showMessageDialog(null, "Data vlastníků objektu se " +
+                                        "překrývají!",
+                                "Chyba!", JOptionPane.ERROR_MESSAGE);
+                        return false;
+                    }
+                }
+        }
+        return true;
+    }
+
+    private static Boolean dateOverlap(Date date, Date date1, Date date2, Date date3) {
+        Long StartA;
+        Long EndA;
+        Long StartB;
+        Long EndB;
+
+        if (date1 == null) {
+            EndA = Long.MAX_VALUE;
+        } else {
+            EndA = date1.getTime();
+        }
+        if (date3 == null) {
+            EndB = Long.MAX_VALUE;
+        } else {
+            EndB = date3.getTime();
+        }
+        StartA = date.getTime();
+        StartB = date2.getTime();
+
+        /* (StartA <= EndB) and (EndA >= StartB) */
+        if (
+                (StartA < EndB)
+                        &&
+                        (EndA > StartB)
+                ) {
+            return true;
+        }
+        return false;
     }
 
     private static void saveOwners() {
