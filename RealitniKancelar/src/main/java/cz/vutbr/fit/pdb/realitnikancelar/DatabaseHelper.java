@@ -141,8 +141,14 @@ public class DatabaseHelper {
                 }
                 stmt.setDate(3, new java.sql.Date(currentInfo.majitelOd.get(i)
                         .getTime()));
-                stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
-                        .getTime()));
+                if (currentInfo.majitelDo.get(i) != null) {
+                    stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
+                            .getTime()));
+                }
+                else {
+                    stmt.setNull(4, Types.DATE);
+                }
+
                 stmt.addBatch();
             }
             stmt.executeBatch();
@@ -230,8 +236,13 @@ public class DatabaseHelper {
                 }
                 stmt.setDate(3, new java.sql.Date(currentInfo.majitelOd.get(i)
                         .getTime()));
-                stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
-                        .getTime()));
+                if (currentInfo.majitelDo.get(i) != null) {
+                    stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
+                            .getTime()));
+                }
+                else {
+                    stmt.setNull(4, Types.DATE);
+                }
                 stmt.addBatch();
             }
             stmt.executeBatch();
