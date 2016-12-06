@@ -216,18 +216,55 @@ public class Data {
         Connection conn = ConnectDialog.conn;
 
         for (int i = 0; i < owners.size(); i++) {
-            if (!owners.get(i).modifiedOwner &&
-                    !owners.get(i).newOwner &&
-                    !owners.get(i).deletedOwner) {
+            Owner currentOwner = owners.get(i);
+            if (!currentOwner.modifiedOwner &&
+                    !currentOwner.newOwner &&
+                    !currentOwner.deletedOwner) {
                 continue; //neni novy ani modifikovany ani smazany, preskocit
             }
 
-            if (owners.get(i).deletedOwner) {
+            if (currentOwner.deletedOwner) {
                 //byl smazany v aplikaci, je treba ho smazat z DB
-                continue;
+                if (currentOwner.deletedOwner) {
+                    String query = "DELETE FROM majitele WHERE id_majitele='" + currentOwner
+                            .id +
+                            "'";
+                    try {
+                        Statement stmt = conn.createStatement();
+                        stmt.executeQuery(query);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
+            }
+            //je modifikovany
+            if (currentOwner.modifiedOwner) {
+                try (PreparedStatement stmt = conn.prepareStatement("UPDATE majitele SET " +
+                        "jmeno = ?, adresa = ? WHERE id_majitele = ?")) {
+                    stmt.setString(1, currentOwner.jmeno);
+                    stmt.setString(2, currentOwner.adresa);
+                    stmt.setInt(3, currentOwner.id);
+                    stmt.execute();
+                    continue;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            //je novy
+            if (currentOwner.newOwner) {
+                try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO " +
+                                "majitele (id_majitele, jmeno, adresa) VALUES (?, ?, ?)")) {
+                    stmt.setInt(1, currentOwner.id);
+                    stmt.setString(2, currentOwner.jmeno);
+                    stmt.setString(3, currentOwner.adresa);
+                    stmt.execute();
+                    continue;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
-            //je novy nebo modifikovany, updatovat nebo pridat v DB
         }
 
         Map<ObjectInfo, Shape> objects = mergeShapes();
