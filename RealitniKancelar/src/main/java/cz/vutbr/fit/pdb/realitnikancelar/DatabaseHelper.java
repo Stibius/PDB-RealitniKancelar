@@ -87,6 +87,7 @@ public class DatabaseHelper {
 
     /**
      * Vlozi kompletne novy objekt
+     *
      * @param current
      * @param currentInfo
      */
@@ -124,7 +125,11 @@ public class DatabaseHelper {
 
             for (int i = 0; i < currentInfo.majitele.size(); i++) {
                 stmt.setInt(1, currentInfo.id);
-                stmt.setInt(2, currentInfo.majitele.get(i).id);
+                if (currentInfo.majitele.get(i) == null) {
+                    stmt.setInt(2, 0);
+                } else {
+                    stmt.setInt(2, currentInfo.majitele.get(i).id);
+                }
                 stmt.setDate(3, new java.sql.Date(currentInfo.majitelOd.get(i)
                         .getTime()));
                 stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
@@ -200,7 +205,12 @@ public class DatabaseHelper {
 
             for (int i = 0; i < currentInfo.majitele.size(); i++) {
                 stmt.setInt(1, currentInfo.id);
-                stmt.setInt(2, currentInfo.majitele.get(i).id);
+                if (currentInfo.majitele.get(i) != null) {
+                    stmt.setInt(2, currentInfo.majitele.get(i).id);
+                } else {
+                    //vychozi majitel je 0, musi byt v databazi
+                    stmt.setInt(2, 0);
+                }
                 stmt.setDate(3, new java.sql.Date(currentInfo.majitelOd.get(i)
                         .getTime()));
                 stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)

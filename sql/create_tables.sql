@@ -138,6 +138,7 @@ REFERENCES objekty(id) on delete cascade;
 
 
 INSERT INTO sektor (id,nazev,geometrie) VALUES (0,'Test sektor',NULL);
+INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (0,'BEZ MAJITELE','BEZ ADRESY');
 --INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (0,'Neznámý majitel','Neznámá adresa');
 --INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (1,'Majitel2','Adresa2');
 --INSERT INTO majitele_objekty (IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (0,0,TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000');

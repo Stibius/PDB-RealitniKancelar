@@ -68,7 +68,7 @@ public class Owner {
             int last = ids.last();
             return last + 1;
         }
-        return 0;
+        return 1;
     }
     
     public static Owner create(ResultSet res) throws SQLException {
@@ -116,6 +116,9 @@ public class Owner {
         try (Statement stmt = ConnectDialog.conn.createStatement()) {
             ResultSet res = stmt.executeQuery("SELECT * FROM majitele");
             while (res.next()) {
+                if (res.getInt("id_majitele") == 0) {
+                    continue;
+                }
                 owns.add(new Owner(res.getInt("id_majitele"),res.getString("jmeno"), res
                         .getString("adresa")));
             }

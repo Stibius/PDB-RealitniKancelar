@@ -340,7 +340,12 @@ public class ObjectInfo {
         try {
             if (res.getObject("idmajitele") != null) {
                 //je null, tak se nic
-                this.majitele.add(Owner.getOwner(res.getInt("idmajitele")));
+                if (res.getInt("idmajitele") == 0) {
+                    this.majitele.add(null);
+                }
+                else {
+                    this.majitele.add(Owner.getOwner(res.getInt("idmajitele")));
+                }
                 this.majitelOd.add(res.getDate("majitelod"));
                 this.majitelDo.add(res.getDate("majiteldo"));
             }

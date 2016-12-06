@@ -313,12 +313,10 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         }
         if (ownersHistoryListModel.getSize() == 0 || currentInfo.majitele.size() == 0 || ownersHistoryList.getSelectedIndex() == -1) return;
         int index = ownersHistoryList.getSelectedIndex();
-        if (currentInfo.majitele.get(index) == null)
-        {
+        if (currentInfo.majitele.get(index) == null) {
             ownerComboBox.setSelectedItem("Bez majitele");
         }
-        else
-        {
+        else {
             ownerComboBox.setSelectedItem(currentInfo.majitele.get(index).jmeno);
         }
         odField.setText(MainWindow.dateToString(currentInfo.majitelOd.get(index)));
