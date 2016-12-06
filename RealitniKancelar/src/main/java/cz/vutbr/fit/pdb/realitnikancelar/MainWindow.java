@@ -278,21 +278,20 @@ public class MainWindow extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(91, 91, 91)
                         .addComponent(ownersButton))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel17)
-                                .addComponent(jLabel18)
-                                .addComponent(jLabel16))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(existenceOdField)
-                                .addComponent(rekonstrukceOdField)
-                                .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel19)
-                            .addGap(77, 77, 77)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel16))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(existenceOdField)
+                            .addComponent(rekonstrukceOdField)
+                            .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel19)
+                        .addGap(77, 77, 77)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -1359,7 +1358,7 @@ public class MainWindow extends javax.swing.JFrame {
         
         if (selectRadioButton.isSelected()) {
 
-            unselect();
+            if (!unselect()) return;
             
             for (int i = 0; i < Data.points.size(); i++) {
                 if (Data.pointsInfo.get(i).hovered) {
@@ -1669,7 +1668,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPolylineRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPolylineRadioButtonItemStateChanged
         // TODO add your handling code here:
-        unselect();
+        if (!unselect()) 
+        {
+            selectRadioButton.setSelected(true);
+            return;
+        }
         if (newPolyline == true) {
             newPolyline = false;
         }
@@ -1679,7 +1682,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPolygonRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPolygonRadioButtonItemStateChanged
         // TODO add your handling code here:
-        unselect();
+        if (!unselect()) 
+        {
+            selectRadioButton.setSelected(true);
+            return;
+        }
         if (newPolygon == true) {
             newPolygon = false;
 
@@ -1697,7 +1704,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addRectangleRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addRectangleRadioButtonItemStateChanged
         // TODO add your handling code here:
-        unselect();
+        if (!unselect()) 
+        {
+            selectRadioButton.setSelected(true);
+            return;
+        }
         if (newRectangle == true)
         {
             newRectangle = false;                  
@@ -1706,7 +1717,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addEllipseRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addEllipseRadioButtonItemStateChanged
         // TODO add your handling code here:
-        unselect();
+        if (!unselect()) 
+        {
+            selectRadioButton.setSelected(true);
+            return;
+        }
         if (newEllipse == true)
         {
             newEllipse = false;                   
@@ -2173,7 +2188,11 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPointRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPointRadioButtonItemStateChanged
         // TODO add your handling code here:
-        unselect();
+        if (!unselect()) 
+        {
+            selectRadioButton.setSelected(true);
+            return;
+        }
     }//GEN-LAST:event_addPointRadioButtonItemStateChanged
 
     private void ownersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownersButtonActionPerformed
@@ -2245,14 +2264,14 @@ public class MainWindow extends javax.swing.JFrame {
         //tady se budou vkladat do databaze vzorova data a rovnou se i zobrazi
     }
     
-    private void unselect()
+    private boolean unselect()
     {
         for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).selected) {
                 if (saveInfo(Data.pointsInfo.get(i)))
                     Data.pointsInfo.get(i).selected = false;
                 else
-                    return;
+                    return false;
             }
         }
 
@@ -2261,7 +2280,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (saveInfo(Data.polylinesInfo.get(i)))
                     Data.polylinesInfo.get(i).selected = false;
                 else
-                    return;
+                    return false;
             }
         }
 
@@ -2270,7 +2289,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (saveInfo(Data.rectanglesInfo.get(i)))
                     Data.rectanglesInfo.get(i).selected = false;
                 else
-                    return;
+                    return false;
             }
         }
 
@@ -2279,7 +2298,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (saveInfo(Data.ellipsesInfo.get(i)))
                     Data.ellipsesInfo.get(i).selected = false;
                 else
-                    return;
+                    return false;
             }
         }
 
@@ -2288,7 +2307,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if (saveInfo(Data.polygonsInfo.get(i)))
                     Data.polygonsInfo.get(i).selected = false;
                 else
-                    return;
+                    return false;
             }
         }
         
@@ -2296,6 +2315,8 @@ public class MainWindow extends javax.swing.JFrame {
         ((DrawingPanel)imagePanel).image = null;
         imagePanel.repaint();
         ((DrawingPanel)mapPanel).createImageFromData();
+        
+        return true;
     }
     
     private void unhover()
