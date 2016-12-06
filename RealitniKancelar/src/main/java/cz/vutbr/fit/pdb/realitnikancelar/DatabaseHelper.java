@@ -9,6 +9,7 @@ import java.io.InvalidObjectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,8 +116,16 @@ public class DatabaseHelper {
             stmt.setInt(6, currentInfo.sektor);
             stmt.setObject(7, obj);
             stmt.setDate(8, new java.sql.Date(currentInfo.existenceOd.getTime()));
-            stmt.setDate(9, new java.sql.Date(currentInfo.existenceDo.getTime()));
-            stmt.setDate(10, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
+            if (currentInfo.existenceDo != null) {
+                stmt.setDate(9, new java.sql.Date(currentInfo.existenceDo.getTime()));
+            } else {
+                stmt.setNull(9, Types.DATE);
+            }
+            if (currentInfo.existenceDo != null) {
+                stmt.setDate(10, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
+            } else {
+                stmt.setNull(10, Types.DATE);
+            }
             stmt.execute();
 
             /* Ted tabulku 'majitele_objekty' */
@@ -186,8 +195,16 @@ public class DatabaseHelper {
             stmt.setString(4, currentInfo.popis);
             stmt.setInt(5, currentInfo.sektor);
             stmt.setDate(6, new java.sql.Date(currentInfo.existenceOd.getTime()));
-            stmt.setDate(7, new java.sql.Date(currentInfo.existenceDo.getTime()));
-            stmt.setDate(8, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
+            if (currentInfo.existenceDo != null) {
+                stmt.setDate(7, new java.sql.Date(currentInfo.existenceDo.getTime()));
+            } else {
+                stmt.setNull(7, Types.DATE);
+            }
+            if (currentInfo.rekonstrukce!= null) {
+                stmt.setDate(8, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
+            } else {
+                stmt.setNull(8, Types.DATE);
+            }
             stmt.setInt(9, currentInfo.id);
 
             stmt.execute();

@@ -88,8 +88,8 @@ public class ObjectInfo {
         this.majitelOd.add(new Date(50, 10, 3));
         this.majitelDo.add(new Date(50, 10, 3));
         this.existenceOd = new Date(50, 10, 3);
-        this.existenceDo = new Date(50, 10, 3);
-        this.rekonstrukce = new Date(50, 10, 3);
+        this.existenceDo = null;
+        this.rekonstrukce = null;
         
         //pokud se nejedna o nacteni z DB, je novy
         this.newObject = !load;
