@@ -988,31 +988,31 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).selected) {
-                saveInfo(Data.pointsInfo.get(i));
+                if (!saveInfo(Data.pointsInfo.get(i))) return;
             }
         }
 
         for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).selected) {
-                saveInfo(Data.polylinesInfo.get(i));
+                if (!saveInfo(Data.polylinesInfo.get(i))) return;
             }
         }
 
         for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).selected) {
-                saveInfo(Data.rectanglesInfo.get(i));
+                if (!saveInfo(Data.rectanglesInfo.get(i))) return;
             }
         }
 
         for (int i = 0; i < Data.ellipses.size(); i++) {
             if (Data.ellipsesInfo.get(i).selected) {
-                saveInfo(Data.ellipsesInfo.get(i));
+                if (!saveInfo(Data.ellipsesInfo.get(i))) return;
             }
         }
 
         for (int i = 0; i < Data.polygons.size(); i++) {
             if (Data.polygonsInfo.get(i).selected) {
-                saveInfo(Data.polygonsInfo.get(i));
+                if (!saveInfo(Data.polygonsInfo.get(i))) return;
             }
         }
         
@@ -2249,36 +2249,46 @@ public class MainWindow extends javax.swing.JFrame {
     {
         for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).selected) {
-                saveInfo(Data.pointsInfo.get(i));
-                Data.pointsInfo.get(i).selected = false;
+                if (saveInfo(Data.pointsInfo.get(i)))
+                    Data.pointsInfo.get(i).selected = false;
+                else
+                    return;
             }
         }
 
         for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).selected) {
-                saveInfo(Data.polylinesInfo.get(i));
-                Data.polylinesInfo.get(i).selected = false;
+                if (saveInfo(Data.polylinesInfo.get(i)))
+                    Data.polylinesInfo.get(i).selected = false;
+                else
+                    return;
             }
         }
 
         for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).selected) {
-                saveInfo(Data.rectanglesInfo.get(i));
-                Data.rectanglesInfo.get(i).selected = false;
+                if (saveInfo(Data.rectanglesInfo.get(i)))
+                    Data.rectanglesInfo.get(i).selected = false;
+                else
+                    return;
             }
         }
 
         for (int i = 0; i < Data.ellipses.size(); i++) {
             if (Data.ellipsesInfo.get(i).selected) {
-                saveInfo(Data.ellipsesInfo.get(i));
-                Data.ellipsesInfo.get(i).selected = false;
+                if (saveInfo(Data.ellipsesInfo.get(i)))
+                    Data.ellipsesInfo.get(i).selected = false;
+                else
+                    return;
             }
         }
 
         for (int i = 0; i < Data.polygons.size(); i++) {
             if (Data.polygonsInfo.get(i).selected) {
-                saveInfo(Data.polygonsInfo.get(i));
-                Data.polygonsInfo.get(i).selected = false;
+                if (saveInfo(Data.polygonsInfo.get(i)))
+                    Data.polygonsInfo.get(i).selected = false;
+                else
+                    return;
             }
         }
         
@@ -2479,9 +2489,11 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
-    private void saveInfo(ObjectInfo info)
+    private boolean saveInfo(ObjectInfo info)
     {
-        if (!info.editable) return;
+        boolean success = true;
+        
+        if (!info.editable) return success;
         
         if (info.nazev != objectNameField.getText())
         {
@@ -2497,7 +2509,12 @@ public class MainWindow extends javax.swing.JFrame {
         try
         {
             Date date = stringToDate(existenceOdField.getText());
-            if (info.existenceOd != date)
+            if (date == null)
+            {
+                success = false;
+                JOptionPane.showMessageDialog(null, "Datum výstavby musí být uvedeno!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            }
+            else if (info.existenceOd != date)
             {
                 info.existenceOd = date;
                 info.modifiedInfo = true;
@@ -2505,7 +2522,8 @@ public class MainWindow extends javax.swing.JFrame {
         }
         catch (IllegalArgumentException e)
         { 
-            existenceOdField.setText(dateToString(info.existenceOd));
+            success = false;
+            JOptionPane.showMessageDialog(null, "Datum výstavby není ve správném formátu!", "Chyba", JOptionPane.ERROR_MESSAGE);
         }
         
         try
@@ -2519,7 +2537,8 @@ public class MainWindow extends javax.swing.JFrame {
         }
         catch (IllegalArgumentException e)
         { 
-            existenceDoField.setText(dateToString(info.existenceDo));
+            JOptionPane.showMessageDialog(null, "Datum demolice není ve správném formátu!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            success = false;
         }
         
         try
@@ -2533,7 +2552,8 @@ public class MainWindow extends javax.swing.JFrame {
         }
         catch (IllegalArgumentException e)
         { 
-            rekonstrukceOdField.setText(dateToString(info.rekonstrukce));
+            JOptionPane.showMessageDialog(null, "Datum rekonstrukce není ve správném formátu!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            success = false;
         }
             
         if (info.popis != descriptionField.getText())
@@ -2548,6 +2568,8 @@ public class MainWindow extends javax.swing.JFrame {
             info.modifiedInfo = true;
         }
         */
+        
+        return success;
     }
     
     private void clearInfo() {
@@ -2593,7 +2615,7 @@ public class MainWindow extends javax.swing.JFrame {
     
     public static Date stringToDate(String sdate) throws IllegalArgumentException 
     {
-        if (sdate == "") return null;
+        if (sdate.isEmpty() || sdate == null) return null;
         
         int index1 = sdate.indexOf(".", 0);
         if (index1 == -1 || index1 == sdate.length()-1) throw new IllegalArgumentException();
