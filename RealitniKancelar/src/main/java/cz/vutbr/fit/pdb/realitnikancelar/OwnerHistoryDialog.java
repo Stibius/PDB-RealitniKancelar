@@ -313,7 +313,14 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         }
         if (ownersHistoryListModel.getSize() == 0 || currentInfo.majitele.size() == 0 || ownersHistoryList.getSelectedIndex() == -1) return;
         int index = ownersHistoryList.getSelectedIndex();
-        ownerComboBox.setSelectedItem(currentInfo.majitele.get(index).jmeno);
+        if (currentInfo.majitele.get(index) == null)
+        {
+            ownerComboBox.setSelectedItem("Bez majitele");
+        }
+        else
+        {
+            ownerComboBox.setSelectedItem(currentInfo.majitele.get(index).jmeno);
+        }
         odField.setText(MainWindow.dateToString(currentInfo.majitelOd.get(index)));
         doField.setText(MainWindow.dateToString(currentInfo.majitelDo.get(index)));
     }//GEN-LAST:event_ownersHistoryListValueChanged
