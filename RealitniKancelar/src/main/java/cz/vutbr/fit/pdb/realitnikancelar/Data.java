@@ -89,60 +89,6 @@ public class Data {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        //nejake objekty na testovani, protoze v databazi nic neni
-        /*
-        rectangles.add(new Rectangle(100, 100, 300, 200));
-        rectanglesInfo.add(new ObjectInfo());
-        rectanglesInfo.get(0).nazev = "Ahoj";
-
-        rectangles.add(new Rectangle(500, 500, 300, 200));
-        rectanglesInfo.add(new ObjectInfo());
-        rectanglesInfo.get(1).nazev = "XXX";
-        
-
-        
-        //vymazou se predchozi data
-        points.clear();
-        pointsInfo.clear();
-        
-        polylines.clear();
-        polylinesInfo.clear();
-        
-        ellipses.clear();
-        ellipsesInfo.clear();
-        
-        rectangles.clear();
-        rectanglesInfo.clear();
-        
-        polygons.clear();
-        polygonsInfo.clear();
-        
-        //pridame nejake objekty
-        points.add(new Point(100, 400));
-        pointsInfo.add(new ObjectInfo());
-        
-        ArrayList<Point> polyline = new ArrayList<Point>();
-        polyline.add(new Point(500, 100));
-        polyline.add(new Point(600, 200));
-        polyline.add(new Point(550, 300));
-        polylines.add(polyline);
-        polylinesInfo.add(new ObjectInfo());
-        
-        ellipses.add(new Ellipse2D.Double(500, 400, 50, 100));
-        ellipsesInfo.add(new ObjectInfo());
-        
-        rectangles.add(new Rectangle(100, 100, 300, 200));
-        rectanglesInfo.add(new ObjectInfo());
-        
-        Polygon polygon = new Polygon();
-        polygon.addPoint(700, 100);
-        polygon.addPoint(800, 50);
-        polygon.addPoint(900, 200);
-        polygon.addPoint(850, 300);
-        polygons.add(polygon);
-        polygonsInfo.add(new ObjectInfo());
-        */
     }
 
     private static ObjectInfo loadShape(ResultSet res) throws Exception, SQLException {
