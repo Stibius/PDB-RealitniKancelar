@@ -2112,7 +2112,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         for(int i=0; i<width; i++) {
             for(int j=0; j<height; j++) {
-                rotateImg.setRGB(height-1-j, width-1-i, ((DrawingPanel)imagePanel).image.getRGB(i, j));
+                rotateImg.setRGB(height-1-j, i, ((DrawingPanel)imagePanel).image.getRGB(i, j));
             }
         }
         
@@ -2139,7 +2139,6 @@ public class MainWindow extends javax.swing.JFrame {
             if (Data.rectanglesInfo.get(i).selected) {
                 Data.rectanglesInfo.get(i).modifiedImage = true;
                 Data.rectanglesInfo.get(i).rotateImage = true;
-                ((DrawingPanel)imagePanel).image.getWidth();
                 return;
             }
         }
@@ -2183,7 +2182,61 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void similarImagesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_similarImagesButtonActionPerformed
         // TODO add your handling code here:
-        new SimilarImagesDialog(this, true).setVisible(true);
+        for (int i = 0; i < Data.points.size(); i++) {
+            if (Data.pointsInfo.get(i).selected) {
+                try {
+                    new SimilarImagesDialog(this, true, Data.pointsInfo.get(i).findSimilarFoto()).setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }              
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polylines.size(); i++) {
+            if (Data.polylinesInfo.get(i).selected) {
+                try {
+                    new SimilarImagesDialog(this, true, Data.polylinesInfo.get(i).findSimilarFoto()).setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }                
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.rectangles.size(); i++) {
+            if (Data.rectanglesInfo.get(i).selected) {
+                try {
+                    new SimilarImagesDialog(this, true, Data.rectanglesInfo.get(i).findSimilarFoto()).setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }                
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.ellipses.size(); i++) {
+            if (Data.ellipsesInfo.get(i).selected) {
+                try {
+                    new SimilarImagesDialog(this, true, Data.ellipsesInfo.get(i).findSimilarFoto()).setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return;
+            }
+        }
+
+        for (int i = 0; i < Data.polygons.size(); i++) {
+            if (Data.polygonsInfo.get(i).selected) {
+                try {
+                    new SimilarImagesDialog(this, true, Data.polygonsInfo.get(i).findSimilarFoto()).setVisible(true);
+                 } catch (SQLException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return;
+            }
+        }
+        
     }//GEN-LAST:event_similarImagesButtonActionPerformed
 
     private void createData()

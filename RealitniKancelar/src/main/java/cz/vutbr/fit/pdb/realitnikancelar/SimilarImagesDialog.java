@@ -5,6 +5,16 @@
  */
 package cz.vutbr.fit.pdb.realitnikancelar;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import oracle.ord.im.OrdImage;
+
 /**
  *
  * @author Honza
@@ -14,9 +24,78 @@ public class SimilarImagesDialog extends javax.swing.JDialog {
     /**
      * Creates new form SimilarImagesDialog
      */
-    public SimilarImagesDialog(java.awt.Frame parent, boolean modal) {
+    public SimilarImagesDialog(java.awt.Frame parent, boolean modal, Object [][] similarImages) {
         super(parent, modal);
         initComponents();
+        
+        for (int i = 0; i <= 3; i++) {
+            switch (i) {
+                case 0:
+                    {   
+                        String name = (String)similarImages[i][0];
+                        OrdImage getImg = (OrdImage)similarImages[i][1];
+                        try {
+                            getImg.getDataInFile("./img/similars/out.jpg");
+                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                            jLabel1.setText(name);
+                            ((DrawingPanel)imagePanel1).image = img;
+                        } catch (SQLException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    break;
+                case 1:
+                    {
+                        String name = (String)similarImages[i][0];
+                        OrdImage getImg = (OrdImage)similarImages[i][1];
+                        try {
+                            getImg.getDataInFile("./img/similars/out.jpg");
+                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                            jLabel2.setText(name);
+                            ((DrawingPanel)imagePanel2).image = img;
+                        } catch (SQLException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }                    
+                    break;
+                case 2:
+                    {
+                        String name = (String)similarImages[i][0];
+                        OrdImage getImg = (OrdImage)similarImages[i][1];
+                        try {
+                            getImg.getDataInFile("./img/similars/out.jpg");
+                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                            jLabel4.setText(name);
+                            ((DrawingPanel)imagePanel3).image = img;
+                        } catch (SQLException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } 
+                    break;
+                default:
+                    {
+                        String name = (String)similarImages[i][0];
+                        OrdImage getImg = (OrdImage)similarImages[i][1];
+                        try {
+                            getImg.getDataInFile("./img/similars/out.jpg");
+                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                            jLabel5.setText(name);
+                            ((DrawingPanel)imagePanel4).image = img;
+                        } catch (SQLException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }                     
+                    break;
+            }
+        }
     }
 
     /**
@@ -192,7 +271,7 @@ public class SimilarImagesDialog extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                SimilarImagesDialog dialog = new SimilarImagesDialog(new javax.swing.JFrame(), true);
+                SimilarImagesDialog dialog = new SimilarImagesDialog(new javax.swing.JFrame(), true, new Object[4][2]);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

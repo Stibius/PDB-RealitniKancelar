@@ -307,9 +307,32 @@ public class ObjectInfo {
     
     /**
      * Funkce najde 4 podobné obrázky objektů pro vybraný objekt.
+     * @throws java.sql.SQLException
      */
-    public void findSimilarFoto (){
-        
+    public Object[][] findSimilarFoto () throws SQLException{
+        Statement stmt = ConnectDialog.conn.createStatement();
+        Object[][] imagesList = new Object [4][2];
+        int i = 0;
+        String simSQL = "SELECT src.id as source, dst.id as destination, dst.img as img, name.nazev as name, SI_ScoreByFtrList(new SI_FeatureList(src.img_ac,0.3,src.img_ch,0.3, src.img_pc,0.1,src.img_tx,0.3), dst.img_si) as similarity FROM obrazky src, obrazky dst, objekty name WHERE src.id <> dst.id AND src.objekt = "+this.id+" AND dst.objekt = name.id ORDER BY similarity ASC";
+        OracleResultSet rset = (OracleResultSet) stmt.executeQuery(simSQL);
+        while(rset.next()){
+            int j = 0;
+            if (i <= 3){
+                OrdImage imgProxy = (OrdImage)
+                     rset.getORAData("img", OrdImage.getORADataFactory());        
+                String name = rset.getString(4);
+                imagesList[i][j] = name;
+                imagesList[i][j+1] = imgProxy;
+                i++;
+            }
+            else {
+            break;
+        }
+            
+        }
+        stmt.close();
+        rset.close();
+        return imagesList;
     }
 
     public void addOwner(ResultSet res) {
