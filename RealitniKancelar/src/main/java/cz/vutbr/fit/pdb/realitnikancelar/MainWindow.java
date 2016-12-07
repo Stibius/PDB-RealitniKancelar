@@ -2539,6 +2539,12 @@ public class MainWindow extends javax.swing.JFrame {
             rekonstrukceField.setText(dateToString(info.rekonstrukce));
         }
         
+        if (info.popis != descriptionField.getText())
+        {
+            info.popis = descriptionField.getText();
+            info.modifiedInfo = true;
+        }
+        
         /* BACHA, PROZATIM VYPINAM SEKTORY
         if (info.sektor != sectorLabel.getText())
         {
