@@ -2500,6 +2500,11 @@ public class MainWindow extends javax.swing.JFrame {
         try
         {
             existenceOd = stringToDate(existenceOdField.getText());
+            if (info.existenceOd != existenceOd)
+            {
+                info.existenceOd = existenceOd;
+                info.modifiedInfo = true;
+            }
         }
         catch (IllegalArgumentException e)
         { 
@@ -2509,6 +2514,11 @@ public class MainWindow extends javax.swing.JFrame {
         try
         {
             existenceDo = stringToDate(existenceDoField.getText());
+            if (info.existenceDo != existenceDo)
+            {
+                info.existenceDo = existenceDo;
+                info.modifiedInfo = true;
+            }
         }
         catch (IllegalArgumentException e)
         { 
@@ -2518,35 +2528,17 @@ public class MainWindow extends javax.swing.JFrame {
         try
         {
             rekonstrukce = stringToDate(rekonstrukceField.getText());
+            if (info.rekonstrukce != rekonstrukce)
+            {
+                info.rekonstrukce = rekonstrukce;
+                info.modifiedInfo = true;
+            }
         }
         catch (IllegalArgumentException e)
         { 
             rekonstrukceField.setText(dateToString(info.rekonstrukce));
         }
         
-        if (info.existenceOd != existenceOd)
-        {
-            info.existenceOd = existenceOd;
-            info.modifiedInfo = true;
-        }
-        
-        if (info.existenceDo != existenceDo)
-        {
-            info.existenceDo = existenceDo;
-            info.modifiedInfo = true;
-        }
-        
-        if (info.rekonstrukce != rekonstrukce)
-        {
-            info.rekonstrukce = rekonstrukce;
-            info.modifiedInfo = true;
-        }
-            
-        if (info.popis != descriptionField.getText())
-        {
-            info.popis = descriptionField.getText();
-            info.modifiedInfo = true;
-        }
         /* BACHA, PROZATIM VYPINAM SEKTORY
         if (info.sektor != sectorLabel.getText())
         {
