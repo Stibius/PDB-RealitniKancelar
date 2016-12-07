@@ -34,31 +34,35 @@ public class SimilarImagesDialog extends javax.swing.JDialog {
                     {   
                         String name = (String)similarImages[i][0];
                         OrdImage getImg = (OrdImage)similarImages[i][1];
-                        try {
-                            getImg.getDataInFile("./img/similars/out.jpg");
-                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
-                            jLabel1.setText(name);
-                            ((DrawingPanel)imagePanel1).image = img;
-                        } catch (SQLException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        if(getImg != null){
+                            try {
+                                getImg.getDataInFile("./img/similars/out.jpg");
+                                BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                                jLabel1.setText(name);
+                                ((DrawingPanel)imagePanel1).image = img;
+                            } catch (SQLException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            }                            
+                        }      
                     }
                     break;
                 case 1:
                     {
                         String name = (String)similarImages[i][0];
                         OrdImage getImg = (OrdImage)similarImages[i][1];
-                        try {
-                            getImg.getDataInFile("./img/similars/out.jpg");
-                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
-                            jLabel2.setText(name);
-                            ((DrawingPanel)imagePanel2).image = img;
-                        } catch (SQLException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        if(getImg != null){
+                            try {
+                                getImg.getDataInFile("./img/similars/out.jpg");
+                                BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                                jLabel2.setText(name);
+                                ((DrawingPanel)imagePanel2).image = img;
+                            } catch (SQLException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     }                    
                     break;
@@ -66,15 +70,17 @@ public class SimilarImagesDialog extends javax.swing.JDialog {
                     {
                         String name = (String)similarImages[i][0];
                         OrdImage getImg = (OrdImage)similarImages[i][1];
-                        try {
-                            getImg.getDataInFile("./img/similars/out.jpg");
-                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
-                            jLabel4.setText(name);
-                            ((DrawingPanel)imagePanel3).image = img;
-                        } catch (SQLException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        if(getImg != null){
+                            try {
+                                getImg.getDataInFile("./img/similars/out.jpg");
+                                BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                                jLabel4.setText(name);
+                                ((DrawingPanel)imagePanel3).image = img;
+                            } catch (SQLException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     } 
                     break;
@@ -82,15 +88,17 @@ public class SimilarImagesDialog extends javax.swing.JDialog {
                     {
                         String name = (String)similarImages[i][0];
                         OrdImage getImg = (OrdImage)similarImages[i][1];
-                        try {
-                            getImg.getDataInFile("./img/similars/out.jpg");
-                            BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
-                            jLabel5.setText(name);
-                            ((DrawingPanel)imagePanel4).image = img;
-                        } catch (SQLException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex) {
-                            Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                        if(getImg != null){
+                            try {
+                                getImg.getDataInFile("./img/similars/out.jpg");
+                                BufferedImage img = ImageIO.read(new File("./img/similars/out.jpg"));
+                                jLabel5.setText(name);
+                                ((DrawingPanel)imagePanel4).image = img;
+                            } catch (SQLException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SimilarImagesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     }                     
                     break;
