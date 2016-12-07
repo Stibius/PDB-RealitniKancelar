@@ -147,7 +147,7 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         ownerNameLabel = new javax.swing.JLabel();
         ownerAddressLabel = new javax.swing.JLabel();
-        rekonstrukceOdField = new javax.swing.JTextField();
+        rekonstrukceField = new javax.swing.JTextField();
         existenceOdField = new javax.swing.JTextField();
         existenceDoField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -286,7 +286,7 @@ public class MainWindow extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(existenceOdField)
-                            .addComponent(rekonstrukceOdField)
+                            .addComponent(rekonstrukceField)
                             .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel19)
@@ -324,7 +324,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
-                    .addComponent(rekonstrukceOdField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(rekonstrukceField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
@@ -987,31 +987,31 @@ public class MainWindow extends javax.swing.JFrame {
         
         for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).selected) {
-                if (!saveInfo(Data.pointsInfo.get(i))) return;
+                saveInfo(Data.pointsInfo.get(i));
             }
         }
 
         for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).selected) {
-                if (!saveInfo(Data.polylinesInfo.get(i))) return;
+                saveInfo(Data.polylinesInfo.get(i));
             }
         }
 
         for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).selected) {
-                if (!saveInfo(Data.rectanglesInfo.get(i))) return;
+                saveInfo(Data.rectanglesInfo.get(i));
             }
         }
 
         for (int i = 0; i < Data.ellipses.size(); i++) {
             if (Data.ellipsesInfo.get(i).selected) {
-                if (!saveInfo(Data.ellipsesInfo.get(i))) return;
+                saveInfo(Data.ellipsesInfo.get(i));
             }
         }
 
         for (int i = 0; i < Data.polygons.size(); i++) {
             if (Data.polygonsInfo.get(i).selected) {
-                if (!saveInfo(Data.polygonsInfo.get(i))) return;
+                saveInfo(Data.polygonsInfo.get(i));
             }
         }
         
@@ -1358,7 +1358,7 @@ public class MainWindow extends javax.swing.JFrame {
         
         if (selectRadioButton.isSelected()) {
 
-            if (!unselect()) return;
+            unselect();
             
             for (int i = 0; i < Data.points.size(); i++) {
                 if (Data.pointsInfo.get(i).hovered) {
@@ -1668,11 +1668,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPolylineRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPolylineRadioButtonItemStateChanged
         // TODO add your handling code here:
-        if (!unselect()) 
-        {
-            selectRadioButton.setSelected(true);
-            return;
-        }
+        unselect();
         if (newPolyline == true) {
             newPolyline = false;
         }
@@ -1682,11 +1678,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPolygonRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPolygonRadioButtonItemStateChanged
         // TODO add your handling code here:
-        if (!unselect()) 
-        {
-            selectRadioButton.setSelected(true);
-            return;
-        }
+        unselect();
         if (newPolygon == true) {
             newPolygon = false;
 
@@ -1704,11 +1696,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addRectangleRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addRectangleRadioButtonItemStateChanged
         // TODO add your handling code here:
-        if (!unselect()) 
-        {
-            selectRadioButton.setSelected(true);
-            return;
-        }
+        unselect(); 
         if (newRectangle == true)
         {
             newRectangle = false;                  
@@ -1717,11 +1705,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addEllipseRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addEllipseRadioButtonItemStateChanged
         // TODO add your handling code here:
-        if (!unselect()) 
-        {
-            selectRadioButton.setSelected(true);
-            return;
-        }
+        unselect();
         if (newEllipse == true)
         {
             newEllipse = false;                   
@@ -2188,11 +2172,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void addPointRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addPointRadioButtonItemStateChanged
         // TODO add your handling code here:
-        if (!unselect()) 
-        {
-            selectRadioButton.setSelected(true);
-            return;
-        }
+        unselect(); 
     }//GEN-LAST:event_addPointRadioButtonItemStateChanged
 
     private void ownersButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ownersButtonActionPerformed
@@ -2264,50 +2244,40 @@ public class MainWindow extends javax.swing.JFrame {
         //tady se budou vkladat do databaze vzorova data a rovnou se i zobrazi
     }
     
-    private boolean unselect()
+    private void unselect()
     {
         for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).selected) {
-                if (saveInfo(Data.pointsInfo.get(i)))
-                    Data.pointsInfo.get(i).selected = false;
-                else
-                    return false;
+                saveInfo(Data.pointsInfo.get(i));
+                Data.pointsInfo.get(i).selected = false;
             }
         }
 
         for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).selected) {
-                if (saveInfo(Data.polylinesInfo.get(i)))
-                    Data.polylinesInfo.get(i).selected = false;
-                else
-                    return false;
+                saveInfo(Data.polylinesInfo.get(i));
+                Data.polylinesInfo.get(i).selected = false;
             }
         }
 
         for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).selected) {
-                if (saveInfo(Data.rectanglesInfo.get(i)))
-                    Data.rectanglesInfo.get(i).selected = false;
-                else
-                    return false;
+                saveInfo(Data.rectanglesInfo.get(i));
+                Data.rectanglesInfo.get(i).selected = false;
             }
         }
 
         for (int i = 0; i < Data.ellipses.size(); i++) {
             if (Data.ellipsesInfo.get(i).selected) {
-                if (saveInfo(Data.ellipsesInfo.get(i)))
-                    Data.ellipsesInfo.get(i).selected = false;
-                else
-                    return false;
+                saveInfo(Data.ellipsesInfo.get(i));
+                Data.ellipsesInfo.get(i).selected = false;
             }
         }
 
         for (int i = 0; i < Data.polygons.size(); i++) {
             if (Data.polygonsInfo.get(i).selected) {
-                if (saveInfo(Data.polygonsInfo.get(i)))
-                    Data.polygonsInfo.get(i).selected = false;
-                else
-                    return false;
+                saveInfo(Data.polygonsInfo.get(i));
+                Data.polygonsInfo.get(i).selected = false;
             }
         }
         
@@ -2316,7 +2286,6 @@ public class MainWindow extends javax.swing.JFrame {
         imagePanel.repaint();
         ((DrawingPanel)mapPanel).createImageFromData();
         
-        return true;
     }
     
     private void unhover()
@@ -2453,7 +2422,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel pointColorPanel;
     private javax.swing.JSpinner pointThicknessSpinner;
     private javax.swing.JLabel positionLabel;
-    private javax.swing.JTextField rekonstrukceOdField;
+    private javax.swing.JTextField rekonstrukceField;
     private javax.swing.JButton rotateImageButton;
     private javax.swing.JButton saveChangesButton;
     private javax.swing.JMenuItem saveChangesMenuItem;
@@ -2480,7 +2449,7 @@ public class MainWindow extends javax.swing.JFrame {
         ownersButton.setEnabled(info.editable);
         existenceOdField.setEnabled(info.editable);
         existenceDoField.setEnabled(info.editable);
-        rekonstrukceOdField.setEnabled(info.editable);
+        rekonstrukceField.setEnabled(info.editable);
         descriptionField.setEnabled(info.editable);
         
         objectNameField.setText(info.nazev);
@@ -2494,7 +2463,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         existenceOdField.setText(dateToString(info.existenceOd));
         existenceDoField.setText(dateToString(info.existenceDo));
-        rekonstrukceOdField.setText(dateToString(info.rekonstrukce));
+        rekonstrukceField.setText(dateToString(info.rekonstrukce));
         descriptionField.setText(info.popis);
         sectorLabel.setText(String.valueOf(info.sektor));
         
@@ -2510,11 +2479,9 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
-    private boolean saveInfo(ObjectInfo info)
+    private void saveInfo(ObjectInfo info)
     {
-        boolean success = true;
-        
-        if (!info.editable) return success;
+        if (!info.editable) return;
         
         if (info.nazev != objectNameField.getText())
         {
@@ -2527,54 +2494,53 @@ public class MainWindow extends javax.swing.JFrame {
             info.modifiedInfo = true;
         }
         
+        Date existenceOd = null;
+        Date existenceDo = null;
+        Date rekonstrukce = null;
+        
         try
         {
-            Date date = stringToDate(existenceOdField.getText());
-            if (date == null)
-            {
-                success = false;
-                JOptionPane.showMessageDialog(null, "Datum výstavby musí být uvedeno!", "Chyba", JOptionPane.ERROR_MESSAGE);
-            }
-            else if (info.existenceOd != date)
-            {
-                info.existenceOd = date;
-                info.modifiedInfo = true;
-            }
+            existenceOd = stringToDate(existenceOdField.getText());
         }
         catch (IllegalArgumentException e)
         { 
-            success = false;
-            JOptionPane.showMessageDialog(null, "Datum výstavby není ve správném formátu!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            existenceOdField.setText(dateToString(info.existenceOd));
         }
         
         try
         {
-            Date date = stringToDate(existenceDoField.getText());
-            if (info.existenceDo != date)
-            {
-                info.existenceDo = date;
-                info.modifiedInfo = true;
-            }
+            existenceDo = stringToDate(existenceDoField.getText());
         }
         catch (IllegalArgumentException e)
         { 
-            JOptionPane.showMessageDialog(null, "Datum demolice není ve správném formátu!", "Chyba", JOptionPane.ERROR_MESSAGE);
-            success = false;
+            existenceDoField.setText(dateToString(info.existenceDo));
         }
         
         try
         {
-            Date date = stringToDate(rekonstrukceOdField.getText());
-            if (info.rekonstrukce != date)
-            {
-                info.rekonstrukce = date;
-                info.modifiedInfo = true;
-            }
+            rekonstrukce = stringToDate(rekonstrukceField.getText());
         }
         catch (IllegalArgumentException e)
         { 
-            JOptionPane.showMessageDialog(null, "Datum rekonstrukce není ve správném formátu!", "Chyba", JOptionPane.ERROR_MESSAGE);
-            success = false;
+            rekonstrukceField.setText(dateToString(info.rekonstrukce));
+        }
+        
+        if (info.existenceOd != existenceOd)
+        {
+            info.existenceOd = existenceOd;
+            info.modifiedInfo = true;
+        }
+        
+        if (info.existenceDo != existenceDo)
+        {
+            info.existenceDo = existenceDo;
+            info.modifiedInfo = true;
+        }
+        
+        if (info.rekonstrukce != rekonstrukce)
+        {
+            info.rekonstrukce = rekonstrukce;
+            info.modifiedInfo = true;
         }
             
         if (info.popis != descriptionField.getText())
@@ -2589,8 +2555,6 @@ public class MainWindow extends javax.swing.JFrame {
             info.modifiedInfo = true;
         }
         */
-        
-        return success;
     }
     
     private void clearInfo() {
@@ -2606,13 +2570,13 @@ public class MainWindow extends javax.swing.JFrame {
         ownersButton.setEnabled(false);
         existenceOdField.setEnabled(false);
         existenceDoField.setEnabled(false);
-        rekonstrukceOdField.setEnabled(false);
+        rekonstrukceField.setEnabled(false);
         descriptionField.setEnabled(false);
         
         objectNameField.setText("");
         existenceOdField.setText("");
         existenceDoField.setText("");
-        rekonstrukceOdField.setText("");
+        rekonstrukceField.setText("");
         descriptionField.setText("");
         sectorLabel.setText("");
         ownerNameLabel.setText("");

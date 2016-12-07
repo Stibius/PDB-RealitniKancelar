@@ -162,6 +162,11 @@ public class Data {
         //Vytvorime testovaci sektor, bacha, smaze vsechny ostatni
         Sektor.testovaciSektor();
         Map<ObjectInfo, Shape> objects = mergeShapes();
+        
+        /* KONTROLA VALIDITY DAT VYSTAVBY, REKONSTRUKCE A DEMOLICE */
+        if (checkValidDates(objects) == false) {
+            return;
+        }
 
         /* KONTROLA PREKRYVU MAJITELU */
         if (checkValidOwnerDates(objects) == false) {
@@ -175,9 +180,58 @@ public class Data {
         /* OBJEKTY */
         saveObjects(objects);
         /* KONEC OBJEKTU */
+        
+      
 
         dataSaved();
     }
+    
+    private static Boolean checkValidDates(Map<ObjectInfo, Shape> objects) {
+        ObjectInfo currentInfo;
+        for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
+            currentInfo = entry.getKey();
+            
+            if (currentInfo.existenceOd == null)
+            {
+                JOptionPane.showMessageDialog(null, 
+                        "U objektu " + currentInfo.nazev + " není uvedeno datum výstavby!", 
+                        "Chyba!", 
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            
+            if (currentInfo.existenceDo != null && !currentInfo.existenceDo.after(currentInfo.existenceOd))
+            {
+                JOptionPane.showMessageDialog(null, 
+                        "U objektu " + currentInfo.nazev + " není datum demolice po datu výstavby!", 
+                        "Chyba!", 
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            
+            if (currentInfo.rekonstrukce != null && !currentInfo.rekonstrukce.after(currentInfo.existenceOd))
+            {
+                JOptionPane.showMessageDialog(null, 
+                        "U objektu " + currentInfo.nazev + " není datum rekonstrukce po datu výstavby!", 
+                        "Chyba!", 
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            
+            if (currentInfo.existenceDo != null && currentInfo.rekonstrukce != null &&
+                    !currentInfo.existenceDo.after(currentInfo.rekonstrukce))
+            {
+                JOptionPane.showMessageDialog(null, 
+                        "U objektu " + currentInfo.nazev + " není datum demolice po datu rekonstrukce!", 
+                        "Chyba!", 
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
 
     private static Boolean checkValidOwnerDates(Map<ObjectInfo, Shape> objects) {
         ObjectInfo currentInfo;
@@ -190,7 +244,7 @@ public class Data {
                     Date StartB = currentInfo.majitelOd.get(j);
                     Date EndB = currentInfo.majitelDo.get(j);
                     if (dateOverlap(StartA, EndA, StartB, EndB)) {
-                        JOptionPane.showMessageDialog(null, "Data vlastníků objektu se " +
+                        JOptionPane.showMessageDialog(null, "Data vlastníků objektu " + currentInfo.nazev + " se " +
                                         "překrývají!",
                                 "Chyba!", JOptionPane.ERROR_MESSAGE);
                         return false;
@@ -385,6 +439,11 @@ public class Data {
             polygonsInfo.get(i).modifiedInfo = false;
             polygonsInfo.get(i).modifiedImage = false;
         }
+        
+        JOptionPane.showMessageDialog(null, 
+                        "Data byla úspěšně uložena do databáze!", 
+                        "Úspěch!", 
+                        JOptionPane.INFORMATION_MESSAGE);
     }
 
     //smaze vsechna data z aplikace
