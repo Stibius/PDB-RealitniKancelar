@@ -93,6 +93,10 @@ public class MainWindow extends javax.swing.JFrame {
         addOwnerButton.setEnabled(false);
         updateOwnerButton.setEnabled(false);
         deleteOwnerButton.setEnabled(false);
+        loadImageButton.setEnabled(false);
+        saveImageButton.setEnabled(false);
+        rotateImageButton.setEnabled(false);
+        similarImagesButton.setEnabled(false);
         
         ownersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ownersList.setModel(ownersListModel);
@@ -152,13 +156,6 @@ public class MainWindow extends javax.swing.JFrame {
         existenceDoField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         descriptionField = new javax.swing.JTextArea();
-        jPanel3 = new javax.swing.JPanel();
-        loadImageButton = new javax.swing.JButton();
-        saveImageButton = new javax.swing.JButton();
-        rotateImageButton = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        imagePanel = new DrawingPanel();
-        similarImagesButton = new javax.swing.JButton();
         editPanel = new javax.swing.JPanel();
         selectRadioButton = new javax.swing.JRadioButton();
         addPointRadioButton = new javax.swing.JRadioButton();
@@ -177,6 +174,13 @@ public class MainWindow extends javax.swing.JFrame {
         deleteOwnerButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         ownersList = new javax.swing.JList<>();
+        jPanel3 = new javax.swing.JPanel();
+        loadImageButton = new javax.swing.JButton();
+        saveImageButton = new javax.swing.JButton();
+        rotateImageButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        imagePanel = new DrawingPanel();
+        similarImagesButton = new javax.swing.JButton();
         mapSettingsPanel = new javax.swing.JPanel();
         backColorPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -339,82 +343,6 @@ public class MainWindow extends javax.swing.JFrame {
         infoPanel.setViewportView(jPanel2);
 
         tabbedPane.addTab("Informace", infoPanel);
-
-        loadImageButton.setText("Načíst ze souboru");
-        loadImageButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadImageButtonActionPerformed(evt);
-            }
-        });
-
-        saveImageButton.setText("Uložit do souboru");
-        saveImageButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveImageButtonActionPerformed(evt);
-            }
-        });
-
-        rotateImageButton.setText("Rotovat");
-        rotateImageButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rotateImageButtonActionPerformed(evt);
-            }
-        });
-
-        imagePanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout imagePanelLayout = new javax.swing.GroupLayout(imagePanel);
-        imagePanel.setLayout(imagePanelLayout);
-        imagePanelLayout.setHorizontalGroup(
-            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 388, Short.MAX_VALUE)
-        );
-        imagePanelLayout.setVerticalGroup(
-            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 322, Short.MAX_VALUE)
-        );
-
-        jScrollPane3.setViewportView(imagePanel);
-
-        similarImagesButton.setText("Vyhledat podobné");
-        similarImagesButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                similarImagesButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(rotateImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(loadImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(saveImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(similarImagesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(56, 56, 56))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loadImageButton)
-                    .addComponent(saveImageButton))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rotateImageButton)
-                    .addComponent(similarImagesButton))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3))
-        );
-
-        tabbedPane.addTab("Obrázek", jPanel3);
 
         selectRadioButton.setSelected(true);
         selectRadioButton.setText("Posouvání a mazání");
@@ -580,6 +508,82 @@ public class MainWindow extends javax.swing.JFrame {
         ownersPanel.setViewportView(jPanel1);
 
         tabbedPane.addTab("Majitelé", ownersPanel);
+
+        loadImageButton.setText("Načíst ze souboru");
+        loadImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadImageButtonActionPerformed(evt);
+            }
+        });
+
+        saveImageButton.setText("Uložit do souboru");
+        saveImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveImageButtonActionPerformed(evt);
+            }
+        });
+
+        rotateImageButton.setText("Rotovat");
+        rotateImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rotateImageButtonActionPerformed(evt);
+            }
+        });
+
+        imagePanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout imagePanelLayout = new javax.swing.GroupLayout(imagePanel);
+        imagePanel.setLayout(imagePanelLayout);
+        imagePanelLayout.setHorizontalGroup(
+            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 388, Short.MAX_VALUE)
+        );
+        imagePanelLayout.setVerticalGroup(
+            imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 322, Short.MAX_VALUE)
+        );
+
+        jScrollPane3.setViewportView(imagePanel);
+
+        similarImagesButton.setText("Vyhledat podobné");
+        similarImagesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                similarImagesButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(rotateImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loadImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(saveImageButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(similarImagesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(56, 56, 56))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loadImageButton)
+                    .addComponent(saveImageButton))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rotateImageButton)
+                    .addComponent(similarImagesButton))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3))
+        );
+
+        tabbedPane.addTab("Obrázek", jPanel3);
 
         backColorPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         backColorPanel.setMaximumSize(new java.awt.Dimension(15, 15));
@@ -1364,8 +1368,6 @@ public class MainWindow extends javax.swing.JFrame {
                 if (Data.pointsInfo.get(i).hovered) {
                     setInfo(Data.pointsInfo.get(i));
                     Data.pointsInfo.get(i).selected = true;
-                    deleteButton.setEnabled(true);
-                    deleteMenuItem.setEnabled(true);
                     try {
                         Data.pointsInfo.get(i).loadFotoFromDB();
                         
@@ -1376,6 +1378,7 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                     ((DrawingPanel)imagePanel).image = Data.pointsInfo.get(i).imgIcon;
                     imagePanel.repaint();
+                    setInfo(Data.pointsInfo.get(i));
                 }
             }
 
@@ -1383,8 +1386,6 @@ public class MainWindow extends javax.swing.JFrame {
                 if (Data.polylinesInfo.get(i).hovered) {
                     setInfo(Data.polylinesInfo.get(i));
                     Data.polylinesInfo.get(i).selected = true;
-                    deleteButton.setEnabled(true);
-                    deleteMenuItem.setEnabled(true);
                     try {
                         Data.polylinesInfo.get(i).loadFotoFromDB();
                         
@@ -1395,6 +1396,7 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                     ((DrawingPanel)imagePanel).image = Data.polylinesInfo.get(i).imgIcon;
                     imagePanel.repaint();
+                    setInfo(Data.polylinesInfo.get(i));
                 } 
             }
 
@@ -1402,8 +1404,6 @@ public class MainWindow extends javax.swing.JFrame {
                 if (Data.rectanglesInfo.get(i).hovered) {
                     setInfo(Data.rectanglesInfo.get(i));
                     Data.rectanglesInfo.get(i).selected = true;
-                    deleteButton.setEnabled(true);
-                    deleteMenuItem.setEnabled(true);
                     try {
                         Data.rectanglesInfo.get(i).loadFotoFromDB();
                         
@@ -1414,7 +1414,7 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                     ((DrawingPanel)imagePanel).image = Data.rectanglesInfo.get(i).imgIcon;
                     imagePanel.repaint();
-                    
+                    setInfo(Data.rectanglesInfo.get(i));
                 } 
             }
 
@@ -1422,8 +1422,6 @@ public class MainWindow extends javax.swing.JFrame {
                 if (Data.ellipsesInfo.get(i).hovered) {
                     setInfo(Data.ellipsesInfo.get(i));
                     Data.ellipsesInfo.get(i).selected = true;
-                    deleteButton.setEnabled(true);
-                    deleteMenuItem.setEnabled(true);
                     try {
                         Data.ellipsesInfo.get(i).loadFotoFromDB();
                         
@@ -1434,6 +1432,7 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                     ((DrawingPanel)imagePanel).image = Data.ellipsesInfo.get(i).imgIcon;
                     imagePanel.repaint();
+                    setInfo(Data.ellipsesInfo.get(i));
                 } 
             }
 
@@ -1441,8 +1440,6 @@ public class MainWindow extends javax.swing.JFrame {
                 if (Data.polygonsInfo.get(i).hovered) {
                     setInfo(Data.polygonsInfo.get(i));
                     Data.polygonsInfo.get(i).selected = true;
-                    deleteButton.setEnabled(true);
-                    deleteMenuItem.setEnabled(true);
                     try {
                         Data.polygonsInfo.get(i).loadFotoFromDB();
                         
@@ -1453,6 +1450,7 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                     ((DrawingPanel)imagePanel).image = Data.polygonsInfo.get(i).imgIcon;
                     imagePanel.repaint();
+                    setInfo(Data.polygonsInfo.get(i));
                 } 
             }
         }
@@ -2440,6 +2438,7 @@ public class MainWindow extends javax.swing.JFrame {
         loadImageButton.setEnabled(info.editable);
         saveImageButton.setEnabled(true);
         rotateImageButton.setEnabled(info.editable);
+        similarImagesButton.setEnabled(true);
         
         deleteButton.setEnabled(info.editable);
         deleteMenuItem.setEnabled(info.editable);
@@ -2561,6 +2560,7 @@ public class MainWindow extends javax.swing.JFrame {
         loadImageButton.setEnabled(false);
         saveImageButton.setEnabled(false);
         rotateImageButton.setEnabled(false);
+        similarImagesButton.setEnabled(false);
         
         deleteButton.setEnabled(false);
         deleteMenuItem.setEnabled(false);
