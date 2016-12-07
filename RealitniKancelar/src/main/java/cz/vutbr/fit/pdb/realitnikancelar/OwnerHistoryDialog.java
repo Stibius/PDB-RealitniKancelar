@@ -290,6 +290,36 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         // TODO add your handling code here:
+        if (ownersHistoryListModel.getSize() != 0) {
+            int index = ownerComboBox.getSelectedIndex();
+            int index2 = ownersHistoryList.getSelectedIndex();
+            if (index == ownersComboBoxModel.getSize() - 1) {
+                if (currentInfo.majitele.get(index2) != null) {
+                    currentInfo.majitele.set(index2, null);
+                    currentInfo.modifiedInfo = true;
+                }
+            } else if (currentInfo.majitele.get(index2) != Data.owners.get(index)) {
+                currentInfo.majitele.set(index2, Data.owners.get(index));
+                currentInfo.modifiedInfo = true;
+            }
+            try {
+                if (currentInfo.majitelOd.get(index2) != MainWindow.stringToDate(odField.getText())) {
+                    currentInfo.majitelOd.set(index2, MainWindow.stringToDate(odField.getText()));
+                    currentInfo.modifiedInfo = true;
+                }
+            } catch (IllegalArgumentException e) {
+                odField.setText(MainWindow.dateToString(currentInfo.majitelOd.get(index2)));
+            }
+            try {
+                if (currentInfo.majitelDo.get(index2) != MainWindow.stringToDate(doField.getText())) {
+                    currentInfo.majitelDo.set(index2, MainWindow.stringToDate(doField.getText()));
+                    currentInfo.modifiedInfo = true;
+                }
+            } catch (IllegalArgumentException e) {
+                doField.setText(MainWindow.dateToString(currentInfo.majitelDo.get(index2)));
+            }
+        }
+        
         setVisible(false);
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -396,15 +426,27 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         int index2 = ownersHistoryList.getSelectedIndex();
         if (index == ownersComboBoxModel.getSize()-1)
         {
-            currentInfo.majitele.set(index2, null);
+            if (currentInfo.majitele.get(index2) != null)
+            {
+                currentInfo.majitele.set(index2, null);
+                currentInfo.modifiedInfo = true;
+            }
         }
         else
         {
-            currentInfo.majitele.set(index2, Data.owners.get(index));
+            if (currentInfo.majitele.get(index2) != Data.owners.get(index))
+            {
+                currentInfo.majitele.set(index2, Data.owners.get(index));
+                currentInfo.modifiedInfo = true;
+            }
         }
         try
         {
-            currentInfo.majitelOd.set(index2, MainWindow.stringToDate(odField.getText()));
+            if (currentInfo.majitelOd.get(index2) != MainWindow.stringToDate(odField.getText()))
+            {
+                currentInfo.majitelOd.set(index2, MainWindow.stringToDate(odField.getText()));
+                currentInfo.modifiedInfo = true;
+            }
         }
         catch (IllegalArgumentException e)
         {
@@ -412,7 +454,11 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         }
         try
         {
-            currentInfo.majitelDo.set(index2, MainWindow.stringToDate(doField.getText()));
+            if (currentInfo.majitelDo.get(index2) != MainWindow.stringToDate(doField.getText()))
+            {
+                currentInfo.majitelDo.set(index2, MainWindow.stringToDate(doField.getText()));
+                currentInfo.modifiedInfo = true;
+            }
         }
         catch (IllegalArgumentException e)
         {
@@ -433,7 +479,6 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
         }
         
         ownersHistoryList.setSelectedIndex(index2);
-        currentInfo.modifiedInfo = true;
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
