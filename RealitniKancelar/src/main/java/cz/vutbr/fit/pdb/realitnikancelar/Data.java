@@ -237,7 +237,40 @@ public class Data {
         ObjectInfo currentInfo;
         for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
             currentInfo = entry.getKey();
-            for (int i = 0; i < currentInfo.majitele.size(); i++)
+            for (int i = 0; i < currentInfo.majitele.size(); i++) {
+                if (currentInfo.majitelOd.get(i) == null)
+                {
+                    JOptionPane.showMessageDialog(null, "Datum začátku vlastnictví objektu " + currentInfo.nazev + 
+                            " majitelem " + currentInfo.majitele.get(i).jmeno +
+                            " není specifikováno!",
+                            "Chyba!", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+                
+                if (currentInfo.majitelDo.get(i) != null &&
+                        !currentInfo.majitelOd.get(i).before(currentInfo.majitelDo.get(i)))
+                {
+                    JOptionPane.showMessageDialog(null, "Datum začátku vlastnictví objektu " + currentInfo.nazev + 
+                            " majitelem " + currentInfo.majitele.get(i).jmeno +
+                            " není dříve než datum konce tohoto vlastnictví!",
+                            "Chyba!", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+                
+                if (!intervalWithin(currentInfo.majitelOd.get(i), 
+                        currentInfo.majitelDo.get(i),
+                        currentInfo.existenceOd,
+                        currentInfo.existenceDo))
+                {
+                    JOptionPane.showMessageDialog(null, "Období vlastnictví objektu " + currentInfo.nazev + 
+                            " majitelem " + currentInfo.majitele.get(i).jmeno +
+                            " není zcela obsaženo mezi datem výstavby a datem demolice tohoto objektu!",
+                            "Chyba!", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+            
+            for (int i = 0; i < currentInfo.majitele.size(); i++) {
                 for (int j = i + 1; j < currentInfo.majitele.size(); j++) {
                     Date StartA = currentInfo.majitelOd.get(i);
                     Date EndA = currentInfo.majitelDo.get(i);
@@ -250,8 +283,39 @@ public class Data {
                         return false;
                     }
                 }
+            }
         }
         return true;
+    }
+    
+    private static Boolean intervalWithin(Date date1, Date date2, Date date3, Date date4)
+    {
+        Long StartA;
+        Long EndA;
+        Long StartB;
+        Long EndB;
+        
+        if (date2 == null) {
+            EndA = Long.MAX_VALUE;
+        } else {
+            EndA = date2.getTime();
+        }
+        if (date4 == null) {
+            EndB = Long.MAX_VALUE;
+        } else {
+            EndB = date4.getTime();
+        }
+        StartA = date1.getTime();
+        StartB = date3.getTime();
+        
+        if (StartA >= StartB && EndA <= EndB)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private static Boolean dateOverlap(Date date, Date date1, Date date2, Date date3) {
