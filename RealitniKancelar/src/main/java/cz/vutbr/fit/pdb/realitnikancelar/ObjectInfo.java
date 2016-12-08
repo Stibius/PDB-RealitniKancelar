@@ -58,6 +58,9 @@ public class ObjectInfo {
     
     BufferedImage imgIcon;
     String imgPath;
+    
+    public int plocha;
+    public int obvod;
 
     /**
      * Inicializace prazdneho ObjectInfo
@@ -102,6 +105,9 @@ public class ObjectInfo {
         
         ids.add(this.id);
         
+        this.plocha = 0;
+        this.obvod = 0;
+        
     }
 
     private int nextId() {
@@ -127,6 +133,8 @@ public class ObjectInfo {
         
         ids.add(info.id);
         //info.imgIcon = info.loadFotoFromDB();
+        info.plocha = info.getArea(res.getInt("id"));
+        info.obvod = info.getCircuit(res.getInt("id"));
         return info;
     }
     
@@ -351,6 +359,30 @@ public class ObjectInfo {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    
+    public int getCircuit(int id) throws SQLException{
+        Statement stmt = ConnectDialog.conn.createStatement();
+        ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_LENGTH(geometrie, 1) obvod " +
+           "FROM objekty WHERE id = "+id);
+        if (rset.next()){
+            return rset.getInt("obvod");
+        }
+        else{
+            return 0;
+        }    
+    }
+    
+    public int getArea(int id) throws SQLException{
+        Statement stmt = ConnectDialog.conn.createStatement();
+        ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_AREA(geometrie, 1) obsah " +
+           "FROM objekty WHERE id = "+id);
+        if (rset.next()){
+            return rset.getInt("obsah");
+        }
+        else{
+            return 0;
         }
     }
 }

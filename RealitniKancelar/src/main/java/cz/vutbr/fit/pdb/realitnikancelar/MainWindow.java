@@ -156,6 +156,11 @@ public class MainWindow extends javax.swing.JFrame {
         existenceDoField = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         descriptionField = new javax.swing.JTextArea();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        plocha = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        obvod = new javax.swing.JLabel();
         editPanel = new javax.swing.JPanel();
         selectRadioButton = new javax.swing.JRadioButton();
         addPointRadioButton = new javax.swing.JRadioButton();
@@ -251,6 +256,13 @@ public class MainWindow extends javax.swing.JFrame {
         descriptionField.setRows(5);
         jScrollPane2.setViewportView(descriptionField);
 
+        jLabel20.setText("Plocha objektu:");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel11.setText("Podrobnosti");
+
+        jLabel21.setText("Obvod objektu:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -258,21 +270,6 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(objectNameField)
-                                    .addComponent(typeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(sectorLabel)
-                                .addGap(87, 87, 87))))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(ownerAddressLabel)
                         .addGroup(jPanel2Layout.createSequentialGroup()
@@ -294,8 +291,32 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel19)
-                        .addGap(77, 77, 77)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(71, 71, 71)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(objectNameField)
+                                    .addComponent(typeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(sectorLabel)
+                                .addGap(87, 87, 87))))
+                    .addComponent(jLabel11)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel20)
+                            .addComponent(jLabel21))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(plocha, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                            .addComponent(obvod, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -337,8 +358,22 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel19)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel20))
+                    .addComponent(plocha, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(obvod, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21))
+                .addGap(114, 114, 114))
         );
+
+        plocha.getAccessibleContext().setAccessibleName("plocha");
+        obvod.getAccessibleContext().setAccessibleName("obvod");
 
         infoPanel.setViewportView(jPanel2);
 
@@ -413,7 +448,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(addEllipseRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addPolygonRadioButton)
-                .addContainerGap(260, Short.MAX_VALUE))
+                .addContainerGap(368, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Editace", editPanel);
@@ -501,7 +536,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(updateOwnerButton)
                     .addComponent(deleteOwnerButton))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -540,7 +575,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         imagePanelLayout.setVerticalGroup(
             imagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 322, Short.MAX_VALUE)
+            .addGap(0, 430, Short.MAX_VALUE)
         );
 
         jScrollPane3.setViewportView(imagePanel);
@@ -766,7 +801,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(mapSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(selectionColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
                 .addGroup(mapSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(pointThicknessSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -774,7 +809,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(mapSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(lineThicknessSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 205, Short.MAX_VALUE))
+                .addGap(0, 243, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Nastavení mapy", mapSettingsPanel);
@@ -807,7 +842,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         mapPanelLayout.setVerticalGroup(
             mapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 458, Short.MAX_VALUE)
+            .addGap(0, 566, Short.MAX_VALUE)
         );
 
         mapScrollPanel.setViewportView(mapPanel);
@@ -928,7 +963,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(createDataButton))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
                     .addComponent(mapScrollPanel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(positionLabel)
@@ -2378,6 +2413,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane infoPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel15;
@@ -2386,6 +2422,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2410,6 +2448,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane mapScrollPanel;
     private javax.swing.JPanel mapSettingsPanel;
     private javax.swing.JTextField objectNameField;
+    private javax.swing.JLabel obvod;
     private javax.swing.JTextField ownerAddressField;
     private javax.swing.JLabel ownerAddressLabel;
     private javax.swing.JTextField ownerNameField;
@@ -2417,6 +2456,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton ownersButton;
     private javax.swing.JList<String> ownersList;
     private javax.swing.JScrollPane ownersPanel;
+    private javax.swing.JLabel plocha;
     private javax.swing.JPanel pointColorPanel;
     private javax.swing.JSpinner pointThicknessSpinner;
     private javax.swing.JLabel positionLabel;
@@ -2476,6 +2516,9 @@ public class MainWindow extends javax.swing.JFrame {
             ownerNameLabel.setText(info.majitele.get(info.majitele.size()-1).jmeno);
             ownerAddressLabel.setText(info.majitele.get(info.majitele.size()-1).adresa);
         }
+        obvod.setText(Integer.toString(info.obvod));
+        plocha.setText(Integer.toString(info.plocha));
+        
     }
     
     private void saveInfo(ObjectInfo info)
@@ -2579,6 +2622,8 @@ public class MainWindow extends javax.swing.JFrame {
         sectorLabel.setText("");
         ownerNameLabel.setText("");
         ownerAddressLabel.setText("");
+        plocha.setText("");
+        obvod.setText("");
     }
     
     public static String dateToString(Date date)
