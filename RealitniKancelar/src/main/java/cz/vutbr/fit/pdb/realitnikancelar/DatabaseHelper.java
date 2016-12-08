@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.logging.Level;
@@ -127,7 +129,9 @@ public class DatabaseHelper {
                 stmt.setNull(10, Types.DATE);
             }
             stmt.execute();
-
+            
+            /*Updatujeme sektor*/
+            DatabaseHelper.setSector(currentInfo.id);
             /* Ted tabulku 'majitele_objekty' */
             stmt = conn.prepareStatement("INSERT INTO majitele_objekty " +
                     "(IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (?,?,?,?)");
@@ -166,6 +170,27 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
     }
+    /**
+     * Funkce zjisti, zda objekt leží v nějakém sektoru, pokud ano, vrátí jeho id.
+     * @param id
+     * @return 
+     */
+    public static void setSector (int id) throws SQLException{
+        Statement stmt = ConnectDialog.conn.createStatement();
+        
+        ResultSet rset = stmt.executeQuery("SELECT s.id FROM objekty o, sektor s " +
+            " WHERE SDO_RELATE(o.geometrie, s.geometrie, 'mask=INSIDE')='TRUE' "+
+            "AND s.id <> 0 AND o.id="+id);
+        if (rset.next()){
+            String updateSQL = "UPDATE objekty SET sektor = "+rset.getInt("id")+
+                " WHERE id = "+id;
+            ResultSet rset2 = stmt.executeQuery(updateSQL);
+            rset2.next();           
+        }
+        else{
+            
+        }
+    }
 
     public static void modifyObjectGeometry(Shape current, ObjectInfo currentInfo) {
         JGeometry jGeo = null;
@@ -182,6 +207,8 @@ public class DatabaseHelper {
             stmt.setInt(2, currentInfo.id);
 
             stmt.execute();
+            //kontrola sektoru
+            DatabaseHelper.setSector(currentInfo.id);
         } catch (Exception e) {
             e.printStackTrace();
         }

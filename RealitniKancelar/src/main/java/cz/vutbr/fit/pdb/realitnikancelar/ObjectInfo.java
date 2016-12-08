@@ -367,9 +367,14 @@ public class ObjectInfo {
         ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_LENGTH(geometrie, 1) obvod " +
            "FROM objekty WHERE id = "+id);
         if (rset.next()){
-            return rset.getInt("obvod");
+            int id_sektor = rset.getInt("obvod");
+            stmt.close();
+            rset.close();
+            return id_sektor;
         }
         else{
+            stmt.close();
+            rset.close();
             return 0;
         }    
     }
@@ -379,9 +384,14 @@ public class ObjectInfo {
         ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_AREA(geometrie, 1) obsah " +
            "FROM objekty WHERE id = "+id);
         if (rset.next()){
-            return rset.getInt("obsah");
+            int id_sektor = rset.getInt("obsah");
+            stmt.close();
+            rset.close();
+            return id_sektor;
         }
         else{
+            stmt.close();
+            rset.close();
             return 0;
         }
     }
