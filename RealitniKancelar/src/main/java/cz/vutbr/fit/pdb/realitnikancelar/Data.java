@@ -38,6 +38,7 @@ public class Data {
     //jedno s geometrickymi objekty a jedno s informacemi o tech objektech
 
     public static ArrayList<Owner> owners = new ArrayList<>();
+    public static ArrayList<Sektor> sectors = new ArrayList<>();
 
     public static ArrayList<Point> points = new ArrayList<>();
     public static ArrayList<ObjectInfo> pointsInfo = new ArrayList<>();
@@ -70,19 +71,28 @@ public class Data {
         ObjectInfo info = null;
 
         try (Statement stmt = ConnectDialog.conn.createStatement()) {
-            ResultSet res = stmt.executeQuery("SELECT * FROM OBJEKTY " +
+            /* Nactení sektoru */
+            ResultSet res = stmt.executeQuery("SELECT * FROM sektor");
+            while (res.next()) {
+                //Nacitani sektoru
+                loadSector(res);
+
+            }
+            /* Nacteni objektu */
+            Statement stmt2 = ConnectDialog.conn.createStatement();
+            ResultSet res2 = stmt2.executeQuery("SELECT * FROM OBJEKTY " +
                     "LEFT OUTER JOIN MAJITELE_OBJEKTY ON objekty.ID=majitele_objekty" +
                     ".IDOBJEKTU " +
                     "LEFT OUTER JOIN MAJITELE ON majitele_objekty.IDMAJITELE=majitele" +
                     ".id_majitele");
-            while (res.next()) {
+            while (res2.next()) {
                 //pokud nemame zadne info, ObjectInfo neexistuje, tudiz ani objekt
-                if (!ObjectInfo.ids.contains(res.getInt("id"))) {
-                    info = loadShape(res);
+                if (!ObjectInfo.ids.contains(res2.getInt("id"))) {
+                    info = loadShape(res2);
                 }
                 //ObjectInfo mame, pridame jenom dalsi majitele, dalsi objekt nechceme
                 else {
-                    info.addOwner(res);
+                    info.addOwner(res2);
                 }
             }
         } catch (SQLException e) {
@@ -90,6 +100,34 @@ public class Data {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void loadSector(ResultSet res) throws Exception {
+        Sektor sektor = new Sektor();
+        byte[] image = new byte[0];
+        JGeometry tempGeo;
+        Shape shape;
+        image = res.getBytes("geometrie");
+        //process shape
+        tempGeo = JGeometry.load(image);
+        shape = ShapeHelper.jGeometry2Shape(tempGeo);
+        //Prevedeme na polygon
+        Polygon shapePoly = new Polygon();
+        PathIterator iterator = shape.getPathIterator(null);
+        float[] floats = new float[6];
+        while (!iterator.isDone()) {
+            int type = iterator.currentSegment(floats);
+            int x = (int) floats[0];
+            int y = (int) floats[1];
+            if (type != PathIterator.SEG_CLOSE) {
+                shapePoly.addPoint(x, y);
+            }
+            iterator.next();
+        }
+        sektor.geometrie = shapePoly;
+        sektor.id = res.getInt("id");
+        sektor.nazev = res.getString("nazev");
+        sectors.add(sektor);
     }
 
     private static ObjectInfo loadShape(ResultSet res) throws Exception, SQLException {
@@ -180,55 +218,50 @@ public class Data {
         /* OBJEKTY */
         saveObjects(objects);
         /* KONEC OBJEKTU */
-        
-      
+
 
         dataSaved();
     }
-    
+
     private static Boolean checkValidDates(Map<ObjectInfo, Shape> objects) {
         ObjectInfo currentInfo;
         for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
             currentInfo = entry.getKey();
-            
-            if (currentInfo.existenceOd == null)
-            {
-                JOptionPane.showMessageDialog(null, 
-                        "U objektu " + currentInfo.nazev + " není uvedeno datum výstavby!", 
-                        "Chyba!", 
+
+            if (currentInfo.existenceOd == null) {
+                JOptionPane.showMessageDialog(null,
+                        "U objektu " + currentInfo.nazev + " není uvedeno datum výstavby!",
+                        "Chyba!",
                         JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-            
-            if (currentInfo.existenceDo != null && !currentInfo.existenceDo.after(currentInfo.existenceOd))
-            {
-                JOptionPane.showMessageDialog(null, 
-                        "U objektu " + currentInfo.nazev + " není datum demolice po datu výstavby!", 
-                        "Chyba!", 
+
+            if (currentInfo.existenceDo != null && !currentInfo.existenceDo.after(currentInfo.existenceOd)) {
+                JOptionPane.showMessageDialog(null,
+                        "U objektu " + currentInfo.nazev + " není datum demolice po datu výstavby!",
+                        "Chyba!",
                         JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-            
-            if (currentInfo.rekonstrukce != null && !currentInfo.rekonstrukce.after(currentInfo.existenceOd))
-            {
-                JOptionPane.showMessageDialog(null, 
-                        "U objektu " + currentInfo.nazev + " není datum rekonstrukce po datu výstavby!", 
-                        "Chyba!", 
+
+            if (currentInfo.rekonstrukce != null && !currentInfo.rekonstrukce.after(currentInfo.existenceOd)) {
+                JOptionPane.showMessageDialog(null,
+                        "U objektu " + currentInfo.nazev + " není datum rekonstrukce po datu výstavby!",
+                        "Chyba!",
                         JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-            
+
             if (currentInfo.existenceDo != null && currentInfo.rekonstrukce != null &&
-                    !currentInfo.existenceDo.after(currentInfo.rekonstrukce))
-            {
-                JOptionPane.showMessageDialog(null, 
-                        "U objektu " + currentInfo.nazev + " není datum demolice po datu rekonstrukce!", 
-                        "Chyba!", 
+                    !currentInfo.existenceDo.after(currentInfo.rekonstrukce)) {
+                JOptionPane.showMessageDialog(null,
+                        "U objektu " + currentInfo.nazev + " není datum demolice po datu rekonstrukce!",
+                        "Chyba!",
                         JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -238,38 +271,35 @@ public class Data {
         for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
             currentInfo = entry.getKey();
             for (int i = 0; i < currentInfo.majitele.size(); i++) {
-                if (currentInfo.majitelOd.get(i) == null)
-                {
-                    JOptionPane.showMessageDialog(null, "Datum začátku vlastnictví objektu " + currentInfo.nazev + 
-                            " majitelem " + currentInfo.majitele.get(i).jmeno +
-                            " není specifikováno!",
+                if (currentInfo.majitelOd.get(i) == null) {
+                    JOptionPane.showMessageDialog(null, "Datum začátku vlastnictví objektu " + currentInfo.nazev +
+                                    " majitelem " + currentInfo.majitele.get(i).jmeno +
+                                    " není specifikováno!",
                             "Chyba!", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-                
+
                 if (currentInfo.majitelDo.get(i) != null &&
-                        !currentInfo.majitelOd.get(i).before(currentInfo.majitelDo.get(i)))
-                {
-                    JOptionPane.showMessageDialog(null, "Datum začátku vlastnictví objektu " + currentInfo.nazev + 
-                            " majitelem " + currentInfo.majitele.get(i).jmeno +
-                            " není dříve než datum konce tohoto vlastnictví!",
+                        !currentInfo.majitelOd.get(i).before(currentInfo.majitelDo.get(i))) {
+                    JOptionPane.showMessageDialog(null, "Datum začátku vlastnictví objektu " + currentInfo.nazev +
+                                    " majitelem " + currentInfo.majitele.get(i).jmeno +
+                                    " není dříve než datum konce tohoto vlastnictví!",
                             "Chyba!", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-                
-                if (!intervalWithin(currentInfo.majitelOd.get(i), 
+
+                if (!intervalWithin(currentInfo.majitelOd.get(i),
                         currentInfo.majitelDo.get(i),
                         currentInfo.existenceOd,
-                        currentInfo.existenceDo))
-                {
-                    JOptionPane.showMessageDialog(null, "Období vlastnictví objektu " + currentInfo.nazev + 
-                            " majitelem " + currentInfo.majitele.get(i).jmeno +
-                            " není zcela obsaženo mezi datem výstavby a datem demolice tohoto objektu!",
+                        currentInfo.existenceDo)) {
+                    JOptionPane.showMessageDialog(null, "Období vlastnictví objektu " + currentInfo.nazev +
+                                    " majitelem " + currentInfo.majitele.get(i).jmeno +
+                                    " není zcela obsaženo mezi datem výstavby a datem demolice tohoto objektu!",
                             "Chyba!", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
-            
+
             for (int i = 0; i < currentInfo.majitele.size(); i++) {
                 for (int j = i + 1; j < currentInfo.majitele.size(); j++) {
                     Date StartA = currentInfo.majitelOd.get(i);
@@ -287,14 +317,13 @@ public class Data {
         }
         return true;
     }
-    
-    private static Boolean intervalWithin(Date date1, Date date2, Date date3, Date date4)
-    {
+
+    private static Boolean intervalWithin(Date date1, Date date2, Date date3, Date date4) {
         Long StartA;
         Long EndA;
         Long StartB;
         Long EndB;
-        
+
         if (date2 == null) {
             EndA = Long.MAX_VALUE;
         } else {
@@ -307,13 +336,10 @@ public class Data {
         }
         StartA = date1.getTime();
         StartB = date3.getTime();
-        
-        if (StartA >= StartB && EndA <= EndB)
-        {
+
+        if (StartA >= StartB && EndA <= EndB) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -503,11 +529,11 @@ public class Data {
             polygonsInfo.get(i).modifiedInfo = false;
             polygonsInfo.get(i).modifiedImage = false;
         }
-        
-        JOptionPane.showMessageDialog(null, 
-                        "Data byla úspěšně uložena do databáze!", 
-                        "Úspěch!", 
-                        JOptionPane.INFORMATION_MESSAGE);
+
+        JOptionPane.showMessageDialog(null,
+                "Data byla úspěšně uložena do databáze!",
+                "Úspěch!",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     //smaze vsechna data z aplikace
@@ -528,6 +554,8 @@ public class Data {
 
         polygons.clear();
         polygonsInfo.clear();
+
+        sectors.clear();
     }
 
     //vymaze objekty s priznakem deleted z aplikace
