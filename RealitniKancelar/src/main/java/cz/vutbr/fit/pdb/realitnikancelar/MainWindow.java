@@ -2494,7 +2494,7 @@ public class MainWindow extends javax.swing.JFrame {
         objectNameField.setText(info.nazev);
         for (int i = 0; i < ObjectInfo.NUM_TYPES; i++)
         {
-            if (info.typ == ObjectInfo.TYPES[i])
+            if (info.typ.equals(ObjectInfo.TYPES[i]))
             {
                 typeComboBox.setSelectedIndex(i);
                 break;
