@@ -165,6 +165,11 @@ public class DrawingPanel extends JPanel {
             }
             g.drawPolygon(Data.polygons.get(i));
         }
+        
+        for (int i = 0; i < Data.sectors.size(); i++) {
+            g.setColor(lineColor); 
+            g.drawPolygon(Data.sectors.get(i).geometrie);
+        }
 
         this.repaint();
     }
