@@ -178,6 +178,7 @@ public class DatabaseHelper {
     public static void setSector (int id) throws SQLException{
         Statement stmt = ConnectDialog.conn.createStatement();
         
+        //leží objekt uvnitř?
         ResultSet rset = stmt.executeQuery("SELECT s.id FROM objekty o, sektor s " +
             " WHERE SDO_RELATE(o.geometrie, s.geometrie, 'mask=INSIDE')='TRUE' "+
             "AND s.id <> 0 AND o.id="+id);
@@ -185,10 +186,24 @@ public class DatabaseHelper {
             String updateSQL = "UPDATE objekty SET sektor = "+rset.getInt("id")+
                 " WHERE id = "+id;
             ResultSet rset2 = stmt.executeQuery(updateSQL);
-            rset2.next();           
+            rset2.next();  
+            rset2.close();
+            rset.close();
         }
+        //dotýká se hranou
         else{
-            
+            ResultSet rset2 = stmt.executeQuery("SELECT s.id FROM objekty o, sektor s " +
+            " WHERE SDO_RELATE(o.geometrie, s.geometrie, 'mask=COVEREDBY')='TRUE' "+
+            "AND s.id <> 0 AND o.id="+id);
+            if (rset2.next()){
+                String updateSQL = "UPDATE objekty SET sektor = "+rset2.getInt("id")+
+                " WHERE id = "+id;
+                ResultSet rset3 = stmt.executeQuery(updateSQL);
+                rset3.next();
+                rset3.close();
+                rset2.close();
+                rset.close();
+            }
         }
     }
 
@@ -242,6 +257,9 @@ public class DatabaseHelper {
 
             stmt.execute();
 
+            /*Updatujeme sektor*/
+            DatabaseHelper.setSector(currentInfo.id);
+            
             /* Ted tabulka 'majitele_objekty'
             Kvuli vsem moznym zmenam v majitelich, obdobich, poradi atd je
             nejlepsi udelat full-refresh

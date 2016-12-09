@@ -61,6 +61,7 @@ public class ObjectInfo {
     
     public int plocha;
     public int obvod;
+    public String nejblizsiZastavka;
 
     /**
      * Inicializace prazdneho ObjectInfo
@@ -107,6 +108,7 @@ public class ObjectInfo {
         
         this.plocha = 0;
         this.obvod = 0;
+        this.nejblizsiZastavka = "";
         
     }
 
@@ -135,6 +137,7 @@ public class ObjectInfo {
         //info.imgIcon = info.loadFotoFromDB();
         info.plocha = info.getArea(res.getInt("id"));
         info.obvod = info.getCircuit(res.getInt("id"));
+        info.nejblizsiZastavka = info.getNearestBusStop(res.getInt("id"));
         return info;
     }
     
@@ -361,7 +364,12 @@ public class ObjectInfo {
             e.printStackTrace();
         }
     }
-    
+    /**
+     * Funkce zjistí obvod vybraného objektu
+     * @param id
+     * @return
+     * @throws SQLException 
+     */
     public int getCircuit(int id) throws SQLException{
         Statement stmt = ConnectDialog.conn.createStatement();
         ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_LENGTH(geometrie, 1) obvod " +
@@ -378,7 +386,12 @@ public class ObjectInfo {
             return 0;
         }    
     }
-    
+    /**
+     * Funkce zjisti obsah vybraného objektu
+     * @param id
+     * @return
+     * @throws SQLException 
+     */
     public int getArea(int id) throws SQLException{
         Statement stmt = ConnectDialog.conn.createStatement();
         ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_AREA(geometrie, 1) obsah " +
@@ -394,5 +407,44 @@ public class ObjectInfo {
             rset.close();
             return 0;
         }
+    }
+    /**
+     * Funkce najde nejbližší autobusovou zastávku a vrátí i její vzddálenost od
+     * objektu.
+     * @param id
+     * @return
+     * @throws SQLException 
+     */
+    public String getNearestBusStop(int id) throws SQLException{
+        Statement stmt = ConnectDialog.conn.createStatement();
+        String bus = "";
+        String SQLfindBus = "SELECT /*+ LEADING(p) INDEX(o OBJEKT_GEOMETRIE_SIDX) */" +
+                " o.nazev, p.typ, p.nazev as bus, SDO_NN_DISTANCE(1) dist" +
+                " FROM objekty o, objekty p WHERE o.id="+id+
+                " AND MDSYS.SDO_NN(o.geometrie,p.geometrie,'SDO_NUM_RES=5', 1)='TRUE'"+
+                " AND o.id <> p.id AND p.typ LIKE 'Autobusová zastávka' ORDER BY dist";
+        ResultSet rset = stmt.executeQuery(SQLfindBus);
+        if (rset.next()){
+            bus = rset.getString("bus")+" vzdálenost: "+rset.getInt("dist");
+            stmt.close();
+            rset.close();
+            return bus;
+        }
+        //zastavka je daleko, hledej ve větší vzdálenosti
+        else{
+            SQLfindBus = "SELECT /*+ LEADING(p) INDEX(o OBJEKT_GEOMETRIE_SIDX) */"+
+                " o.nazev, p.typ, p.nazev as bus ,SDO_NN_DISTANCE(1) dist"+
+                " FROM objekty o, objekty p WHERE o.id="+id+
+                " AND MDSYS.SDO_NN(o.geometrie,p.geometrie,'sdo_batch_size=20 ',1)='TRUE'"+
+                " AND o.id <> p.id AND ROWNUM <=2  AND p.typ LIKE 'Autobusová zastávka'";
+            ResultSet rset2 = stmt.executeQuery(SQLfindBus);
+            if(rset2.next()){
+                bus = rset2.getString("bus")+" vzdálenost: "+rset2.getInt("dist");
+                stmt.close();
+                rset2.close();
+                return bus;
+            }
+        }
+        return bus;
     }
 }
