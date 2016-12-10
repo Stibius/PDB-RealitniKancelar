@@ -62,6 +62,7 @@ public class ObjectInfo {
     public int plocha;
     public int obvod;
     public String nejblizsiZastavka;
+    public int centrum;
 
     /**
      * Inicializace prazdneho ObjectInfo
@@ -109,6 +110,7 @@ public class ObjectInfo {
         this.plocha = 0;
         this.obvod = 0;
         this.nejblizsiZastavka = "";
+        this.centrum = 0;
         
     }
 
@@ -138,6 +140,7 @@ public class ObjectInfo {
         info.plocha = info.getArea(res.getInt("id"));
         info.obvod = info.getCircuit(res.getInt("id"));
         info.nejblizsiZastavka = info.getNearestBusStop(res.getInt("id"));
+        info.centrum = info.getCenterDistance(res.getInt("id"));
         return info;
     }
     
@@ -425,7 +428,7 @@ public class ObjectInfo {
                 " AND o.id <> p.id AND p.typ LIKE 'Autobusová zastávka' ORDER BY dist";
         ResultSet rset = stmt.executeQuery(SQLfindBus);
         if (rset.next()){
-            bus = rset.getString("bus")+" vzdálenost: "+rset.getInt("dist");
+            bus = rset.getString("bus")+",    vzdálenost: "+rset.getInt("dist");
             stmt.close();
             rset.close();
             return bus;
@@ -439,12 +442,31 @@ public class ObjectInfo {
                 " AND o.id <> p.id AND ROWNUM <=2  AND p.typ LIKE 'Autobusová zastávka'";
             ResultSet rset2 = stmt.executeQuery(SQLfindBus);
             if(rset2.next()){
-                bus = rset2.getString("bus")+" vzdálenost: "+rset2.getInt("dist");
+                bus = rset2.getString("bus")+",   vzdálenost: "+rset2.getInt("dist");
                 stmt.close();
                 rset2.close();
                 return bus;
             }
         }
         return bus;
+    }
+    /**
+     * Funkce vrátí vzdálenost objektu od centra
+     * @param id
+     * @return
+     * @throws SQLException 
+     */
+    public int getCenterDistance(int id) throws SQLException{
+        Statement stmt = ConnectDialog.conn.createStatement();
+        ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_DISTANCE(a.geometrie, g.geometrie, 1) vzdalenost" +
+            " FROM objekty a, sektor g" +
+            " WHERE a.id = "+id+" AND g.nazev LIKE 'Centrum'");
+        if (rset.next()){
+            int id_sektor = rset.getInt("vzdalenost");
+            stmt.close();
+            rset.close();
+            return id_sektor;
+        }
+        return 0;
     }
 }
