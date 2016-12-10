@@ -131,15 +131,24 @@ public class ShapeHelper {
             result.add(x);
             result.add(y);
         }
-
-        double[] ordinates = new double[result.size()];
-        int k = 0;
-        for (Double d : result) {
-            ordinates[k++] = d;
-            //System.out.println(d);
+        
+        if (shapeType == SHAPE_TYPE_CIRCLE)
+        {
+            double[] ordinates = new double[6];
+            for (int i = 0; i < 6; i++) {
+                ordinates[i] = result.get(i);
+            }
+            res = new JGeometry(dbType, 0, new int[]{1, dbInfoType, dbShape}, ordinates);
         }
-
-        res = new JGeometry(dbType, 0, new int[]{1, dbInfoType, dbShape}, ordinates);
+        else
+        {
+            double[] ordinates = new double[result.size()];
+            int k = 0;
+            for (Double d : result) {
+                ordinates[k++] = d;
+            }
+            res = new JGeometry(dbType, 0, new int[]{1, dbInfoType, dbShape}, ordinates);
+        }
 
         return res;
 

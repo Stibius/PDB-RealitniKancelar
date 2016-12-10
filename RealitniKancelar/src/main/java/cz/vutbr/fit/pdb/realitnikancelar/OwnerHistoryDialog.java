@@ -52,11 +52,11 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
             }
         }
         
-        for (int i = 0; i < Data.ellipsesInfo.size(); i++)
+        for (int i = 0; i < Data.circlesInfo.size(); i++)
         {
-            if (Data.ellipsesInfo.get(i).selected)
+            if (Data.circlesInfo.get(i).selected)
             {
-                currentInfo = Data.ellipsesInfo.get(i);
+                currentInfo = Data.circlesInfo.get(i);
             }
         }
         

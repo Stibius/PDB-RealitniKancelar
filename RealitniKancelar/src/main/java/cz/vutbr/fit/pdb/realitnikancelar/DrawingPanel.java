@@ -116,9 +116,9 @@ public class DrawingPanel extends JPanel {
             g.drawRect(Data.rectangles.get(i).x, Data.rectangles.get(i).y, Data.rectangles.get(i).width, Data.rectangles.get(i).height);
         }
         
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).deletedObject) continue;
-            if (Data.ellipsesInfo.get(i).selected)
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).deletedObject) continue;
+            if (Data.circlesInfo.get(i).selected)
             {
                 g.setColor(selectionFillColor); 
             }
@@ -126,11 +126,11 @@ public class DrawingPanel extends JPanel {
             {
                 g.setColor(fillColor); 
             }
-            g.fillOval((int)Data.ellipses.get(i).getX(), (int)Data.ellipses.get(i).getY(), (int)Data.ellipses.get(i).getWidth(), (int)Data.ellipses.get(i).getHeight());
+            g.fillOval((int)Data.circles.get(i).getX(), (int)Data.circles.get(i).getY(), (int)Data.circles.get(i).getWidth(), (int)Data.circles.get(i).getHeight());
         }
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).deletedObject) continue;
-            if (Data.ellipsesInfo.get(i).hovered || Data.ellipsesInfo.get(i).selected)
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).deletedObject) continue;
+            if (Data.circlesInfo.get(i).hovered || Data.circlesInfo.get(i).selected)
             {
                 g.setColor(selectionLineColor);
             }
@@ -138,7 +138,7 @@ public class DrawingPanel extends JPanel {
             {
                 g.setColor(lineColor); 
             }
-            g.drawOval((int)Data.ellipses.get(i).getX(), (int)Data.ellipses.get(i).getY(), (int)Data.ellipses.get(i).getWidth(), (int)Data.ellipses.get(i).getHeight());
+            g.drawOval((int)Data.circles.get(i).getX(), (int)Data.circles.get(i).getY(), (int)Data.circles.get(i).getWidth(), (int)Data.circles.get(i).getHeight());
         }
 
         for (int i = 0; i < Data.polygons.size(); i++) {
