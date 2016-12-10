@@ -473,7 +473,7 @@
                           <Component id="addPolylineRadioButton" min="-2" max="-2" attributes="0"/>
                           <Component id="addPointRadioButton" min="-2" max="-2" attributes="0"/>
                           <Component id="addRectangleRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="addEllipseRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="addCircleRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="111" max="32767" attributes="0"/>
                   </Group>
@@ -492,7 +492,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="addRectangleRadioButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="addEllipseRadioButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="addCircleRadioButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="addPolygonRadioButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="368" max="32767" attributes="0"/>
@@ -531,12 +531,12 @@
                 <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="addRectangleRadioButtonItemStateChanged"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JRadioButton" name="addEllipseRadioButton">
+            <Component class="javax.swing.JRadioButton" name="addCircleRadioButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="P&#x159;idat elipsu"/>
+                <Property name="text" type="java.lang.String" value="P&#x159;idat kru&#x17e;nici"/>
               </Properties>
               <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="addEllipseRadioButtonItemStateChanged"/>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="addCircleRadioButtonItemStateChanged"/>
               </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="addPolygonRadioButton">

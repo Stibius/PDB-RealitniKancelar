@@ -47,8 +47,8 @@ public class Data {
     public static ArrayList<ArrayList<Point>> polylines = new ArrayList<>();
     public static ArrayList<ObjectInfo> polylinesInfo = new ArrayList<>();
 
-    public static ArrayList<Ellipse2D> ellipses = new ArrayList<>();
-    public static ArrayList<ObjectInfo> ellipsesInfo = new ArrayList<>();
+    public static ArrayList<Ellipse2D> circles = new ArrayList<>();
+    public static ArrayList<ObjectInfo> circlesInfo = new ArrayList<>();
 
     public static ArrayList<Rectangle> rectangles = new ArrayList<>();
     public static ArrayList<ObjectInfo> rectanglesInfo = new ArrayList<>();
@@ -150,8 +150,8 @@ public class Data {
             rectanglesInfo.add(info);
             return;
         } else if (shape instanceof Ellipse2D) {
-            ellipses.add((Ellipse2D) shape);
-            ellipsesInfo.add(info);
+            circles.add((Ellipse2D) shape);
+            circlesInfo.add(info);
             return;
         } else if (shape instanceof GeneralPath && !line) {
             Polygon shapePoly = new Polygon();
@@ -457,8 +457,8 @@ public class Data {
         Map<ObjectInfo, Shape> objects = new HashMap<>();
         for (int i = 0; i < rectangles.size(); i++)
             objects.put(rectanglesInfo.get(i), rectangles.get(i));
-        for (int i = 0; i < ellipses.size(); i++)
-            objects.put(ellipsesInfo.get(i), ellipses.get(i));
+        for (int i = 0; i < circles.size(); i++)
+            objects.put(circlesInfo.get(i), circles.get(i));
         for (int i = 0; i < polygons.size(); i++)
             objects.put(polygonsInfo.get(i), polygons.get(i));
         for (int i = 0; i < points.size(); i++) {
@@ -517,11 +517,11 @@ public class Data {
             rectanglesInfo.get(i).modifiedInfo = false;
             rectanglesInfo.get(i).modifiedImage = false;
         }
-        for (int i = 0; i < ellipses.size(); i++) {
-            ellipsesInfo.get(i).newObject = false;
-            ellipsesInfo.get(i).modifiedGeometry = false;
-            ellipsesInfo.get(i).modifiedInfo = false;
-            ellipsesInfo.get(i).modifiedImage = false;
+        for (int i = 0; i < circles.size(); i++) {
+            circlesInfo.get(i).newObject = false;
+            circlesInfo.get(i).modifiedGeometry = false;
+            circlesInfo.get(i).modifiedInfo = false;
+            circlesInfo.get(i).modifiedImage = false;
         }
         for (int i = 0; i < polygons.size(); i++) {
             polygonsInfo.get(i).newObject = false;
@@ -549,8 +549,8 @@ public class Data {
         rectangles.clear();
         rectanglesInfo.clear();
 
-        ellipses.clear();
-        ellipsesInfo.clear();
+        circles.clear();
+        circlesInfo.clear();
 
         polygons.clear();
         polygonsInfo.clear();
@@ -587,10 +587,10 @@ public class Data {
                 i--;
             }
         }
-        for (int i = 0; i < ellipses.size(); i++) {
-            if (ellipsesInfo.get(i).deletedObject) {
-                ellipses.remove(i);
-                ellipsesInfo.remove(i);
+        for (int i = 0; i < circles.size(); i++) {
+            if (circlesInfo.get(i).deletedObject) {
+                circles.remove(i);
+                circlesInfo.remove(i);
                 i--;
             }
         }

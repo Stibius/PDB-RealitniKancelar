@@ -64,7 +64,7 @@ public class MainWindow extends javax.swing.JFrame {
     private boolean newPolyline = false;
     private boolean newPolygon = false;
     private boolean newRectangle = false;
-    private boolean newEllipse = false;
+    private boolean newCircle = false;
     
     public static DefaultComboBoxModel ownersListModel = new DefaultComboBoxModel();
     public static ArrayList<String> ownersListNames = new ArrayList<String>();
@@ -86,7 +86,7 @@ public class MainWindow extends javax.swing.JFrame {
         addPolylineRadioButton.setEnabled(false);
         addPolygonRadioButton.setEnabled(false);
         addRectangleRadioButton.setEnabled(false);
-        addEllipseRadioButton.setEnabled(false);
+        addCircleRadioButton.setEnabled(false);
         ownersList.setEnabled(false);
         ownerNameField.setEnabled(false);
         ownerAddressField.setEnabled(false);
@@ -105,7 +105,7 @@ public class MainWindow extends javax.swing.JFrame {
         buttonGroup.add(addPointRadioButton);
         buttonGroup.add(addPolylineRadioButton);
         buttonGroup.add(addRectangleRadioButton);
-        buttonGroup.add(addEllipseRadioButton);
+        buttonGroup.add(addCircleRadioButton);
         buttonGroup.add(addPolygonRadioButton);
         
         ((DrawingPanel)mapPanel).backColor = DEFAULT_BACK_COLOR;
@@ -168,7 +168,7 @@ public class MainWindow extends javax.swing.JFrame {
         addPointRadioButton = new javax.swing.JRadioButton();
         addPolylineRadioButton = new javax.swing.JRadioButton();
         addRectangleRadioButton = new javax.swing.JRadioButton();
-        addEllipseRadioButton = new javax.swing.JRadioButton();
+        addCircleRadioButton = new javax.swing.JRadioButton();
         addPolygonRadioButton = new javax.swing.JRadioButton();
         ownersPanel = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
@@ -416,10 +416,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        addEllipseRadioButton.setText("Přidat elipsu");
-        addEllipseRadioButton.addItemListener(new java.awt.event.ItemListener() {
+        addCircleRadioButton.setText("Přidat kružnici");
+        addCircleRadioButton.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                addEllipseRadioButtonItemStateChanged(evt);
+                addCircleRadioButtonItemStateChanged(evt);
             }
         });
 
@@ -443,7 +443,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(addPolylineRadioButton)
                     .addComponent(addPointRadioButton)
                     .addComponent(addRectangleRadioButton)
-                    .addComponent(addEllipseRadioButton))
+                    .addComponent(addCircleRadioButton))
                 .addContainerGap(111, Short.MAX_VALUE))
         );
         editPanelLayout.setVerticalGroup(
@@ -458,7 +458,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addRectangleRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addEllipseRadioButton)
+                .addComponent(addCircleRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addPolygonRadioButton)
                 .addContainerGap(368, Short.MAX_VALUE))
@@ -999,7 +999,7 @@ public class MainWindow extends javax.swing.JFrame {
             addPolylineRadioButton.setEnabled(true);
             addPolygonRadioButton.setEnabled(true);
             addRectangleRadioButton.setEnabled(true);
-            addEllipseRadioButton.setEnabled(true);
+            addCircleRadioButton.setEnabled(true);
             ownersList.setEnabled(true);
             ownerNameField.setEnabled(true);
             ownerAddressField.setEnabled(true);
@@ -1055,9 +1055,9 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).selected) {
-                saveInfo(Data.ellipsesInfo.get(i));
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).selected) {
+                saveInfo(Data.circlesInfo.get(i));
             }
         }
 
@@ -1147,10 +1147,10 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
 
-            for (int i = 0; i < Data.ellipses.size(); i++) {
-                if (Data.ellipsesInfo.get(i).deletedObject) continue;
-                if (Data.ellipses.get(i).contains(x, y)) {
-                    Data.ellipsesInfo.get(i).hovered = true;
+            for (int i = 0; i < Data.circles.size(); i++) {
+                if (Data.circlesInfo.get(i).deletedObject) continue;
+                if (Data.circles.get(i).contains(x, y)) {
+                    Data.circlesInfo.get(i).hovered = true;
                     mapPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                     ((DrawingPanel) mapPanel).createImageFromData();
                     return;
@@ -1218,42 +1218,18 @@ public class MainWindow extends javax.swing.JFrame {
                 ((DrawingPanel) mapPanel).createImageFromData();
             }
         }
-        else if (addEllipseRadioButton.isSelected())
+        else if (addCircleRadioButton.isSelected())
         {
-            if (newEllipse)
+            if (newCircle)
             {
-                if (x < origin.x) 
-                {
-                    Data.ellipses.get(Data.ellipses.size()-1).setFrame(
-                            x, 
-                            Data.ellipses.get(Data.ellipses.size()-1).getY(), 
-                            origin.x - x, 
-                            Data.ellipses.get(Data.ellipses.size()-1).getHeight());
-                }
-                else
-                {
-                    Data.ellipses.get(Data.ellipses.size()-1).setFrame(
-                            origin.x, 
-                            Data.ellipses.get(Data.ellipses.size()-1).getY(), 
-                            x - origin.x, 
-                            Data.ellipses.get(Data.ellipses.size()-1).getHeight());
-                }
-                if (y < origin.y) 
-                {
-                    Data.ellipses.get(Data.ellipses.size()-1).setFrame(
-                            Data.ellipses.get(Data.ellipses.size()-1).getX(), 
-                            y, 
-                            Data.ellipses.get(Data.ellipses.size()-1).getWidth(), 
-                            origin.y - y);
-                }
-                else
-                {
-                    Data.ellipses.get(Data.ellipses.size()-1).setFrame(
-                            Data.ellipses.get(Data.ellipses.size()-1).getX(), 
-                            origin.y, 
-                            Data.ellipses.get(Data.ellipses.size()-1).getWidth(), 
-                            y - origin.y);
-                }
+                int radius = (int)Math.sqrt(Math.pow(x - origin.x, 2) + Math.pow(y - origin.y, 2));
+                
+                Data.circles.get(Data.circles.size()-1).setFrame(
+                        origin.x - radius, 
+                        origin.y - radius, 
+                        radius * 2, 
+                        radius * 2);
+    
                 ((DrawingPanel) mapPanel).createImageFromData();
             }
         }
@@ -1311,15 +1287,15 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
         
-        for (int i = 0; i < Data.ellipses.size(); i++)
+        for (int i = 0; i < Data.circles.size(); i++)
         {
-            if (Data.ellipsesInfo.get(i).selected && Data.ellipsesInfo.get(i).editable)
+            if (Data.circlesInfo.get(i).selected && Data.circlesInfo.get(i).editable)
             {
-                Data.ellipses.get(i).setFrame(Data.ellipses.get(i).getX() + xDiff, 
-                        Data.ellipses.get(i).getY() + yDiff,
-                        Data.ellipses.get(i).getWidth(),
-                        Data.ellipses.get(i).getHeight());
-                Data.ellipsesInfo.get(i).modifiedGeometry= true;
+                Data.circles.get(i).setFrame(Data.circles.get(i).getX() + xDiff, 
+                        Data.circles.get(i).getY() + yDiff,
+                        Data.circles.get(i).getWidth(),
+                        Data.circles.get(i).getHeight());
+                Data.circlesInfo.get(i).modifiedGeometry= true;
             }
         }
         
@@ -1466,21 +1442,21 @@ public class MainWindow extends javax.swing.JFrame {
                 } 
             }
 
-            for (int i = 0; i < Data.ellipses.size(); i++) {
-                if (Data.ellipsesInfo.get(i).hovered) {
-                    setInfo(Data.ellipsesInfo.get(i));
-                    Data.ellipsesInfo.get(i).selected = true;
+            for (int i = 0; i < Data.circles.size(); i++) {
+                if (Data.circlesInfo.get(i).hovered) {
+                    setInfo(Data.circlesInfo.get(i));
+                    Data.circlesInfo.get(i).selected = true;
                     try {
-                        Data.ellipsesInfo.get(i).loadFotoFromDB();
+                        Data.circlesInfo.get(i).loadFotoFromDB();
                         
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    ((DrawingPanel)imagePanel).image = Data.ellipsesInfo.get(i).imgIcon;
+                    ((DrawingPanel)imagePanel).image = Data.circlesInfo.get(i).imgIcon;
                     imagePanel.repaint();
-                    setInfo(Data.ellipsesInfo.get(i));
+                    setInfo(Data.circlesInfo.get(i));
                 } 
             }
 
@@ -1608,27 +1584,27 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         }
-        else if (addEllipseRadioButton.isSelected())
+        else if (addCircleRadioButton.isSelected())
         {
-            if (evt.getButton() == MouseEvent.BUTTON1 && !newEllipse) {
+            if (evt.getButton() == MouseEvent.BUTTON1 && !newCircle) {
                 origin.x = evt.getX();
                 origin.y = evt.getY();
-                Data.ellipses.add(new Ellipse2D.Double());
-                Data.ellipses.get(Data.ellipses.size() - 1).setFrame(origin.x, origin.y, 0, 0);
+                Data.circles.add(new Ellipse2D.Double());
+                Data.circles.get(Data.circles.size() - 1).setFrame(origin.x, origin.y, 0, 0);
                 ObjectInfo info = new ObjectInfo(false);
                 info.selected = true;
-                Data.ellipsesInfo.add(info);
-                newEllipse = true;
+                Data.circlesInfo.add(info);
+                newCircle = true;
                 setInfo(info);
 
 
             }
-            else if (evt.getButton() == MouseEvent.BUTTON3 ||(evt.getButton() == MouseEvent.BUTTON1 && newEllipse))
+            else if (evt.getButton() == MouseEvent.BUTTON3 ||(evt.getButton() == MouseEvent.BUTTON1 && newCircle))
             {
-                if (newEllipse == true)
+                if (newCircle == true)
                 {
                     unselect();
-                    newEllipse = false;
+                    newCircle = false;
             
 
                     
@@ -1676,12 +1652,12 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         
-            for (int i = 0; i < Data.ellipses.size(); i++)
+            for (int i = 0; i < Data.circles.size(); i++)
             {
-                if (Data.ellipsesInfo.get(i).selected)
+                if (Data.circlesInfo.get(i).selected)
                 {
-                    Data.ellipsesInfo.get(i).deletedObject = true;
-                    Data.ellipsesInfo.get(i).selected = false;
+                    Data.circlesInfo.get(i).deletedObject = true;
+                    Data.circlesInfo.get(i).selected = false;
                     Data.rectanglesInfo.get(i).hovered = false;
                 }
             }
@@ -1749,14 +1725,14 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_addRectangleRadioButtonItemStateChanged
 
-    private void addEllipseRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addEllipseRadioButtonItemStateChanged
+    private void addCircleRadioButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_addCircleRadioButtonItemStateChanged
         // TODO add your handling code here:
         unselect();
-        if (newEllipse == true)
+        if (newCircle == true)
         {
-            newEllipse = false;                   
+            newCircle = false;                   
         }
-    }//GEN-LAST:event_addEllipseRadioButtonItemStateChanged
+    }//GEN-LAST:event_addCircleRadioButtonItemStateChanged
 
     private void saveChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveChangesButtonActionPerformed
         // TODO add your handling code here:
@@ -1859,12 +1835,12 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            for (int j = 0; j < Data.ellipsesInfo.get(i).majitele.size(); j++)
+        for (int i = 0; i < Data.circles.size(); i++) {
+            for (int j = 0; j < Data.circlesInfo.get(i).majitele.size(); j++)
             {
-                if (!Data.ellipsesInfo.get(i).deletedObject && 
-                        Data.ellipsesInfo.get(i).majitele.get(j) != null &&
-                        Data.ellipsesInfo.get(i).majitele.get(j).id == id)
+                if (!Data.circlesInfo.get(i).deletedObject && 
+                        Data.circlesInfo.get(i).majitele.get(j) != null &&
+                        Data.circlesInfo.get(i).majitele.get(j).id == id)
                 {
                     used = true;
                 }
@@ -2007,8 +1983,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).selected) {
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).selected) {
                 JFileChooser fc = new JFileChooser();
                 int returnVal = fc.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -2022,10 +1998,10 @@ public class MainWindow extends javax.swing.JFrame {
                         imagePanel.setPreferredSize(dim);
                         imagePanel.setSize(dim);
                         imagePanel.repaint();
-                        Data.ellipsesInfo.get(i).modifiedImage = true;
+                        Data.circlesInfo.get(i).modifiedImage = true;
                     } catch (IOException e) {
                     }
-                    Data.ellipsesInfo.get(i).imgPath = fc.getSelectedFile().getAbsolutePath();
+                    Data.circlesInfo.get(i).imgPath = fc.getSelectedFile().getAbsolutePath();
                 } 
                 return;
             }
@@ -2112,14 +2088,14 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).selected) {
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).selected) {
                 JFileChooser fc = new JFileChooser();
                 int returnVal = fc.showSaveDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     System.out.println(fc.getSelectedFile().getAbsolutePath());
                     try {
-                        Data.ellipsesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
+                        Data.circlesInfo.get(i).saveFotoFromDB(fc.getSelectedFile().getAbsolutePath());
                     } catch (SQLException ex) {
                         Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (IOException ex) {
@@ -2189,10 +2165,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).selected) {
-                Data.ellipsesInfo.get(i).modifiedImage = true;
-                Data.ellipsesInfo.get(i).rotateImage = true;
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).selected) {
+                Data.circlesInfo.get(i).modifiedImage = true;
+                Data.circlesInfo.get(i).rotateImage = true;
                 return;
             }
         }
@@ -2261,10 +2237,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).selected) {
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).selected) {
                 try {
-                    new SimilarImagesDialog(this, true, Data.ellipsesInfo.get(i).findSimilarFoto()).setVisible(true);
+                    new SimilarImagesDialog(this, true, Data.circlesInfo.get(i).findSimilarFoto()).setVisible(true);
                 } catch (SQLException ex) {
                     Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -2313,10 +2289,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
 
-        for (int i = 0; i < Data.ellipses.size(); i++) {
-            if (Data.ellipsesInfo.get(i).selected) {
-                saveInfo(Data.ellipsesInfo.get(i));
-                Data.ellipsesInfo.get(i).selected = false;
+        for (int i = 0; i < Data.circles.size(); i++) {
+            if (Data.circlesInfo.get(i).selected) {
+                saveInfo(Data.circlesInfo.get(i));
+                Data.circlesInfo.get(i).selected = false;
             }
         }
 
@@ -2352,9 +2328,9 @@ public class MainWindow extends javax.swing.JFrame {
             Data.rectanglesInfo.get(i).hovered = false;
         }
         
-        for (int i = 0; i < Data.ellipses.size(); i++)
+        for (int i = 0; i < Data.circles.size(); i++)
         {
-            Data.ellipsesInfo.get(i).hovered = false;
+            Data.circlesInfo.get(i).hovered = false;
         }
         
         for (int i = 0; i < Data.polygons.size(); i++)
@@ -2402,7 +2378,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JRadioButton addEllipseRadioButton;
+    private javax.swing.JRadioButton addCircleRadioButton;
     private javax.swing.JButton addOwnerButton;
     private javax.swing.JRadioButton addPointRadioButton;
     private javax.swing.JRadioButton addPolygonRadioButton;
