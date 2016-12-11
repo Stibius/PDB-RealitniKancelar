@@ -109,6 +109,7 @@ public class Data {
     }
 
     public static void loadDefaultData() {
+        new ConnectDialog(new javax.swing.JFrame(), true).setVisible(true);
         FileReader fileReader = null;
         System.out.println("Pracuji...");
 
@@ -146,8 +147,6 @@ public class Data {
             e.printStackTrace();
         }
         System.out.println("Hotovo!");
-        System.exit(0);
-
     }
 
     private static void loadSector(ResultSet res) throws Exception {

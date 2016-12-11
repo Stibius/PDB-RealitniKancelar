@@ -123,7 +123,7 @@ public class MainWindow extends javax.swing.JFrame {
         fillColorPanel.setBackground(DEFAULT_FILL_COLOR);
         selectionColorPanel.setBackground(DEFAULT_SELECTION_LINE_COLOR);
         if (Data.defaultData) {
-            new ConnectDialog(new javax.swing.JFrame(), true).setVisible(true);
+            
             Data.loadDefaultData();
         }
 
@@ -2289,7 +2289,15 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void createData()
     {
-        //tady se budou vkladat do databaze vzorova data a rovnou se i zobrazi
+        JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    Data.defaultDataPath = fc.getSelectedFile().getAbsolutePath();
+                }
+        Data.loadDefaultData();
+        System.out.println("Vykreslování objektů...");
+        Data.loadData();
     }
     
     private void unselect()
