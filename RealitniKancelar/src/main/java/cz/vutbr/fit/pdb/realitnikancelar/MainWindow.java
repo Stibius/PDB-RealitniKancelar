@@ -122,6 +122,11 @@ public class MainWindow extends javax.swing.JFrame {
         lineColorPanel.setBackground(DEFAULT_LINE_COLOR);
         fillColorPanel.setBackground(DEFAULT_FILL_COLOR);
         selectionColorPanel.setBackground(DEFAULT_SELECTION_LINE_COLOR);
+        if (Data.defaultData) {
+            
+            Data.loadDefaultData();
+        }
+
     }
 
     /**
@@ -2284,7 +2289,15 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void createData()
     {
-        //tady se budou vkladat do databaze vzorova data a rovnou se i zobrazi
+        JFileChooser fc = new JFileChooser();
+                int returnVal = fc.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    System.out.println(fc.getSelectedFile().getAbsolutePath());
+                    Data.defaultDataPath = fc.getSelectedFile().getAbsolutePath();
+                }
+        Data.loadDefaultData();
+        System.out.println("Vykreslování objektů...");
+        Data.loadData();
     }
     
     private void unselect()
@@ -2389,11 +2402,20 @@ public class MainWindow extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        if (args.length == 2) {
+            if (args[0].equals("--load")) {
+                Data.defaultData = true;
+                Data.defaultDataPath = args[1];
+            }
+        }
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+
                 new MainWindow().setVisible(true);
+
             }
         });
     }

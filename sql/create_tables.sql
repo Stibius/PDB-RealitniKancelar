@@ -110,7 +110,6 @@ INSERT INTO USER_SDO_GEOM_METADATA VALUES (
     NULL
 );
 
-DROP INDEX objekt_geometrie_sidx;
 CREATE INDEX sektor_geometrie_sidx ON sektor(geometrie) indextype is MDSYS.SPATIAL_INDEX;
 
 COMMIT;
@@ -137,10 +136,8 @@ FOREIGN KEY (objekt)
 REFERENCES objekty(id) on delete cascade;
 
 
-INSERT INTO sektor (id,nazev,geometrie) VALUES (0,'Test sektor',SDO_GEOMETRY(2003, NULL, NULL, -- 2D polygon
-		SDO_ELEM_INFO_ARRAY(1, 1003, 3), -- exterior rectangle (left-bottom, right-top)
-		SDO_ORDINATE_ARRAY(20,35, 65,50)));
 INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (0,'BEZ MAJITELE','BEZ ADRESY');
+
 --INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (0,'Neznámý majitel','Neznámá adresa');
 --INSERT INTO majitele (id_majitele,jmeno,adresa) VALUES (1,'Majitel2','Adresa2');
 --INSERT INTO majitele_objekty (IDOBJEKTU,IDMAJITELE,MAJITELOD,MAJITELDO) VALUES (0,0,TIMESTAMP '1950-01-03 00:00:00.000000',TIMESTAMP '1950-01-03 00:00:00.000000');
