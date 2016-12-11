@@ -32,7 +32,9 @@ import oracle.ord.im.OrdImage;
 public class ObjectInfo {
     
     final public static int NUM_TYPES = 4;
-    final public static String[] TYPES = { "Dům", "Řeka", "Autobusová zastávka", "Silnice" };
+    final public static String[] TYPES = { "Dům", "Rekreační plocha", "Autobusová " +
+            "zastávka",
+            "Silnice" };
     
     public int id;
     public String nazev;
@@ -456,17 +458,78 @@ public class ObjectInfo {
      * @return
      * @throws SQLException 
      */
-    public int getCenterDistance(int id) throws SQLException{
+    public int getCenterDistance(int id) throws SQLException {
         Statement stmt = ConnectDialog.conn.createStatement();
         ResultSet rset = stmt.executeQuery("SELECT SDO_GEOM.SDO_DISTANCE(a.geometrie, g.geometrie, 1) vzdalenost" +
-            " FROM objekty a, sektor g" +
-            " WHERE a.id = "+id+" AND g.nazev LIKE 'Centrum'");
-        if (rset.next()){
+                " FROM objekty a, sektor g" +
+                " WHERE a.id = " + id + " AND g.nazev LIKE 'Centrum'");
+        if (rset.next()) {
             int id_sektor = rset.getInt("vzdalenost");
             stmt.close();
             rset.close();
             return id_sektor;
         }
         return 0;
+    }
+        /*
+     * Funkce uloží nový obrázek ze zadanych dat.
+     * @throws SQLException
+     * @throws IOException
+     */
+    public static void saveDefaultFotoToDB(Integer idObr, Integer idObj, String path) throws
+            SQLException,
+            IOException{
+        ConnectDialog.conn.setAutoCommit(false);
+        int imgID = 0;
+        // insert a new record with an empty ORDImage object
+        Statement stmt1 = ConnectDialog.conn.createStatement();
+        ResultSet res = stmt1.executeQuery("SELECT obrazky_seq.NEXTVAL from DUAL");
+        while (res.next()) {
+            imgID = Integer.parseInt(res.getString(1));
+        }
+        String insertSQL = "insert into obrazky(id, objekt, img) values"+
+                " ("+idObr+","+idObj+", ordsys.ordimage.init())";
+        stmt1.executeUpdate(insertSQL);
+        stmt1.close();
+
+        // retrieve the previously created ORDImage object for future updating
+        Statement stmt2 = ConnectDialog.conn.createStatement();
+        String selSQL = "select img from obrazky where objekt="+idObj+" for update";
+        OracleResultSet rset = (OracleResultSet) stmt2.executeQuery(selSQL);
+        rset.next();
+        OrdImage imgProxy = (OrdImage)
+                rset.getORAData("img", OrdImage.getORADataFactory());
+        rset.close();
+        stmt2.close();
+
+        // load the media data from a file to the ORDImage Java object
+        imgProxy.loadDataFromFile(path);
+        // set the properties of the Oracle Mm object from the Java object
+        imgProxy.setProperties();
+
+        // update the table with ORDImage Java object (data already loaded)
+        String updateSQL1 = "update obrazky set"+
+                " img=? where objekt = "+idObr;
+        OraclePreparedStatement pstmt = (OraclePreparedStatement)
+                ConnectDialog.conn.prepareStatement(updateSQL1);
+        pstmt.setORAData(1, imgProxy);
+        pstmt.executeUpdate();
+        pstmt.close();
+
+        // update the table with StillImage object and features
+        Statement stmt3 = ConnectDialog.conn.createStatement();
+        String updateSQL2 = "update obrazky p set"+
+                " p.img_si=SI_StillImage(p.img.getContent()) where objekt = "+idObr;
+        stmt3.executeUpdate(updateSQL2);
+        String updateSQL3 = "update obrazky p set"+
+                " p.img_ac=SI_AverageColor(p.img_si),"+
+                " p.img_ch=SI_ColorHistogram(p.img_si),"+
+                " p.img_pc=SI_PositionalColor(p.img_si),"+
+                " p.img_tx=SI_Texture(p.img_si) where objekt = "+idObr;
+        stmt3.executeUpdate(updateSQL3);
+        stmt3.close();
+
+        ConnectDialog.conn.commit(); // commit the thransaction
+        ConnectDialog.conn.setAutoCommit(true);
     }
 }

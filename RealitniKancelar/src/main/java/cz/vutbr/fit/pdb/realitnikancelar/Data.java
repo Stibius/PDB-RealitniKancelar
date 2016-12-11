@@ -7,14 +7,14 @@ package cz.vutbr.fit.pdb.realitnikancelar;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.io.IOException;
-import java.io.InvalidObjectException;
+import java.io.*;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import oracle.spatial.geometry.JGeometry;
 
 import javax.swing.*;
@@ -25,6 +25,7 @@ import javax.swing.*;
  */
 public class Data {
     public static boolean line = false;
+    public static String defaultDataPath;
 
     public static class JGeometry2ShapeException extends Exception {
     }
@@ -56,9 +57,14 @@ public class Data {
     public static ArrayList<Polygon> polygons = new ArrayList<>();
     public static ArrayList<ObjectInfo> polygonsInfo = new ArrayList<>();
 
+    public static Boolean defaultData = false;
+
     //tady se budou potom nacitat data z databaze, zatim tady vytvarim nejake objekty rucne
     public static void loadData() {
-
+        //Pokud chceme nahrat testovaci data
+        if (defaultData) {
+            loadDefaultData();
+        }
         //vymazat vsechna stara data z aplikace
         removeAllFromApp();
 
@@ -100,6 +106,48 @@ public class Data {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void loadDefaultData() {
+        FileReader fileReader = null;
+        System.out.println("Pracuji...");
+
+        try {
+            fileReader = new FileReader(new File(defaultDataPath));
+            BufferedReader br = new BufferedReader(fileReader);
+
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().equals(""))
+                    continue;
+                System.out.println(line);
+                System.out.println("\n");
+                line = line.replace(";","");
+                Statement stmt2 = ConnectDialog.conn.createStatement();
+                ResultSet res2 = stmt2.executeQuery(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            System.out.println("Vkládám obrázky");
+            ObjectInfo.saveDefaultFotoToDB(1,12,"img/hriste.jpg");
+            ObjectInfo.saveDefaultFotoToDB(2,9,"img/fontana.jpg");
+            ObjectInfo.saveDefaultFotoToDB(3,11,"img/zastavka.jpg");
+            ObjectInfo.saveDefaultFotoToDB(4,0,"img/by.jpg");
+            ObjectInfo.saveDefaultFotoToDB(5,3,"img/bytovka.jpg");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Hotovo!");
+        System.exit(0);
+
     }
 
     private static void loadSector(ResultSet res) throws Exception {

@@ -122,6 +122,11 @@ public class MainWindow extends javax.swing.JFrame {
         lineColorPanel.setBackground(DEFAULT_LINE_COLOR);
         fillColorPanel.setBackground(DEFAULT_FILL_COLOR);
         selectionColorPanel.setBackground(DEFAULT_SELECTION_LINE_COLOR);
+        if (Data.defaultData) {
+            new ConnectDialog(new javax.swing.JFrame(), true).setVisible(true);
+            Data.loadDefaultData();
+        }
+
     }
 
     /**
@@ -2389,11 +2394,20 @@ public class MainWindow extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        if (args.length == 2) {
+            if (args[0].equals("--load")) {
+                Data.defaultData = true;
+                Data.defaultDataPath = args[1];
+            }
+        }
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+
                 new MainWindow().setVisible(true);
+
             }
         });
     }
