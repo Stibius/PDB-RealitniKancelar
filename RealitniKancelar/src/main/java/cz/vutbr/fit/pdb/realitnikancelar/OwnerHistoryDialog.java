@@ -10,6 +10,7 @@ import java.awt.Shape;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import java.lang.IllegalArgumentException;
+import java.util.Date;
 
 /**
  * Dialog pro upravu historie majitelů
@@ -363,6 +364,15 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
             Owner owner = currentInfo.majitele.get(index);
             currentInfo.majitele.set(index, currentInfo.majitele.get(index-1));
             currentInfo.majitele.set(index-1, owner);
+            
+            Date dateOd = currentInfo.majitelOd.get(index);
+            currentInfo.majitelOd.set(index, currentInfo.majitelOd.get(index-1));
+            currentInfo.majitelOd.set(index-1, dateOd);
+            
+            Date dateDo = currentInfo.majitelDo.get(index);
+            currentInfo.majitelDo.set(index, currentInfo.majitelDo.get(index-1));
+            currentInfo.majitelDo.set(index-1, dateDo);
+            
             currentInfo.modifiedInfo = true;
         }
         else
@@ -491,6 +501,15 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
             Owner owner = currentInfo.majitele.get(index);
             currentInfo.majitele.set(index, currentInfo.majitele.get(index+1));
             currentInfo.majitele.set(index+1, owner);
+            
+            Date dateOd = currentInfo.majitelOd.get(index);
+            currentInfo.majitelOd.set(index, currentInfo.majitelOd.get(index+1));
+            currentInfo.majitelOd.set(index+1, dateOd);
+            
+            Date dateDo = currentInfo.majitelDo.get(index);
+            currentInfo.majitelDo.set(index, currentInfo.majitelDo.get(index+1));
+            currentInfo.majitelDo.set(index+1, dateDo);
+            
             currentInfo.modifiedInfo = true;
         }
         else
