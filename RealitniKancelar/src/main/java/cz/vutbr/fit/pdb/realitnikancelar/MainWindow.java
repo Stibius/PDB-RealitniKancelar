@@ -1684,7 +1684,7 @@ public class MainWindow extends javax.swing.JFrame {
                 {
                     Data.circlesInfo.get(i).deletedObject = true;
                     Data.circlesInfo.get(i).selected = false;
-                    Data.rectanglesInfo.get(i).hovered = false;
+                    Data.circlesInfo.get(i).hovered = false;
                 }
             }
         
@@ -1694,7 +1694,7 @@ public class MainWindow extends javax.swing.JFrame {
                 {
                     Data.polygonsInfo.get(i).deletedObject = true;
                     Data.polygonsInfo.get(i).selected = false;
-                    Data.rectanglesInfo.get(i).hovered = false;
+                    Data.polygonsInfo.get(i).hovered = false;
                 }
             }
             
