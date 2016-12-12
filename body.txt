@@ -1,0 +1,7 @@
+xvybir05    100%
+xfojti11    100%
+xdosta40    100%
+
+Vedoucím projektu je Jan Vybíral (xvybir05) pracoval na GUI, připojení k databázi /*doplnit*/
+David Fojtík (xfojti11) pracoval na multimediální databázi, prostorových operátorech a analytických funkcí a dotazech temporálního charakteru, dokumentace.
+Jiří Dostál (xdosta40) pracoval na prostorové databázi /*doplnit*/
