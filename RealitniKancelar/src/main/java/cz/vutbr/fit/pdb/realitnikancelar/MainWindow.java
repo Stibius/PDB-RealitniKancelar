@@ -226,7 +226,6 @@ public class MainWindow extends javax.swing.JFrame {
         deleteMenuItem = new javax.swing.JMenuItem();
         saveChangesMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
-        helpMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Realitní kancelář");
@@ -961,9 +960,6 @@ public class MainWindow extends javax.swing.JFrame {
         mainMenu.add(exitMenuItem);
 
         jMenuBar1.add(mainMenu);
-
-        helpMenu.setLabel("Nápověda");
-        jMenuBar1.add(helpMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -2445,7 +2441,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTextField existenceOdField;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JPanel fillColorPanel;
-    private javax.swing.JMenu helpMenu;
     private javax.swing.JPanel imagePanel;
     private javax.swing.JScrollPane infoPanel;
     private javax.swing.JLabel jLabel1;
