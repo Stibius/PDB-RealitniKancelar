@@ -13,7 +13,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="loadDataMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Na&#x10d;&#xed;st data z datab&#xe1;ze"/>
+                <Property name="text" type="java.lang.String" value="P&#x159;ipojit k datab&#xe1;zi"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadDataMenuItemActionPerformed"/>
@@ -1199,7 +1199,7 @@
     </Container>
     <Component class="javax.swing.JButton" name="loadDataButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Na&#x10d;&#xed;st data z datab&#xe1;ze"/>
+        <Property name="text" type="java.lang.String" value="P&#x159;ipojit k datab&#xe1;zi"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadDataButtonActionPerformed"/>

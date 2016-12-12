@@ -97,6 +97,8 @@ public class MainWindow extends javax.swing.JFrame {
         saveImageButton.setEnabled(false);
         rotateImageButton.setEnabled(false);
         similarImagesButton.setEnabled(false);
+        createDataButton.setEnabled(false);
+        createDataMenuItem.setEnabled(false);
         
         ownersList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ownersList.setModel(ownersListModel);
@@ -305,34 +307,6 @@ public class MainWindow extends javax.swing.JFrame {
                             .addComponent(nejblizsiZastavka, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                             .addComponent(centrumVzdalenost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel20)
-                                .addComponent(jLabel21))
-                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(ownerAddressLabel)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel15)
-                                .addGap(14, 14, 14)
-                                .addComponent(ownerNameLabel)))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(91, 91, 91)
-                            .addComponent(ownersButton))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel17)
-                                .addComponent(jLabel18)
-                                .addComponent(jLabel16))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(existenceOdField)
-                                .addComponent(rekonstrukceField)
-                                .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel19)
-                            .addGap(71, 71, 71)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel8)
@@ -348,7 +322,35 @@ public class MainWindow extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(sectorLabel)
                                     .addGap(87, 87, 87))))
-                        .addComponent(jLabel11))))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel20)
+                                .addComponent(jLabel21)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(ownerAddressLabel)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel15)
+                                        .addGap(14, 14, 14)
+                                        .addComponent(ownerNameLabel)))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGap(91, 91, 91)
+                                    .addComponent(ownersButton))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel17)
+                                        .addComponent(jLabel18)
+                                        .addComponent(jLabel16))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(existenceOdField)
+                                        .addComponent(rekonstrukceField)
+                                        .addComponent(existenceDoField, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel19)
+                                    .addGap(71, 71, 71)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel11))
+                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -886,7 +888,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         mapScrollPanel.setViewportView(mapPanel);
 
-        loadDataButton.setText("Načíst data z databáze");
+        loadDataButton.setText("Připojit k databázi");
         loadDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadDataButtonActionPerformed(evt);
@@ -918,7 +920,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         mainMenu.setLabel("Menu");
 
-        loadDataMenuItem.setText("Načíst data z databáze");
+        loadDataMenuItem.setText("Připojit k databázi");
         loadDataMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadDataMenuItemActionPerformed(evt);
@@ -1031,6 +1033,8 @@ public class MainWindow extends javax.swing.JFrame {
             ownerAddressField.setEnabled(true);
             saveChangesButton.setEnabled(true);
             saveChangesMenuItem.setEnabled(true);
+            createDataButton.setEnabled(true);
+            createDataMenuItem.setEnabled(true);
             
         
             
@@ -2711,5 +2715,6 @@ public class MainWindow extends javax.swing.JFrame {
         return new Date(year, month, day); 
     }
     
-    
+ 
+
 }

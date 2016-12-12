@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import static cz.vutbr.fit.pdb.realitnikancelar.MainWindow.ownersListModel;
+import static cz.vutbr.fit.pdb.realitnikancelar.MainWindow.ownersListNames;
 import oracle.spatial.geometry.JGeometry;
 
 import javax.swing.*;
@@ -109,44 +111,51 @@ public class Data {
     }
 
     public static void loadDefaultData() {
-        new ConnectDialog(new javax.swing.JFrame(), true).setVisible(true);
-        FileReader fileReader = null;
-        System.out.println("Pracuji...");
+        if (!ConnectDialog.connected)
+        {
+            new ConnectDialog(new javax.swing.JFrame(), true).setVisible(true);
+        }
+        
+        if (ConnectDialog.connected) {
+            FileReader fileReader = null;
+            System.out.println("Pracuji...");
 
-        try {
-            fileReader = new FileReader(new File(defaultDataPath));
-            BufferedReader br = new BufferedReader(fileReader);
+            try {
+                fileReader = new FileReader(new File(defaultDataPath));
+                BufferedReader br = new BufferedReader(fileReader);
 
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                if (line.trim().equals(""))
-                    continue;
-                System.out.println(line);
-                System.out.println("\n");
-                line = line.replace(";","");
-                Statement stmt2 = ConnectDialog.conn.createStatement();
-                ResultSet res2 = stmt2.executeQuery(line);
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    if (line.trim().equals("")) {
+                        continue;
+                    }
+                    System.out.println(line);
+                    System.out.println("\n");
+                    line = line.replace(";", "");
+                    Statement stmt2 = ConnectDialog.conn.createStatement();
+                    ResultSet res2 = stmt2.executeQuery(line);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                System.out.println("Vkládám obrázky");
+                ObjectInfo.saveDefaultFotoToDB(1, 12, "img/hriste.jpg");
+                ObjectInfo.saveDefaultFotoToDB(2, 9, "img/fontana.jpg");
+                ObjectInfo.saveDefaultFotoToDB(3, 11, "img/zastavka.jpg");
+                ObjectInfo.saveDefaultFotoToDB(4, 0, "img/by.jpg");
+                ObjectInfo.saveDefaultFotoToDB(5, 3, "img/bytovka.jpg");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Hotovo!");
         }
-        try {
-            System.out.println("Vkládám obrázky");
-            ObjectInfo.saveDefaultFotoToDB(1,12,"img/hriste.jpg");
-            ObjectInfo.saveDefaultFotoToDB(2,9,"img/fontana.jpg");
-            ObjectInfo.saveDefaultFotoToDB(3,11,"img/zastavka.jpg");
-            ObjectInfo.saveDefaultFotoToDB(4,0,"img/by.jpg");
-            ObjectInfo.saveDefaultFotoToDB(5,3,"img/bytovka.jpg");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Hotovo!");
     }
 
     private static void loadSector(ResultSet res) throws Exception {
