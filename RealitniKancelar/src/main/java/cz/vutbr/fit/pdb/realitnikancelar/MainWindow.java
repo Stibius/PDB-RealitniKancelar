@@ -44,9 +44,9 @@ import javax.imageio.ImageIO;
 import java.lang.IllegalArgumentException;
 
 /**
- *
- * @author Honza
  * Hlavni okno.
+ * @author Honza
+ *
  */
 public class MainWindow extends javax.swing.JFrame {
 

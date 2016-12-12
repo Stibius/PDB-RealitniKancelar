@@ -12,8 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by jiri
- * Manipulace s objekty SHAPE<->SDO_GEOMETRY
+ * Manipulace s objekty SHAPE a SDO_GEOMETRY
+ *
+ * @author jiri
  */
 public class ShapeHelper {
 
@@ -32,7 +33,13 @@ public class ShapeHelper {
     public static int DB_INFO_LINE = 2;
     public static int DB_INFO_OTHER = 1003;
 
-
+    /**
+     * Prevod Jgeometry na Shape
+     *
+     * @param jGeometry jGeometry
+     * @return shape
+     * @throws Data.JGeometry2ShapeException Spatny typ tvaru
+     */
     public static Shape jGeometry2Shape(JGeometry jGeometry) throws
             Data.JGeometry2ShapeException {
 
@@ -56,6 +63,10 @@ public class ShapeHelper {
 
     /**
      * Prevod tvaru na jGeometry
+     *
+     * @param shape tvar typu Shape
+     * @return Jgeometry tvaru
+     * @throws InvalidObjectException spatny typ tvaru
      */
     public static JGeometry shape2jGeometry(Shape shape) throws InvalidObjectException {
 
@@ -131,17 +142,14 @@ public class ShapeHelper {
             result.add(x);
             result.add(y);
         }
-        
-        if (shapeType == SHAPE_TYPE_CIRCLE)
-        {
+
+        if (shapeType == SHAPE_TYPE_CIRCLE) {
             double[] ordinates = new double[6];
             for (int i = 0; i < 6; i++) {
                 ordinates[i] = result.get(i);
             }
             res = new JGeometry(dbType, 0, new int[]{1, dbInfoType, dbShape}, ordinates);
-        }
-        else
-        {
+        } else {
             double[] ordinates = new double[result.size()];
             int k = 0;
             for (Double d : result) {

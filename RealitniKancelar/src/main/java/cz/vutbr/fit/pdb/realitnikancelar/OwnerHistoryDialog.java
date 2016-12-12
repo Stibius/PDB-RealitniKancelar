@@ -12,7 +12,7 @@ import javax.swing.DefaultComboBoxModel;
 import java.lang.IllegalArgumentException;
 
 /**
- *
+ * Dialog pro upravu historie majitelů
  * @author Honza
  */
 public class OwnerHistoryDialog extends javax.swing.JDialog {
@@ -23,6 +23,8 @@ public class OwnerHistoryDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form OwnerHistoryDialog
+     * @param parent parent
+     * @param modal modal
      */
     public OwnerHistoryDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);

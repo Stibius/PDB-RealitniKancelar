@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Created by jiri on 3.12.16.
+ * Sektor
+ *
+ * @author jiri
  */
 public class Sektor {
     public Integer id;

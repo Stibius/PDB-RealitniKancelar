@@ -15,15 +15,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import static cz.vutbr.fit.pdb.realitnikancelar.MainWindow.ownersListModel;
 import static cz.vutbr.fit.pdb.realitnikancelar.MainWindow.ownersListNames;
+
 import oracle.spatial.geometry.JGeometry;
 
 import javax.swing.*;
 
 /**
+ * Tady jsou ulozeny veskere informace o objektech.
+ *
  * @author Honza
- *         Tady budou ulozeny veskere informace o objektech.
  */
 public class Data {
     public static boolean line = false;
@@ -110,12 +113,14 @@ public class Data {
         }
     }
 
+    /**
+     * Nacte vychozi data ze souboru
+     */
     public static void loadDefaultData() {
-        if (!ConnectDialog.connected)
-        {
+        if (!ConnectDialog.connected) {
             new ConnectDialog(new javax.swing.JFrame(), true).setVisible(true);
         }
-        
+
         if (ConnectDialog.connected) {
             FileReader fileReader = null;
             System.out.println("Pracuji...");
@@ -158,6 +163,12 @@ public class Data {
         }
     }
 
+    /**
+     * Nacte sektor
+     *
+     * @param res ResultSet z DB
+     * @throws Exception
+     */
     private static void loadSector(ResultSet res) throws Exception {
         Sektor sektor = new Sektor();
         byte[] image = new byte[0];
@@ -186,6 +197,14 @@ public class Data {
         sectors.add(sektor);
     }
 
+    /**
+     * Nacte cely objekt vcetne geometrie
+     *
+     * @param res ResultSet z DB
+     * @return ObjectInfo objektu
+     * @throws Exception
+     * @throws SQLException
+     */
     private static ObjectInfo loadShape(ResultSet res) throws Exception, SQLException {
         ObjectInfo info = ObjectInfo.createFromDB(res);
         byte[] image = new byte[0];
@@ -283,54 +302,46 @@ public class Data {
 
         dataSaved();
     }
-    
-    private static Boolean checkValidGeometry()
-    {
+
+    private static Boolean checkValidGeometry() {
         /* kolize bodu s body */
-        for (int i = 0; i < Data.points.size(); i++)
-        {
+        for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.points.size(); j++)
-            {
+
+            for (int j = 0; j < Data.points.size(); j++) {
                 if (i == j || Data.pointsInfo.get(j).deletedObject) continue;
-                
-                if (Data.points.get(i).equals(Data.points.get(j)))
-                {
+
+                if (Data.points.get(i).equals(Data.points.get(j))) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.pointsInfo.get(i).nazev + 
-                        " a " + Data.pointsInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.pointsInfo.get(i).nazev +
+                                    " a " + Data.pointsInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize bodu s lomenymi carami */
-        for (int i = 0; i < Data.points.size(); i++)
-        {
+        for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.polylines.size(); j++)
-            {
+
+            for (int j = 0; j < Data.polylines.size(); j++) {
                 if (Data.polylinesInfo.get(j).deletedObject) continue;
-                
-                for (int jj = 0; jj < Data.polylines.get(j).size() - 1; jj++)
-                {
+
+                for (int jj = 0; jj < Data.polylines.get(j).size() - 1; jj++) {
                     Line2D line = new Line2D.Double(
                             Data.polylines.get(j).get(jj),
-                            Data.polylines.get(j).get(jj+1));
-                    
-                    if (line.ptSegDist(Data.points.get(i)) == 0.0)
-                    {
+                            Data.polylines.get(j).get(jj + 1));
+
+                    if (line.ptSegDist(Data.points.get(i)) == 0.0) {
                         JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.pointsInfo.get(i).nazev + 
-                        " a " + Data.polylinesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                                "Objekty " + Data.pointsInfo.get(i).nazev +
+                                        " a " + Data.polylinesInfo.get(j).nazev +
+                                        " spolu kolidují!",
+                                "Chyba!",
+                                JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
                 }
@@ -338,100 +349,86 @@ public class Data {
         }
         
         /* kolize bodu s obdelniky */
-        for (int i = 0; i < Data.points.size(); i++)
-        {
+        for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.rectangles.size(); j++)
-            {
+
+            for (int j = 0; j < Data.rectangles.size(); j++) {
                 if (Data.rectanglesInfo.get(j).deletedObject) continue;
-                
-                if (Data.rectangles.get(j).contains(Data.points.get(i)))
-                {
+
+                if (Data.rectangles.get(j).contains(Data.points.get(i))) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.pointsInfo.get(i).nazev + 
-                        " a " + Data.rectanglesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.pointsInfo.get(i).nazev +
+                                    " a " + Data.rectanglesInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize bodu s kruznicemi */
-        for (int i = 0; i < Data.points.size(); i++)
-        {
+        for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.circles.size(); j++)
-            {
+
+            for (int j = 0; j < Data.circles.size(); j++) {
                 if (Data.circlesInfo.get(j).deletedObject) continue;
-                
-                if (Data.circles.get(j).contains(Data.points.get(i)))
-                {
+
+                if (Data.circles.get(j).contains(Data.points.get(i))) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.pointsInfo.get(i).nazev + 
-                        " a " + Data.circlesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.pointsInfo.get(i).nazev +
+                                    " a " + Data.circlesInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize bodu s polygony */
-        for (int i = 0; i < Data.points.size(); i++)
-        {
+        for (int i = 0; i < Data.points.size(); i++) {
             if (Data.pointsInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.polygons.size(); j++)
-            {
+
+            for (int j = 0; j < Data.polygons.size(); j++) {
                 if (Data.polygonsInfo.get(j).deletedObject) continue;
-                
-                if (Data.polygons.get(j).contains(Data.points.get(i)))
-                {
+
+                if (Data.polygons.get(j).contains(Data.points.get(i))) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.pointsInfo.get(i).nazev + 
-                        " a " + Data.polygonsInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.pointsInfo.get(i).nazev +
+                                    " a " + Data.polygonsInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize lomenych car s lomenymi carami */
-        for (int i = 0; i < Data.polylines.size(); i++)
-        {
+        for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.polylines.size(); j++)
-            {
+
+            for (int j = 0; j < Data.polylines.size(); j++) {
                 if (i == j || Data.polylinesInfo.get(j).deletedObject) continue;
-                
-                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++)
-                {
-                    for (int jj = 0; jj < Data.polylines.get(j).size() - 1; jj++)
-                    {
+
+                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++) {
+                    for (int jj = 0; jj < Data.polylines.get(j).size() - 1; jj++) {
                         Line2D line1 = new Line2D.Double(
-                            Data.polylines.get(i).get(ii),
-                            Data.polylines.get(i).get(ii+1));
-                        
+                                Data.polylines.get(i).get(ii),
+                                Data.polylines.get(i).get(ii + 1));
+
                         Line2D line2 = new Line2D.Double(
-                            Data.polylines.get(j).get(jj),
-                            Data.polylines.get(j).get(jj+1));
-                        
-                        if (line1.intersectsLine(line2))
-                        {
+                                Data.polylines.get(j).get(jj),
+                                Data.polylines.get(j).get(jj + 1));
+
+                        if (line1.intersectsLine(line2)) {
                             JOptionPane.showMessageDialog(null,
-                            "Objekty " + Data.polylinesInfo.get(i).nazev + 
-                            " a " + Data.polylinesInfo.get(j).nazev + 
-                            " spolu kolidují!",
-                            "Chyba!",
-                            JOptionPane.ERROR_MESSAGE);
+                                    "Objekty " + Data.polylinesInfo.get(i).nazev +
+                                            " a " + Data.polylinesInfo.get(j).nazev +
+                                            " spolu kolidují!",
+                                    "Chyba!",
+                                    JOptionPane.ERROR_MESSAGE);
                             return false;
                         }
                     }
@@ -440,28 +437,24 @@ public class Data {
         }
         
         /* kolize lomenych car s obdelniky */
-        for (int i = 0; i < Data.polylines.size(); i++)
-        {
+        for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.rectangles.size(); j++)
-            {
+
+            for (int j = 0; j < Data.rectangles.size(); j++) {
                 if (Data.rectanglesInfo.get(j).deletedObject) continue;
-                
-                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++)
-                {
+
+                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++) {
                     Line2D line = new Line2D.Double(
-                        Data.polylines.get(i).get(ii),
-                        Data.polylines.get(i).get(ii+1));
-                        
-                    if (Data.rectangles.get(j).intersectsLine(line))
-                    {
+                            Data.polylines.get(i).get(ii),
+                            Data.polylines.get(i).get(ii + 1));
+
+                    if (Data.rectangles.get(j).intersectsLine(line)) {
                         JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.polylinesInfo.get(i).nazev + 
-                        " a " + Data.rectanglesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                                "Objekty " + Data.polylinesInfo.get(i).nazev +
+                                        " a " + Data.rectanglesInfo.get(j).nazev +
+                                        " spolu kolidují!",
+                                "Chyba!",
+                                JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
                 }
@@ -469,35 +462,31 @@ public class Data {
         }
         
         /* kolize lomenych car s kruznicemi */
-        for (int i = 0; i < Data.polylines.size(); i++)
-        {
+        for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.circles.size(); j++)
-            {
+
+            for (int j = 0; j < Data.circles.size(); j++) {
                 if (Data.circlesInfo.get(j).deletedObject) continue;
-                
-                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++)
-                {
+
+                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++) {
                     Line2D line = new Line2D.Double(
-                        Data.polylines.get(i).get(ii),
-                        Data.polylines.get(i).get(ii+1));
-                    
+                            Data.polylines.get(i).get(ii),
+                            Data.polylines.get(i).get(ii + 1));
+
                     Point2D center = new Point2D.Double(
                             Data.circles.get(j).getCenterX(),
                             Data.circles.get(j).getCenterY()
                     );
-                    
+
                     double dist = line.ptSegDist(center);
-                        
-                    if (dist <= Data.circles.get(j).getWidth() / 2)
-                    {
+
+                    if (dist <= Data.circles.get(j).getWidth() / 2) {
                         JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.polylinesInfo.get(i).nazev + 
-                        " a " + Data.circlesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                                "Objekty " + Data.polylinesInfo.get(i).nazev +
+                                        " a " + Data.circlesInfo.get(j).nazev +
+                                        " spolu kolidují!",
+                                "Chyba!",
+                                JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
                 }
@@ -505,40 +494,35 @@ public class Data {
         }
         
         /* kolize lomenych car s polygony */
-        for (int i = 0; i < Data.polylines.size(); i++)
-        {
+        for (int i = 0; i < Data.polylines.size(); i++) {
             if (Data.polylinesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.polygons.size(); j++)
-            {
+
+            for (int j = 0; j < Data.polygons.size(); j++) {
                 if (Data.polygonsInfo.get(j).deletedObject) continue;
-                
-                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++)
-                {
-                    for (int jj = 0; jj < Data.polygons.get(j).npoints - 1; jj++)
-                    {
+
+                for (int ii = 0; ii < Data.polylines.get(i).size() - 1; ii++) {
+                    for (int jj = 0; jj < Data.polygons.get(j).npoints - 1; jj++) {
                         Line2D line1 = new Line2D.Double(
-                            Data.polylines.get(i).get(ii),
-                            Data.polylines.get(i).get(ii+1));
-                        
+                                Data.polylines.get(i).get(ii),
+                                Data.polylines.get(i).get(ii + 1));
+
                         Line2D line2 = new Line2D.Double(
-                            new Point2D.Double(
-                                    Data.polygons.get(j).xpoints[jj], 
-                                    Data.polygons.get(j).ypoints[jj]),
-                            new Point2D.Double(
-                                    Data.polygons.get(j).xpoints[jj+1], 
-                                    Data.polygons.get(j).ypoints[jj+1]));
-                        
+                                new Point2D.Double(
+                                        Data.polygons.get(j).xpoints[jj],
+                                        Data.polygons.get(j).ypoints[jj]),
+                                new Point2D.Double(
+                                        Data.polygons.get(j).xpoints[jj + 1],
+                                        Data.polygons.get(j).ypoints[jj + 1]));
+
                         if (line1.intersectsLine(line2) ||
                                 Data.polygons.get(j).contains(Data.polylines.get(i).get(ii)) ||
-                                Data.polygons.get(j).contains(Data.polylines.get(i).get(ii+1)))
-                        {
+                                Data.polygons.get(j).contains(Data.polylines.get(i).get(ii + 1))) {
                             JOptionPane.showMessageDialog(null,
-                            "Objekty " + Data.polylinesInfo.get(i).nazev + 
-                            " a " + Data.polygonsInfo.get(j).nazev + 
-                            " spolu kolidují!",
-                            "Chyba!",
-                            JOptionPane.ERROR_MESSAGE);
+                                    "Objekty " + Data.polylinesInfo.get(i).nazev +
+                                            " a " + Data.polygonsInfo.get(j).nazev +
+                                            " spolu kolidují!",
+                                    "Chyba!",
+                                    JOptionPane.ERROR_MESSAGE);
                             return false;
                         }
                     }
@@ -547,136 +531,122 @@ public class Data {
         }
         
         /* kolize obdelniku s obdelniky */
-        for (int i = 0; i < Data.rectangles.size(); i++)
-        {
+        for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.rectangles.size(); j++)
-            {
+
+            for (int j = 0; j < Data.rectangles.size(); j++) {
                 if (i == j || Data.rectanglesInfo.get(j).deletedObject) continue;
-                
-                if (Data.rectangles.get(j).intersects(Data.rectangles.get(i)))
-                {
+
+                if (Data.rectangles.get(j).intersects(Data.rectangles.get(i))) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.rectanglesInfo.get(i).nazev + 
-                        " a " + Data.rectanglesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.rectanglesInfo.get(i).nazev +
+                                    " a " + Data.rectanglesInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize obdelniku s kruznicemi */
-        for (int i = 0; i < Data.rectangles.size(); i++)
-        {
+        for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.circles.size(); j++)
-            {
+
+            for (int j = 0; j < Data.circles.size(); j++) {
                 if (Data.circlesInfo.get(j).deletedObject) continue;
-                
-                if (Data.circles.get(j).intersects(Data.rectangles.get(i)))
-                {
+
+                if (Data.circles.get(j).intersects(Data.rectangles.get(i))) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.rectanglesInfo.get(i).nazev + 
-                        " a " + Data.circlesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.rectanglesInfo.get(i).nazev +
+                                    " a " + Data.circlesInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize obdelniku s polygony */
-        for (int i = 0; i < Data.rectangles.size(); i++)
-        {
+        for (int i = 0; i < Data.rectangles.size(); i++) {
             if (Data.rectanglesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.polygons.size(); j++)
-            {
+
+            for (int j = 0; j < Data.polygons.size(); j++) {
                 if (Data.polygonsInfo.get(j).deletedObject) continue;
-                
-                if (Data.polygons.get(j).intersects(Data.rectangles.get(i)))
-                {
+
+                if (Data.polygons.get(j).intersects(Data.rectangles.get(i))) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.rectanglesInfo.get(i).nazev + 
-                        " a " + Data.polygonsInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.rectanglesInfo.get(i).nazev +
+                                    " a " + Data.polygonsInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize kruznic s kruznicemi */
-        for (int i = 0; i < Data.circles.size(); i++)
-        {
+        for (int i = 0; i < Data.circles.size(); i++) {
             if (Data.circlesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.circles.size(); j++)
-            {
+
+            for (int j = 0; j < Data.circles.size(); j++) {
                 if (i == j || Data.circlesInfo.get(j).deletedObject) continue;
-                
+
                 Point2D point1 = new Point2D.Double(
                         Data.circles.get(i).getCenterX(),
                         Data.circles.get(i).getCenterY()
                 );
-                
+
                 Point2D point2 = new Point2D.Double(
                         Data.circles.get(j).getCenterX(),
                         Data.circles.get(j).getCenterY()
                 );
-                
+
                 double dist = point1.distance(point2);
                 double r1 = Data.circles.get(i).getWidth() / 2;
                 double r2 = Data.circles.get(j).getWidth() / 2;
-                
-                if (dist <= r1 + r2)
-                {
+
+                if (dist <= r1 + r2) {
                     JOptionPane.showMessageDialog(null,
-                        "Objekty " + Data.circlesInfo.get(i).nazev + 
-                        " a " + Data.circlesInfo.get(j).nazev + 
-                        " spolu kolidují!",
-                        "Chyba!",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Objekty " + Data.circlesInfo.get(i).nazev +
+                                    " a " + Data.circlesInfo.get(j).nazev +
+                                    " spolu kolidují!",
+                            "Chyba!",
+                            JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             }
         }
         
         /* kolize kruznic s polygony */
-        for (int i = 0; i < Data.circles.size(); i++)
-        {
+        for (int i = 0; i < Data.circles.size(); i++) {
             if (Data.circlesInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.polygons.size(); j++)
-            {
+
+            for (int j = 0; j < Data.polygons.size(); j++) {
                 if (Data.polygonsInfo.get(j).deletedObject) continue;
-                
+
                 for (int jj = 0; jj < Data.polygons.get(j).npoints - 1; jj++) {
                     Line2D line = new Line2D.Double(
-                        new Point2D.Double(
-                            Data.polygons.get(j).xpoints[jj], 
-                            Data.polygons.get(j).ypoints[jj]),
-                        new Point2D.Double(
-                            Data.polygons.get(j).xpoints[jj+1], 
-                            Data.polygons.get(j).ypoints[jj+1]));
-                    
+                            new Point2D.Double(
+                                    Data.polygons.get(j).xpoints[jj],
+                                    Data.polygons.get(j).ypoints[jj]),
+                            new Point2D.Double(
+                                    Data.polygons.get(j).xpoints[jj + 1],
+                                    Data.polygons.get(j).ypoints[jj + 1]));
+
                     Point2D center = new Point2D.Double(
                             Data.circles.get(i).getCenterX(),
                             Data.circles.get(i).getCenterY());
-                    
+
                     double dist = line.ptSegDist(center);
 
                     if (dist <= Data.circles.get(i).getWidth() / 2) {
                         JOptionPane.showMessageDialog(null,
                                 "Objekty " + Data.circlesInfo.get(i).nazev
-                                + " a " + Data.polygonsInfo.get(j).nazev
-                                + " spolu kolidují!",
+                                        + " a " + Data.polygonsInfo.get(j).nazev
+                                        + " spolu kolidují!",
                                 "Chyba!",
                                 JOptionPane.ERROR_MESSAGE);
                         return false;
@@ -686,19 +656,16 @@ public class Data {
         }
         
         /* kolize polygonu s polygony */
-        for (int i = 0; i < Data.polygons.size(); i++)
-        {
+        for (int i = 0; i < Data.polygons.size(); i++) {
             if (Data.polygonsInfo.get(i).deletedObject) continue;
-            
-            for (int j = 0; j < Data.polygons.size(); j++)
-            {
+
+            for (int j = 0; j < Data.polygons.size(); j++) {
                 if (i == j || Data.polygonsInfo.get(j).deletedObject) continue;
-                
-                if (polygons.get(i).contains(polygons.get(j).getBounds2D()))
-                {
+
+                if (polygons.get(i).contains(polygons.get(j).getBounds2D())) {
                     return false;
                 }
-                
+
                 for (int ii = 0; ii < Data.polygons.get(i).npoints - 1; ii++) {
                     for (int jj = 0; jj < Data.polygons.get(j).npoints - 1; jj++) {
                         Line2D line1 = new Line2D.Double(
@@ -708,7 +675,7 @@ public class Data {
                                 new Point2D.Double(
                                         Data.polygons.get(i).xpoints[ii + 1],
                                         Data.polygons.get(i).ypoints[ii + 1]));
-                        
+
                         Line2D line2 = new Line2D.Double(
                                 new Point2D.Double(
                                         Data.polygons.get(j).xpoints[jj],
@@ -720,8 +687,8 @@ public class Data {
                         if (line1.intersectsLine(line2)) {
                             JOptionPane.showMessageDialog(null,
                                     "Objekty " + Data.polygonsInfo.get(i).nazev
-                                    + " a " + Data.polygonsInfo.get(j).nazev
-                                    + " spolu kolidují!",
+                                            + " a " + Data.polygonsInfo.get(j).nazev
+                                            + " spolu kolidují!",
                                     "Chyba!",
                                     JOptionPane.ERROR_MESSAGE);
                             return false;
@@ -732,85 +699,73 @@ public class Data {
         }
         
         /* kolize objektu s hranicemi sektoru */
-        for (int i = 0; i < Data.sectors.size(); i++)
-        {
-            for (int ii = 0; ii < Data.sectors.get(i).geometrie.npoints - 1; ii++)
-            {
+        for (int i = 0; i < Data.sectors.size(); i++) {
+            for (int ii = 0; ii < Data.sectors.get(i).geometrie.npoints - 1; ii++) {
                 Line2D line = new Line2D.Double(
                         new Point2D.Double(
                                 Data.sectors.get(i).geometrie.xpoints[ii],
                                 Data.sectors.get(i).geometrie.ypoints[ii]),
                         new Point2D.Double(
                                 Data.sectors.get(i).geometrie.xpoints[ii + 1],
-                                Data.sectors.get(i).geometrie.ypoints[ii + 1]));  
-                
-                for (int j = 0; j < Data.points.size(); j++)
-                {
-                    if (line.ptSegDist(Data.points.get(j)) == 0.0)
-                    {
+                                Data.sectors.get(i).geometrie.ypoints[ii + 1]));
+
+                for (int j = 0; j < Data.points.size(); j++) {
+                    if (line.ptSegDist(Data.points.get(j)) == 0.0) {
                         JOptionPane.showMessageDialog(null,
                                 "Objekt " + Data.pointsInfo.get(j).nazev
-                                + " protíná hranici sektoru!",
+                                        + " protíná hranici sektoru!",
                                 "Chyba!",
                                 JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
                 }
-                
-                for (int j = 0; j < Data.polylines.size(); j++)
-                {
-                    for (int jj = 0; jj < Data.polylines.get(j).size() - 1; jj++)
-                    {
+
+                for (int j = 0; j < Data.polylines.size(); j++) {
+                    for (int jj = 0; jj < Data.polylines.get(j).size() - 1; jj++) {
                         Line2D line2 = new Line2D.Double(
-                            Data.polylines.get(j).get(jj),
-                            Data.polylines.get(j).get(jj+1));
-                        
-                        if (line.intersectsLine(line2))
-                        {
+                                Data.polylines.get(j).get(jj),
+                                Data.polylines.get(j).get(jj + 1));
+
+                        if (line.intersectsLine(line2)) {
                             JOptionPane.showMessageDialog(null,
-                                "Objekt " + Data.polylinesInfo.get(j).nazev
-                                + " protíná hranici sektoru!",
-                                "Chyba!",
-                                JOptionPane.ERROR_MESSAGE);
+                                    "Objekt " + Data.polylinesInfo.get(j).nazev
+                                            + " protíná hranici sektoru!",
+                                    "Chyba!",
+                                    JOptionPane.ERROR_MESSAGE);
                             return false;
                         }
                     }
                 }
-                
-                for (int j = 0; j < Data.rectangles.size(); j++)
-                {
-                    if (line.intersects(Data.rectangles.get(j)))
-                    {
+
+                for (int j = 0; j < Data.rectangles.size(); j++) {
+                    if (line.intersects(Data.rectangles.get(j))) {
                         JOptionPane.showMessageDialog(null,
                                 "Objekt " + Data.rectanglesInfo.get(j).nazev
-                                + " protíná hranici sektoru!",
+                                        + " protíná hranici sektoru!",
                                 "Chyba!",
                                 JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
                 }
-                
-                for (int j = 0; j < Data.circles.size(); j++)
-                {
+
+                for (int j = 0; j < Data.circles.size(); j++) {
                     Point2D center = new Point2D.Double(
                             Data.circles.get(j).getCenterX(),
                             Data.circles.get(j).getCenterY());
-                    
+
                     double dist = line.ptSegDist(center);
 
-                    if (dist <= Data.circles.get(j).getWidth() / 2) 
-                    {
+                    if (dist <= Data.circles.get(j).getWidth() / 2) {
                         JOptionPane.showMessageDialog(null,
                                 "Objekt " + Data.circlesInfo.get(j).nazev
-                                + " protíná hranici sektoru!",
+                                        + " protíná hranici sektoru!",
                                 "Chyba!",
                                 JOptionPane.ERROR_MESSAGE);
                         return false;
                     }
                 }
-                
-                for (int j = 0; j < Data.polygons.size(); j++)
-                {
+
+                for (int j = 0; j < Data.polygons.size(); j++) {
                     for (int jj = 0; jj < Data.polygons.get(j).npoints - 1; jj++) {
                         Line2D line2 = new Line2D.Double(
                                 new Point2D.Double(
@@ -823,20 +778,20 @@ public class Data {
                         if (line.intersectsLine(line2)) {
                             JOptionPane.showMessageDialog(null,
                                     "Objekt " + Data.polygonsInfo.get(j).nazev
-                                    + " protíná hranici sektoru!",
+                                            + " protíná hranici sektoru!",
                                     "Chyba!",
                                     JOptionPane.ERROR_MESSAGE);
                             return false;
                         }
                     }
                 }
-            }   
+            }
         }
-        
-        
+
+
         return true;
     }
-    
+
     private static Boolean checkValidDates(Map<ObjectInfo, Shape> objects) {
         ObjectInfo currentInfo;
         for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {

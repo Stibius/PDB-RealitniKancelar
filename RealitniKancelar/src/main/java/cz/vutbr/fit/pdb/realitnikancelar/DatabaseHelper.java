@@ -17,7 +17,8 @@ import java.util.logging.Logger;
 
 /**
  * Helper pro manipulaci s databazi
- * Created by jiri on 6.12.16.
+ *
+ * @author jiri
  */
 public class DatabaseHelper {
     private static Connection conn = ConnectDialog.conn;
@@ -25,7 +26,7 @@ public class DatabaseHelper {
     /**
      * Smaze majitele z databaze
      *
-     * @param currentOwner
+     * @param currentOwner majitel
      */
     public static void deleteOwner(Owner currentOwner) {
         String query = "DELETE FROM majitele WHERE id_majitele='" + currentOwner.id + "'";
@@ -40,7 +41,7 @@ public class DatabaseHelper {
     /**
      * Upravi majitele v databazi
      *
-     * @param currentOwner
+     * @param currentOwner majitel
      */
     public static void modifyOwner(Owner currentOwner) {
         try (PreparedStatement stmt = conn.prepareStatement("UPDATE majitele SET " +
@@ -58,7 +59,7 @@ public class DatabaseHelper {
     /**
      * Prida noveho majitele
      *
-     * @param currentOwner
+     * @param currentOwner majitel
      */
     public static void newOwner(Owner currentOwner) {
         try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO " +
@@ -76,7 +77,7 @@ public class DatabaseHelper {
     /**
      * Smaze objekt z databaze
      *
-     * @param currentInfo
+     * @param currentInfo info o objektu
      */
     public static void deleteObject(ObjectInfo currentInfo) {
         String query = "DELETE FROM objekty WHERE id='" + currentInfo.id + "'";
@@ -91,8 +92,8 @@ public class DatabaseHelper {
     /**
      * Vlozi kompletne novy objekt
      *
-     * @param current
-     * @param currentInfo
+     * @param current     objekt
+     * @param currentInfo info o objektu
      */
     public static void newObject(Shape current, ObjectInfo currentInfo) {
         JGeometry jGeo = null;
@@ -148,8 +149,7 @@ public class DatabaseHelper {
                 if (currentInfo.majitelDo.get(i) != null) {
                     stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
                             .getTime()));
-                }
-                else {
+                } else {
                     stmt.setNull(4, Types.DATE);
                 }
 
@@ -170,34 +170,36 @@ public class DatabaseHelper {
             e.printStackTrace();
         }
     }
+
     /**
      * Funkce zjisti, zda objekt leží v nějakém sektoru, pokud ano, vrátí jeho id.
-     * @param id
-     * @return 
+     *
+     * @param id id obkejtu
+     * @throws SQLException Chyba SQL
      */
-    public static void setSector (int id) throws SQLException{
+    public static void setSector(int id) throws SQLException {
         Statement stmt = ConnectDialog.conn.createStatement();
-        
+
         //leží objekt uvnitř?
         ResultSet rset = stmt.executeQuery("SELECT s.id FROM objekty o, sektor s " +
-            " WHERE SDO_RELATE(o.geometrie, s.geometrie, 'mask=INSIDE')='TRUE' "+
-            "AND s.id <> 0 AND o.id="+id);
-        if (rset.next()){
-            String updateSQL = "UPDATE objekty SET sektor = "+rset.getInt("id")+
-                " WHERE id = "+id;
+                " WHERE SDO_RELATE(o.geometrie, s.geometrie, 'mask=INSIDE')='TRUE' " +
+                "AND s.id <> 0 AND o.id=" + id);
+        if (rset.next()) {
+            String updateSQL = "UPDATE objekty SET sektor = " + rset.getInt("id") +
+                    " WHERE id = " + id;
             ResultSet rset2 = stmt.executeQuery(updateSQL);
-            rset2.next();  
+            rset2.next();
             rset2.close();
             rset.close();
         }
         //dotýká se hranou
-        else{
+        else {
             ResultSet rset2 = stmt.executeQuery("SELECT s.id FROM objekty o, sektor s " +
-            " WHERE SDO_RELATE(o.geometrie, s.geometrie, 'mask=COVEREDBY')='TRUE' "+
-            "AND s.id <> 0 AND o.id="+id);
-            if (rset2.next()){
-                String updateSQL = "UPDATE objekty SET sektor = "+rset2.getInt("id")+
-                " WHERE id = "+id;
+                    " WHERE SDO_RELATE(o.geometrie, s.geometrie, 'mask=COVEREDBY')='TRUE' " +
+                    "AND s.id <> 0 AND o.id=" + id);
+            if (rset2.next()) {
+                String updateSQL = "UPDATE objekty SET sektor = " + rset2.getInt("id") +
+                        " WHERE id = " + id;
                 ResultSet rset3 = stmt.executeQuery(updateSQL);
                 rset3.next();
                 rset3.close();
@@ -207,6 +209,12 @@ public class DatabaseHelper {
         }
     }
 
+    /**
+     * Upravi geometrii v DB
+     *
+     * @param current     objekt
+     * @param currentInfo info o objektu
+     */
     public static void modifyObjectGeometry(Shape current, ObjectInfo currentInfo) {
         JGeometry jGeo = null;
         try {
@@ -229,6 +237,11 @@ public class DatabaseHelper {
         }
     }
 
+    /**
+     * Upravi informace o objektu v DB
+     *
+     * @param currentInfo info o objektu
+     */
     public static void modifyObjectInfo(ObjectInfo currentInfo) {
         /* Nejdriv update tabulky 'objekty' */
         try {
@@ -248,7 +261,7 @@ public class DatabaseHelper {
             } else {
                 stmt.setNull(7, Types.DATE);
             }
-            if (currentInfo.rekonstrukce!= null) {
+            if (currentInfo.rekonstrukce != null) {
                 stmt.setDate(8, new java.sql.Date(currentInfo.rekonstrukce.getTime()));
             } else {
                 stmt.setNull(8, Types.DATE);
@@ -284,8 +297,7 @@ public class DatabaseHelper {
                 if (currentInfo.majitelDo.get(i) != null) {
                     stmt.setDate(4, new java.sql.Date(currentInfo.majitelDo.get(i)
                             .getTime()));
-                }
-                else {
+                } else {
                     stmt.setNull(4, Types.DATE);
                 }
                 stmt.addBatch();

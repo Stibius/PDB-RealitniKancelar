@@ -15,9 +15,9 @@ import java.awt.geom.Line2D;
 
 
 /**
- *
- * @author Honza
  * Trida pro platno, kam se kresli.
+ * @author Honza
+ *
  */
 public class DrawingPanel extends JPanel {
     

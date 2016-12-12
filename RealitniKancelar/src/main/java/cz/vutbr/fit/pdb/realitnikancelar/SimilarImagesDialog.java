@@ -16,13 +16,15 @@ import javax.imageio.ImageIO;
 import oracle.ord.im.OrdImage;
 
 /**
- *
+ * Dialog podobných obrázků
  * @author Honza
  */
 public class SimilarImagesDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form SimilarImagesDialog
+     * @param parent parent
+     * @param modal modal
      */
     public SimilarImagesDialog(java.awt.Frame parent, boolean modal, Object [][] similarImages) {
         super(parent, modal);
