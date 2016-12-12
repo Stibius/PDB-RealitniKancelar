@@ -270,7 +270,12 @@ public class Data {
 
     }
 
-    // ukladani dat do DB
+    /**
+     * Ukladani dat do DB.
+     *
+     * @throws InvalidObjectException
+     * @throws SQLException
+     */
     public static void saveData() throws InvalidObjectException, SQLException {
         //Vytvorime testovaci sektor, bacha, smaze vsechny ostatni
         Sektor.testovaciSektor();
@@ -303,6 +308,11 @@ public class Data {
         dataSaved();
     }
 
+    /**
+     * Kontroluje geometricke kolize mezi objekty a mezi objekty a hranicemi sektoru.
+     *
+     * @return true, pokud nebyly nalezeny zadne kolize
+     */
     private static Boolean checkValidGeometry() {
         /* kolize bodu s body */
         for (int i = 0; i < Data.points.size(); i++) {
@@ -792,6 +802,12 @@ public class Data {
         return true;
     }
 
+    /**
+     * Kontroluje validitu dat vystavby, rekonstrukce a demolice.
+     *
+     * @param objects Vsechny objekty v aplikaci a jejich informace.
+     * @return true, pokud nebyly nalezeny zadne nesrovnalosti v datech vystavby, rekonstrukce a demolice objektu.
+     */
     private static Boolean checkValidDates(Map<ObjectInfo, Shape> objects) {
         ObjectInfo currentInfo;
         for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
@@ -835,6 +851,12 @@ public class Data {
     }
 
 
+    /**
+     * Kontroluje validitu dat zacatku a konce vlastnictvi u majitelu.
+     *
+     * @param objects Vsechny objekty v aplikaci a jejich informace.
+     * @return true, pokud nebyly nalezeny zadne nesrovnalosti v datech zacatku a konce vlastnictvi u majitelu
+     */
     private static Boolean checkValidOwnerDates(Map<ObjectInfo, Shape> objects) {
         ObjectInfo currentInfo;
         for (Map.Entry<ObjectInfo, Shape> entry : objects.entrySet()) {
@@ -887,6 +909,15 @@ public class Data {
         return true;
     }
 
+    /**
+     * Zjistuje, jestli je interval dany prvnimi dvema datumy cely uvnitr intervalu daneho druhymi dvema datumy.
+     *
+     * @param date1 Datum zacatku prvniho intervalu.
+     * @param date2 Datum konce prvniho intervalu.
+     * @param date3 Datum zacatku druheho intervalu.
+     * @param date4 Datum konce druheho intervalu.
+     * @return true, pokud je interval dany prvnimi dvema datumy cely uvnitr intervalu daneho druhymi dvema datumy.
+     */
     private static Boolean intervalWithin(Date date1, Date date2, Date date3, Date date4) {
         Long StartA;
         Long EndA;
@@ -913,6 +944,15 @@ public class Data {
         }
     }
 
+    /**
+     * Zjistuje, jestli se interval dany prvnimi dvema datumy prekryva s intervalem danym druhymi dvema datumy.
+     *
+     * @param date Datum zacatku prvniho intervalu.
+     * @param date1 Datum konce prvniho intervalu.
+     * @param date2 Datum zacatku druheho intervalu.
+     * @param date3 Datum konce druheho intervalu.
+     * @return true, pokud se interval dany prvnimi dvema datumy prekryva s intervalem danym druhymi dvema datumy.
+     */
     private static Boolean dateOverlap(Date date, Date date1, Date date2, Date date3) {
         Long StartA;
         Long EndA;
@@ -943,6 +983,10 @@ public class Data {
         return false;
     }
 
+    /**
+     * Ulozi nove, zmenene a smazane majitele do DB.
+     *
+     */
     private static void saveOwners() {
         Owner currentOwner;
         for (int i = 0; i < owners.size(); i++) {
@@ -974,6 +1018,12 @@ public class Data {
         }
     }
 
+    /**
+     * Ulozi nove, modifikovane a smazane objekty do DB.
+     *
+     * @param objects Vsechny objekty v aplikaci a jejich informace.
+     * @throws SQLException
+     */
     private static void saveObjects(Map<ObjectInfo, Shape> objects) throws SQLException {
         ObjectInfo currentInfo;
         Shape current;
@@ -1022,6 +1072,11 @@ public class Data {
         }
     }
 
+    /**
+     * Zmerguje vsechny druhy objektu a jejich informace do jednoho Map.
+     *
+     * @return Vsechny druhy objektu a jejich informace zmergovane do jednoho Map
+     */
     public static Map mergeShapes() {
         Map<ObjectInfo, Shape> objects = new HashMap<>();
         for (int i = 0; i < rectangles.size(); i++)
@@ -1058,9 +1113,11 @@ public class Data {
         return objects;
     }
 
-    //vola se po ulozeni dat do DB
-    //pro vsechny objekty se nastavi, ze nejsou nove ani modifikovane
-    //smazane se smazou z aplikace
+    /**
+     * Vola se po ulozeni dat do DB.
+     * Pro vsechny objekty se nastavi, ze nejsou nove ani modifikovane
+     * Smazane se smazou z aplikace.
+     */
     public static void dataSaved() {
         removeDeletedFromApp();
 
@@ -1105,7 +1162,9 @@ public class Data {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    //smaze vsechna data z aplikace
+    /**
+     * Smaze vsechna data z aplikace.
+     */
     public static void removeAllFromApp() {
         owners.clear();
 
@@ -1127,7 +1186,9 @@ public class Data {
         sectors.clear();
     }
 
-    //vymaze objekty s priznakem deleted z aplikace
+    /**
+     * vymaze objekty s priznakem deleted z aplikace
+     */
     public static void removeDeletedFromApp() {
         for (int i = 0; i < owners.size(); i++) {
             if (owners.get(i).deletedOwner) {

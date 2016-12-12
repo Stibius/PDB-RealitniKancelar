@@ -36,7 +36,9 @@ public class DrawingPanel extends JPanel {
     
     }
     
-    //nakresli mapu, ktera odpovida aktualnimu obsahu tridy Data
+    /**
+     * nakresli mapu, ktera odpovida aktualnimu obsahu tridy Data
+     */
     public void createImageFromData() {
         this.setPreferredSize(new Dimension(Data.width, Data.height));
         image = new BufferedImage(Data.width, Data.height, BufferedImage.TYPE_INT_RGB);
@@ -174,7 +176,9 @@ public class DrawingPanel extends JPanel {
         this.repaint();
     }
 
-    //vola se pri prekreslovani platna
+    /**
+     * vola se pri prekreslovani platna
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

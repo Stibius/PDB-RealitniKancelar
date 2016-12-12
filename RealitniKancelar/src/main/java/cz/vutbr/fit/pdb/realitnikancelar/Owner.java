@@ -22,7 +22,10 @@ public class Owner {
     public boolean deletedOwner; //pokud je true, tento majitel byl v aplikaci smazan, ignoruje se a z aplikace bude smazan az pri aktualizaci DB
     private static TreeSet<Integer> ids = new TreeSet<Integer>();
     
-    //load je true, pokud budou data pro tento objekt nactena z DB
+    /**
+     * 
+     * @param load je true, pokud budou data pro tento objekt nactena z DB
+     */
     public Owner(boolean load) {
         this.id = nextId();
         this.jmeno = "Novy majitel";
@@ -35,6 +38,7 @@ public class Owner {
         
         ids.add(this.id);
     }
+    
     public Owner(Integer id, String jmeno, String adresa) {
         this.id = id;
         this.jmeno = jmeno;
@@ -48,7 +52,10 @@ public class Owner {
         ids.add(this.id);
     }
     
-    //load je true, pokud byla data pro tento objekt nactena z DB
+    /**
+     * 
+     * @param load je true, pokud budou data pro tento objekt nactena z DB
+     */
     public Owner(String jmeno, String adresa, boolean load)
     {
         this.id = nextId();

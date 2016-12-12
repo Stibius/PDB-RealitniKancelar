@@ -1010,6 +1010,9 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Nacte data z DB. Predtim zobrazi prihlasovaci dialog, pokud nejsme prihlaseni.
+     */
     private void loadData() {
         if (!ConnectDialog.connected)
         {
@@ -1059,6 +1062,9 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Ulozi zmeny do DB.
+     */
     private void saveChanges() {
         
         //nejdriv ulozime aktualni info oznaceneho objektu z GUI do data
@@ -1641,6 +1647,9 @@ public class MainWindow extends javax.swing.JFrame {
         ((DrawingPanel)mapPanel).createImageFromData();
     }//GEN-LAST:event_mapPanelMousePressed
 
+    /**
+     * Oznaci vybrany objekt jako smazany, ale jeste ho nemaze. Predtim zobrazi varovnou hlasku.
+     */
     private void deleteSelectedObject()
     {
         int option = JOptionPane.showConfirmDialog(null, "Opravdu vymazat označený objekt?", "Vymazat objekt?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -1804,19 +1813,7 @@ public class MainWindow extends javax.swing.JFrame {
         for (int i = 0; i < ownersListNames.size(); i++)
         {
             ownersListModel.addElement(ownersListNames.get(i));
-        }
-        
-        /*
-        ownersComboBox.removeAllItems();
-        
-        for (int i = 0; i < Data.owners.size(); i++)
-        {
-            ownersComboBox.addItem(Data.owners.get(i).jmeno);
-        }
-        
-        
-        ownersComboBox.setSelectedIndex(index);
-          */     
+        }   
     }//GEN-LAST:event_updateOwnerButtonActionPerformed
 
     private void deleteOwnerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteOwnerButtonActionPerformed
@@ -2287,6 +2284,9 @@ public class MainWindow extends javax.swing.JFrame {
         
     }//GEN-LAST:event_similarImagesButtonActionPerformed
 
+    /**
+     * Necha uzivatele vybrat SQL skript pro nacteni vzorovych dat a pak je nacte.
+     */
     private void createData()
     {
         JFileChooser fc = new JFileChooser();
@@ -2300,6 +2300,9 @@ public class MainWindow extends javax.swing.JFrame {
         Data.loadData();
     }
     
+    /**
+     * Odznaci prave oznaceny objekt a ulozi jeho pripadne modifikace.
+     */
     private void unselect()
     {
         for (int i = 0; i < Data.points.size(); i++) {
@@ -2344,6 +2347,9 @@ public class MainWindow extends javax.swing.JFrame {
         
     }
     
+    /**
+     * Nastavi pro vsechny objekty, ze nad nimi neni mys.
+     */
     private void unhover()
     {
         for (int i = 0; i < Data.points.size(); i++)
@@ -2509,6 +2515,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton updateOwnerButton;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Zobrazi v GUI informace o danem objektu.
+     * @param info Informace o objektu, ktere se maji zobrazit v GUI
+     */
     private void setInfo(ObjectInfo info) {
         loadImageButton.setEnabled(info.editable);
         saveImageButton.setEnabled(true);
@@ -2558,6 +2568,10 @@ public class MainWindow extends javax.swing.JFrame {
         
     }
     
+    /**
+     * Ulozi informace z GUI do daneho ObjectInfo.
+     * @param info Sem se ulozi aktualni informace z GUI.
+     */
     private void saveInfo(ObjectInfo info)
     {
         if (!info.editable) return;
@@ -2624,16 +2638,11 @@ public class MainWindow extends javax.swing.JFrame {
             info.popis = descriptionField.getText();
             info.modifiedInfo = true;
         }
-        
-        /* BACHA, PROZATIM VYPINAM SEKTORY
-        if (info.sektor != sectorLabel.getText())
-        {
-            info.sektor = sectorLabel.getText();
-            info.modifiedInfo = true;
-        }
-        */
     }
     
+    /**
+     * Vycisti GUI od vsech informaci.
+     */
     private void clearInfo() {
         loadImageButton.setEnabled(false);
         saveImageButton.setEnabled(false);
@@ -2665,6 +2674,11 @@ public class MainWindow extends javax.swing.JFrame {
         centrumVzdalenost.setText("");
     }
     
+    /**
+     * Prevede Date na String. 
+     * @param date Date, ktere se ma prevest na String.
+     * @return Dane Date jako String. Prazdny retezec, pokud je date null.
+     */
     public static String dateToString(Date date)
     {
         if (date == null) return "";
@@ -2680,6 +2694,12 @@ public class MainWindow extends javax.swing.JFrame {
         return sdate;
     }
     
+    /**
+     * Prevede String na Date. 
+     * @param sdate String, ktery se ma prevest na Date.
+     * @return Dany String jako Date. null, pokud je sdate null nebo prazdny retezec.
+     * @throws IllegalArgumentException
+     */
     public static Date stringToDate(String sdate) throws IllegalArgumentException 
     {
         if (sdate.isEmpty() || sdate == null) return null;
